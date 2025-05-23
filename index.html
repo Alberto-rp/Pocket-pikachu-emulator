@@ -230,11 +230,26 @@
         .end{
             background-color: red;
         }
+
+        .developerScreen.hide {
+            display: none;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="createScreen"></div>
+        <div class="developerScreen">
+            <div class="createScreen"></div><br>
+            
+            <!-- Buttons -->
+            <button id="saveDraw">SAVE</button>
+            <button id="saveAnimation">SAVE ANIMATION</button><br>
+            <button id="printDraw">PRINT</button>
+            <button id="printInit">PRINT SELECTED</button><br>
+            <button id="editPrint">EDIT ANIM</button><br>
+            <button id="startAnim">START ANIM</button>
+            <input type="text" id="salida">
+        </div>
         <div class="tamagotchiBody">
             <div class="screenContainer">
                 <img src="img/logoPikachu300ppp.png" alt="logo" class="logo">
@@ -260,14 +275,5 @@
             <img src="img/logoparaIco.png" alt="bodyTamago" id="bodyTamago">
         </div>
     </div>
-    <br>
-    <!-- <button id="eraser">ERASER</button> -->
-    <button id="saveDraw">SAVE</button>
-    <button id="saveAnimation">SAVE ANIMATION</button><br>
-    <button id="printDraw">PRINT</button>
-    <button id="printInit">PRINT SELECTED</button><br>
-    <button id="editPrint">EDIT ANIM</button><br>
-    <button id="startAnim">START ANIM</button>
-    <input type="text" id="salida">
 </body>
 </html>

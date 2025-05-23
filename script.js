@@ -24,7 +24,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const createScreen = document.querySelector('.createScreen');
     const DisplayScreen = document.querySelector('.screen');
 
+
+    // Developer screen
     loadAnim(createScreen, null, true);
+    if(window.location.href.indexOf('github.io') != -1){
+        document.querySelector('.developerScreen').classList.add('hide');
+    }
 
     //Init Pantalla
     loadAnim(DisplayScreen, null, true);
