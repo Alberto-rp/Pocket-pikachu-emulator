@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadAnim(createScreen, null, true);
     if(window.location.href.indexOf('github.io') != -1){
         document.querySelector('.developerScreen').classList.add('hide');
-        document.body.style.zoom = "80%";
+        document.body.style.zoom = "90%";
     }
 
     //Init Pantalla
