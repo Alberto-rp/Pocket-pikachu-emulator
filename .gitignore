@@ -2,3 +2,8 @@
 *.jpeg
 *.ai
 *.psd
+
+# Ignore temp folders
+img/img reales/ 
+
+img/*.psd
