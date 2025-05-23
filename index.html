@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PokPik</title>
+    <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+    <script src="script.js"></script>
+    <style>
+        @font-face {
+            font-family: 'digital';
+            src: url('fonts/digitalMono7.ttf') format('truetype'); /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
+        }
+
+        body {
+            background-color: #ffcc00;
+        }
+
+        .container {
+            display: flex;
+        }
+
+        /* TOP MENU */
+
+        .menuBar {
+            display: flex;
+            background-color: rgb(205, 252, 236);
+            border-radius: 10px;
+            border-bottom-left-radius: 0px;
+            border-bottom-right-radius: 0px;
+        }
+
+        .menuBar .img-menu {
+            /* width: 100px; */
+            width: 50px;
+            opacity: 0.04;
+        }
+        .menuBar .img-menu.selected{
+            opacity: 1;
+        }
+
+        .menuBar .walkCounter {
+            position: absolute;
+            right: 32px;
+            top: 20px;
+            font-family: digital;
+            font-size: 60px;
+            min-width: 136px;
+            color: #333366;
+            display: flex;
+            justify-content: end;
+            /* background-color: red; */
+        }
+
+        .walkCounter.shadow {
+            opacity: 0.04;
+        }
+
+        /* SCREENS */
+
+        .createScreen, .screen{
+            display: flex;
+            flex-wrap: wrap;
+            background-color: rgb(205, 252, 236);
+            height: 300px;
+            min-height: 300px;
+            /* width: 350px; */
+            width: 360px;
+            min-width: 360px;
+        }
+        
+        .createScreen {
+            margin-right: 20px;
+        }
+
+        .screen {
+            padding: 25px;
+            padding-top: 5px;
+            border-radius: 10px;
+            border-top-left-radius: 0px;
+            border-top-right-radius: 0px;
+        }
+        
+        .screenContainer {
+            padding: 25px;
+            padding-bottom: 45px;
+            background-color: #2c3753;
+            border-radius: 20px;
+            width: 410px;
+            min-width: 410px;
+            position: relative;
+        }
+
+
+        /* logo pokepika */
+        .logo {
+            position: absolute;
+            z-index: 10;
+            width: 300px;
+            left: calc(50% - 150px);
+            bottom: 9px;
+        }
+
+        /* PIXELS */
+
+        .pixel {
+            width: 8px;
+            height: 8px;
+            /* margin: 1px; */
+            margin: 0.5px;
+            padding: 0.5px;
+            background-color: rgb(162, 233, 209);
+        }
+
+        .pixel.clicked {
+            background-color: #333366;
+            /* background-color: #2c215b; */
+        }
+
+        .pixel:not(.clicked){
+            opacity: 0.5;
+        }
+
+
+        /* BUTTONS */
+        .buttonsContainer {
+            /* background-color: red; */
+            margin-top: 20px;
+            width: 450px;
+            height: 200px;
+            position: absolute;
+        }
+
+        .buttonsContainer .backEnter {
+            position: absolute;
+            background-color: #44547b;
+            border: solid 1px black;
+            background-image: url("img/buttonShape.png");
+            border-radius: 100%;
+            height: 60px;
+            width: 60px;
+        }
+        
+        .backEnter:not(#reset-button) {
+            box-shadow: 4px 0px 7px #8d7100;
+        }
+
+        .buttonsContainer .backEnter:not(#reset-button):active {
+            border: solid 3px black;
+            transform: translateX(1px);
+        }
+        
+        #enter-button {
+            top: 14px;
+            right: 22px;
+        }
+        
+        #back-button {
+            top: 57px;
+            right: 121px;
+        }
+        
+        #reset-button {
+            top: 128px;
+            right: 56px;
+            width: 30px;
+            height: 30px;
+            background-image: url("img/buttonResetShape.png");
+            border: solid 2px black;
+        }
+
+        #reset-button:active {
+            border: solid 4px black;
+            transform: translateX(-1px);
+        }
+
+        .buttonsContainer .menuState {
+            position: absolute;
+            background-color: #44547b;
+            border: solid 1px black;
+            background-image: url("img/buttonShapeLong.png");
+            border-radius: 100%;
+            height: 30px;
+            width: 64px;
+            box-shadow: 4px 0px 7px #8d7100;
+        }
+
+        .buttonsContainer .menuState:active {
+            border: solid 3px black;
+            transform: translateX(1px);
+        }
+
+        #menu-button {
+            top: 160px;
+            right: 136px;
+        }
+
+        #state-button {
+            top: 160px;
+            right: 251px;
+        }
+
+        #cruceta {
+            position: absolute;
+            top: 17px;
+            right: 301px;
+            /* -webkit-filter: drop-shadow(5px 5px 5px #222);
+            filter: drop-shadow(5px 5px 5px #222); */
+        }
+        #cruceta-shadow {
+            position: absolute;
+            width: 31%;
+            top: 12px;
+            right: 297px;
+            -webkit-filter: drop-shadow(5px 5px 5px #222);
+            filter: drop-shadow(2px 2px 7px #222);
+        }
+        
+        /* Ramdom Stuff */
+        #bodyTamago {
+            z-index: -1;
+            top: -30px;
+            left: 200px;
+            width: 800px;
+            position: absolute;
+            display: none;
+        }
+
+        .end{
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="createScreen"></div>
+        <div class="tamagotchiBody">
+            <div class="screenContainer">
+                <img src="img/logoPikachu300ppp.png" alt="logo" class="logo">
+                <div class="menuBar">
+                    <img src="img/clock.png" alt="clock" id="clockMenu" class="img-menu">
+                    <img src="img/gift.png" alt="clock" id="giftMenu" class="img-menu">
+                    <img src="img/coins.png" alt="clock" id="gamblingMenu" class="img-menu">
+                    <div class="walkCounter"></div>
+                    <div class="walkCounter shadow">88888</div>
+                </div>
+                <div class="screen"></div>
+            </div>
+            <div class="buttonsContainer">
+                <button id="shake">SHAKE</button>
+                <img src="img/cruceta-shadow.png" alt="cruceta" id="cruceta-shadow">
+                <img src="img/cruceta.png" alt="cruceta" id="cruceta">
+                <button id="state-button" class="menuState"></button>
+                <button id="menu-button" class="menuState"></button>
+                <button id="enter-button" class="backEnter"></button>
+                <button id="back-button" class="backEnter"></button>
+                <button id="reset-button" class="backEnter"></button>
+            </div>
+            <img src="img/logoparaIco.png" alt="bodyTamago" id="bodyTamago">
+        </div>
+    </div>
+    <br>
+    <!-- <button id="eraser">ERASER</button> -->
+    <button id="saveDraw">SAVE</button>
+    <button id="saveAnimation">SAVE ANIMATION</button><br>
+    <button id="printDraw">PRINT</button>
+    <button id="printInit">PRINT SELECTED</button><br>
+    <button id="editPrint">EDIT ANIM</button><br>
+    <button id="startAnim">START ANIM</button>
+    <input type="text" id="salida">
+</body>
+</html>
