@@ -234,8 +234,10 @@ document.addEventListener('DOMContentLoaded', () => {
             let selected = menus.find(item => document.querySelector(`#${item}`).classList.contains('selected'))
             let nextMenu = (menus.indexOf(selected) < (menus.length - 1))? (menus.indexOf(selected) + 1) : menus.indexOf(selected)
             // console.log('right')
-            document.querySelector(`#${selected}`).classList.remove('selected');
-            document.querySelector(`#${menus[nextMenu]}`).classList.add('selected');
+            setTimeout(() => {
+                document.querySelector(`#${selected}`).classList.remove('selected');
+                document.querySelector(`#${menus[nextMenu]}`).classList.add('selected');
+            }, 200);
         }
     })
 
@@ -245,8 +247,10 @@ document.addEventListener('DOMContentLoaded', () => {
             let selected = menus.find(item => document.querySelector(`#${item}`).classList.contains('selected'))
             let nextMenu = (menus.indexOf(selected) > 0)? (menus.indexOf(selected) - 1) : menus.indexOf(selected)
             // console.log('right')
-            document.querySelector(`#${selected}`).classList.remove('selected');
-            document.querySelector(`#${menus[nextMenu]}`).classList.add('selected');
+            setTimeout(() => {
+                document.querySelector(`#${selected}`).classList.remove('selected');
+                document.querySelector(`#${menus[nextMenu]}`).classList.add('selected');
+            }, 200);
         }
     })
 
