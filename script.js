@@ -151,7 +151,9 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelector('.walkCounter').innerHTML = steps;
         }, 200);
         setTimeout(() => {
-            document.querySelector("#clockMenu").classList.add('selected')
+            if(animStatus == ''){
+                document.querySelector("#clockMenu").classList.add('selected')
+            }
         }, 400);
 
         // Clear interval to switch off the screen in 60s
@@ -164,6 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }else{
                 if(animStatus != 'clock'){ // | gift | game
                     let menuSelected = document.querySelector('.menuBar .selected').id
+                    console.log(menuSelected)
                     switch (menuSelected) {
                         case "clockMenu": //CLOCK
                             basicAnim('stop');
@@ -221,6 +224,29 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(intervalAnim)
             // loadAnim(DisplayScreen, Anims.status.ok)
             displayState(DisplayScreen);
+        }
+    })
+
+    // RIGHT BUTTON
+    var menus = ['clockMenu', 'giftMenu', 'gamblingMenu'];
+    document.querySelector('#right-button').addEventListener('click', () => {
+        if(animStatus != '' && animStatus == 'stand'){
+            let selected = menus.find(item => document.querySelector(`#${item}`).classList.contains('selected'))
+            let nextMenu = (menus.indexOf(selected) < (menus.length - 1))? (menus.indexOf(selected) + 1) : menus.indexOf(selected)
+            // console.log('right')
+            document.querySelector(`#${selected}`).classList.remove('selected');
+            document.querySelector(`#${menus[nextMenu]}`).classList.add('selected');
+        }
+    })
+
+    // LEFT BUTTON
+    document.querySelector('#left-button').addEventListener('click', () => {
+        if(animStatus != '' && animStatus == 'stand'){
+            let selected = menus.find(item => document.querySelector(`#${item}`).classList.contains('selected'))
+            let nextMenu = (menus.indexOf(selected) > 0)? (menus.indexOf(selected) - 1) : menus.indexOf(selected)
+            // console.log('right')
+            document.querySelector(`#${selected}`).classList.remove('selected');
+            document.querySelector(`#${menus[nextMenu]}`).classList.add('selected');
         }
     })
 

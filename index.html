@@ -218,6 +218,32 @@
             -webkit-filter: drop-shadow(5px 5px 5px #222);
             filter: drop-shadow(2px 2px 7px #222);
         }
+
+        #right-button {
+            top: 60px;
+            left: 100px;
+        }
+        #left-button {
+            top: 60px;
+            left: 12px;
+        }
+        #top-button {
+            transform: rotate(90deg);
+            top: 17px;
+            left: 56px;
+        }
+        #bottom-button {
+            transform: rotate(90deg);
+            top: 105px;
+            left: 56px;
+        }
+        
+        .hiden-button {
+            width: 54px;
+            height: 39px;
+            position: absolute;
+            opacity: 0;
+        }
         
         /* Ramdom Stuff */
         #bodyTamago {
@@ -272,8 +298,8 @@
                 <img src="img/logoPikachu300ppp.png" alt="logo" class="logo">
                 <div class="menuBar">
                     <img src="img/clock.png" alt="clock" id="clockMenu" class="img-menu">
-                    <img src="img/gift.png" alt="clock" id="giftMenu" class="img-menu">
-                    <img src="img/coins.png" alt="clock" id="gamblingMenu" class="img-menu">
+                    <img src="img/gift.png" alt="gift" id="giftMenu" class="img-menu">
+                    <img src="img/coins.png" alt="coins" id="gamblingMenu" class="img-menu">
                     <div class="walkCounter"></div>
                     <div class="walkCounter shadow">88888</div>
                 </div>
@@ -283,6 +309,10 @@
                 <button id="shake">shake</button>
                 <img src="img/cruceta-shadow.png" alt="cruceta" id="cruceta-shadow">
                 <img src="img/cruceta.png" alt="cruceta" id="cruceta">
+                <button id="right-button" class="hiden-button">right</button>
+                <button id="left-button" class="hiden-button">left</button>
+                <button id="top-button" class="hiden-button">top</button>
+                <button id="bottom-button" class="hiden-button">bottom</button>
                 <button id="state-button" class="menuState"></button>
                 <button id="menu-button" class="menuState"></button>
                 <button id="enter-button" class="backEnter"></button>
