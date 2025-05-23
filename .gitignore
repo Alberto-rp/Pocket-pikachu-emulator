@@ -4,6 +4,6 @@
 *.psd
 
 # Ignore temp folders
+img/recursos/ 
 img/img reales/ 
-
 img/*.psd
