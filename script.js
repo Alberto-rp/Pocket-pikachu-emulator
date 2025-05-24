@@ -4,7 +4,7 @@ fetch('./anims.json')
 .then((response) => response.json())
 .then((data) => {
     Anims = data;
-    Anims.edit = Anims.status.ok;
+    Anims.edit = Anims.start.rightGigle;
 });
 
 // Anim vars
