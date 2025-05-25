@@ -4,6 +4,7 @@ fetch('./anims.json')
 .then((response) => response.json())
 .then((data) => {
     Anims = data;
+    // Anims.edit = Anims.start.leftGiggle;
     Anims.edit = Anims.start.rightGigle;
 });
 
@@ -25,15 +26,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const DisplayScreen = document.querySelector('.screen');
 
 
+    if(localStorage.getItem("InitTamagotchi") == null){
+        restartTamagotchi(DisplayScreen);
+    }else{
+        //Init Pantalla
+        loadAnim(DisplayScreen, null, true);
+    }
+    
+
+    /* DEV TOOLS */
     // Developer screen
     loadAnim(createScreen, null, true);
     if(window.location.href.indexOf('github.io') != -1){
         document.querySelector('.developerScreen').classList.add('hide');
         document.body.style.zoom = "90%";
     }
-
-    //Init Pantalla
-    loadAnim(DisplayScreen, null, true);
 
     //Drawing functionality
     function draw(event) {
@@ -47,13 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     createScreen.addEventListener('click', draw)
-
-    // Eraser functionality
-    // document.querySelector("#eraser").addEventListener('click', () => {
-    //     createScreen.removeEventListener('click', draw)
-    //     createScreen.addEventListener('mouseover', draw)
-    // })
-
 
     //Saving Animation
     document.querySelector("#saveAnimation").addEventListener('click', () => {
@@ -100,109 +100,72 @@ document.addEventListener('DOMContentLoaded', () => {
         loadAnim(createScreen, Anims.edit)
     })
 
-    //SHAKE WALK
-    let timeOutLook = undefined; //Prevent start the animation until stop shaking
-    document.querySelector('#shake').addEventListener('click', () => {
-        let startTime = new Date();
-        let screenShaked = document.querySelector('.screenContainer');
-        let buttons = document.querySelector('.buttonsContainer');
-
-        clearTimeout(timeOutLook);
-        
-        // Shake the screen
-        screenShaked.style.marginTop = '-15px';
-        buttons.style.marginTop = '35px';
-        setTimeout(() => {
-            screenShaked.style.marginTop = '0px';
-            buttons.style.marginTop = '20px';
-            walk();
-            if(animStatus == 'state') {
-                displayState(DisplayScreen);
-            }
-        }, 250);
-
-        if (startTime.getHours() >= 7 && startTime.getHours() < 20) { //Prevent during sleeping
-
-            if(animStatus == 'stand') { // Make Pikachu look 
-                timeOutLook = setTimeout(() => {
-                    console.log("EING?")
-                    basicAnim('stop');
-                    setTimeout(() => {
-                        loadAnim(DisplayScreen, Anims.standBasic.look);
-                    }, 500);
-            
-                    setTimeout(() => {
-                        basicAnim('start');
-                    }, 3000);
-                }, 2000);
-            }
-        }else{
-            console.log("Pikachu is sleeping")
-        }
-
-    })
-
     //INIT TAMAGOTCHI / ENTER
     // var clockInterval;
     var screenOff;
     document.querySelector("#enter-button").addEventListener('click', () => {
-        // Init screen (Timeouts to emulate analogic)
-        setTimeout(() => {
-            document.querySelector('.walkCounter').innerHTML = steps;
-        }, 200);
-        setTimeout(() => {
-            if(animStatus == ''){
-                document.querySelector("#clockMenu").classList.add('selected')
-            }
-        }, 400);
-
-        // Clear interval to switch off the screen in 60s
-        clearInterval(screenOff);
-
-        // Basic start
-        setTimeout(() => {
-            if(animStatus == ''){
-                basicAnim('start');
-            }else{
-                if(animStatus != 'clock'){ // | gift | game
-                    let menuSelected = document.querySelector('.menuBar .selected').id
-                    console.log(menuSelected)
-                    switch (menuSelected) {
-                        case "clockMenu": //CLOCK
-                            basicAnim('stop');
-                            animStatus = 'clock'
-                            console.log(animStatus)
-                            document.querySelector("#clockMenu").classList.remove('selected')
-                            clockFunc();
-                            intervalAnim = setInterval(clockFunc, 500);
-                            function clockFunc() {
-                                let timeStart = new Date();
-                                let hours = ((timeStart.getHours() + 24) % 12 || 0).toString() //Get 0 - 12 hours
-                                let minutes = timeStart.getMinutes().toString().split('') // Get minutes
-                                let pmState = (timeStart.getHours() > 12)? true : false; //Get PM or AM
+        if(animStatus == 'pokeball') {
+            clearInterval(intervalAnim);
+            restartTamagotchi(DisplayScreen, true)
+        }else{
+            // Init screen (Timeouts to emulate analogic)
+            setTimeout(() => {
+                document.querySelector('.walkCounter').innerHTML = steps;
+            }, 200);
+            setTimeout(() => {
+                if(animStatus == ''){
+                    document.querySelector("#clockMenu").classList.add('selected')
+                }
+            }, 400);
     
-                                printHour(DisplayScreen, hours, minutes, pmState);
-                            }
-                            break;
-                    
-                        default:
-                            break;
+            // Clear interval to switch off the screen in 60s
+            clearInterval(screenOff);
+    
+            // Basic start
+            setTimeout(() => {
+                if(animStatus == ''){
+                    basicAnim('start');
+                }else{
+                    if(animStatus != 'clock'){ // | gift | game
+                        let menuSelected = document.querySelector('.menuBar .selected').id
+                        console.log(menuSelected)
+                        switch (menuSelected) {
+                            case "clockMenu": //CLOCK
+                                basicAnim('stop');
+                                animStatus = 'clock'
+                                console.log(animStatus)
+                                document.querySelector("#clockMenu").classList.remove('selected')
+                                clockFunc();
+                                intervalAnim = setInterval(clockFunc, 500);
+                                function clockFunc() {
+                                    let timeStart = new Date();
+                                    let hours = ((timeStart.getHours() + 24) % 12 || 0).toString() //Get 0 - 12 hours
+                                    let minutes = timeStart.getMinutes().toString().split('') // Get minutes
+                                    let pmState = (timeStart.getHours() > 12)? true : false; //Get PM or AM
+        
+                                    printHour(DisplayScreen, hours, minutes, pmState);
+                                }
+                                break;
+                        
+                            default:
+                                break;
+                        }
                     }
                 }
+    
+            }, 500);
+    
+    
+            // APAGAR LA PANTALLA
+            screenOff = setInterval(switchOff, 60000)
+            function switchOff() {
+                clearInterval(intervalAnim);
+                animStatus = ''
+                cleanStates();
+                document.querySelector('.walkCounter').innerHTML = '';
+                loadAnim(DisplayScreen, null, true);
+                clearInterval(screenOff);
             }
-
-        }, 500);
-
-
-        // APAGAR LA PANTALLA
-        screenOff = setInterval(switchOff, 60000)
-        function switchOff() {
-            clearInterval(intervalAnim);
-            animStatus = ''
-            cleanStates();
-            document.querySelector('.walkCounter').innerHTML = '';
-            loadAnim(DisplayScreen, null, true);
-            clearInterval(screenOff);
         }
     })
 
@@ -254,16 +217,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     })
 
+    //RESET BUTTON
+    document.querySelector('#reset-button').addEventListener('click', () => {
+        restartTamagotchi(DisplayScreen);
+    })
+
     // Test Animation
     let on = 0;
     document.querySelector("#startAnim").addEventListener('click', () => {
         on = on == 1? 0 : 1;
         if(on == 1){
-            breakFast();
+            // breakFast();
+            pokeinit();
             // happyAnim();
         }else{
+            pokeinit();
             // breakFast();
-            happyAnim();
+            // happyAnim();
         }
     })
 
@@ -333,6 +303,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
     }
 
+    //SHAKE WALK
+    let timeOutLook = undefined; //Prevent start the animation until stop shaking
+    document.querySelector('#shake').addEventListener('click', () => {
+        let startTime = new Date();
+        let screenShaked = document.querySelector('.screenContainer');
+        let buttons = document.querySelector('.buttonsContainer');
+
+        clearTimeout(timeOutLook);
+        
+        // Shake the screen
+        screenShaked.style.marginTop = '-15px';
+        buttons.style.marginTop = '35px';
+        setTimeout(() => {
+            screenShaked.style.marginTop = '0px';
+            buttons.style.marginTop = '20px';
+            walk();
+            if(animStatus == 'state') {
+                displayState(DisplayScreen);
+            }
+        }, 250);
+
+        if (startTime.getHours() >= 7 && startTime.getHours() < 20) { //Prevent during sleeping
+
+            if(animStatus == 'stand') { // Make Pikachu look 
+                timeOutLook = setTimeout(() => {
+                    console.log("EING?")
+                    basicAnim('stop');
+                    setTimeout(() => {
+                        loadAnim(DisplayScreen, Anims.standBasic.look);
+                    }, 500);
+            
+                    setTimeout(() => {
+                        basicAnim('start');
+                    }, 3000);
+                }, 2000);
+            }
+        }else{
+            console.log("Pikachu is sleeping")
+        }
+
+    })
+
     // CELEBRATE ANIMATIONS
     function happyAnim() {
         basicAnim('stop');
@@ -400,6 +412,70 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
         
+    }
+
+    // Pokeball anim
+    function pokeinit() {
+        animStatus = 'pokeball'
+        console.log(animStatus)
+        let pokecounter = 1;
+        intervalAnim = setInterval(animate, 250);
+
+        // Declare cookie
+        var now = new Date();
+        now.setTime(now.getTime() + 3600 * 1000); // Agregamos 1 hora en milisegundos
+
+        function animate() {
+            endTime = new Date();
+            pokecounter++
+
+            if(pokecounter <= 4 || pokecounter == 6 || pokecounter == 8){
+                loadAnim(DisplayScreen, Anims.start.leftGiggle)
+            }else if(pokecounter == 5 || pokecounter == 7){
+                loadAnim(DisplayScreen, Anims.start.rightGigle)
+            }else if(pokecounter == 12){
+                pokecounter = 1;
+            }
+        }
+    }
+
+    function restartTamagotchi (DisplayScreen, enterclicked) {
+        if(!enterclicked){
+            if(animStatus != ''){
+                clearInterval(intervalAnim);
+                animStatus = '';
+            }
+            document.querySelector("#clockMenu").classList.add('selected')
+            document.querySelector("#giftMenu").classList.add('selected')
+            document.querySelector("#gamblingMenu").classList.add('selected')
+            document.querySelector('.walkCounter').innerHTML = 88888;
+            loadAnim(DisplayScreen, null, true, true);
+            document.cookie = ''
+            localStorage.clear();
+    
+            setTimeout(() => {
+                cleanStates();
+                document.querySelector('.walkCounter').innerHTML = '';
+                localStorage.setItem("InitTamagotchi", true)
+                loadAnim(DisplayScreen, null, true);
+                pokeinit();
+            }, 3000);
+        }else{
+            setTimeout(() => {
+                loadAnim(DisplayScreen, Anims.start.pop1)
+            }, 200);
+            setTimeout(() => {
+                loadAnim(DisplayScreen, Anims.start.pop2)
+            }, 1000);
+            setTimeout(() => {
+                loadAnim(DisplayScreen, null, true);
+            }, 1500);
+            setTimeout(() => {
+                document.querySelector('.walkCounter').innerHTML = steps;
+                document.querySelector("#clockMenu").classList.add('selected')
+                basicAnim('start');
+            }, 3000);
+        }
     }
 
     //PROBAR ESTO CUANDO ESTE SUBIDO A UN HTTPS
@@ -479,7 +555,7 @@ function walk() {
     }
 }
 
-function loadAnim(screen, anim, clear){
+function loadAnim(screen, anim, clear, full){
     screen.innerHTML = '';
     for(i = 0; i < 1080; i++){
         let newDiv = document.createElement("div");
@@ -488,7 +564,7 @@ function loadAnim(screen, anim, clear){
         
         // Se puede sumar o restar a la i de abajo para mover a izq o der
         // Crear otra func con mas de una anim de entrada y mas de un some / clock / game
-        if(!clear && anim.some(elem => elem == `num-${i}`)){
+        if(!clear && anim.some(elem => elem == `num-${i}`) || full){
             newDiv.classList.add('clicked');
         }
 
