@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Developer screen
     loadAnim(createScreen, null, true);
     if(window.location.href.indexOf('github.io') != -1){
-        document.querySelector('.developerScreen').classList.add('hide');
+        // document.querySelector('.developerScreen').classList.add('hide');
         document.body.style.zoom = "90%";
     }
 
@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // BACK BUTTON
     document.querySelector("#back-button").addEventListener('click', () => {
-        if(animStatus == 'clock'){
+        if(animStatus == 'clock' || animStatus == 'state'){
             clearInterval(intervalAnim)
             document.querySelector("#clockMenu").classList.add('selected')
             basicAnim('start');
@@ -197,10 +197,8 @@ document.addEventListener('DOMContentLoaded', () => {
             let selected = menus.find(item => document.querySelector(`#${item}`).classList.contains('selected'))
             let nextMenu = (menus.indexOf(selected) < (menus.length - 1))? (menus.indexOf(selected) + 1) : menus.indexOf(selected)
             // console.log('right')
-            setTimeout(() => {
-                document.querySelector(`#${selected}`).classList.remove('selected');
-                document.querySelector(`#${menus[nextMenu]}`).classList.add('selected');
-            }, 200);
+            document.querySelector(`#${selected}`).classList.remove('selected');
+            document.querySelector(`#${menus[nextMenu]}`).classList.add('selected');
         }
     })
 
@@ -210,10 +208,8 @@ document.addEventListener('DOMContentLoaded', () => {
             let selected = menus.find(item => document.querySelector(`#${item}`).classList.contains('selected'))
             let nextMenu = (menus.indexOf(selected) > 0)? (menus.indexOf(selected) - 1) : menus.indexOf(selected)
             // console.log('right')
-            setTimeout(() => {
-                document.querySelector(`#${selected}`).classList.remove('selected');
-                document.querySelector(`#${menus[nextMenu]}`).classList.add('selected');
-            }, 200);
+            document.querySelector(`#${selected}`).classList.remove('selected');
+            document.querySelector(`#${menus[nextMenu]}`).classList.add('selected');
         }
     })
 
@@ -482,7 +478,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //PROBAR ESTO CUANDO ESTE SUBIDO A UN HTTPS
 
-    /*window.addEventListener("deviceorientation", handleOrientation);
+    window.addEventListener("deviceorientation", handleOrientation);
 	
 	function handleOrientation(event) {
 		var absolute = event.absolute;
@@ -509,7 +505,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 
 		newColor = "rgba(" + beta + "," + alpha + "," + gamma + ",1.00)";
-        document.querySelector('#salida').value = `HEY ${absolute}`;
+        document.querySelector('#salida').value = `HEY ${absolute} ${event.alpha} ${event.beta} ${event.gamma}`;
 		
 		
 		// console.log(event.alpha);
@@ -522,7 +518,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			
 		// }
 		
-	}*/
+	}
 
 })
 
