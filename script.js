@@ -132,6 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         switch (menuSelected) {
                             case "clockMenu": //CLOCK
                                 basicAnim('stop');
+                                clearTimeout(timeOutLook);
                                 animStatus = 'clock'
                                 console.log(animStatus)
                                 document.querySelector("#clockMenu").classList.remove('selected')
@@ -481,45 +482,12 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener("deviceorientation", handleOrientation);
 	
 	function handleOrientation(event) {
-		// var absolute = event.absolute;
-		if (event.alpha > 180 && event.alpha < 360) {
-			var alpha = Math.round(Math.abs(event.alpha/360*255));
-			
-		} else {
-			var alpha = Math.round(Math.abs((360-event.alpha)/360*255));
-			
-		}
-		if (Math.abs(event.beta) > 90 && Math.abs(event.beta) < 180) {
-			var beta = Math.round((Math.abs(event.beta/90*255)-225));
-			
-		} else {
-			var beta = Math.round(((180-Math.abs(event.beta))/90*255)-225);
-			
-		}
-		if (Math.abs(event.gamma) > 90 && Math.abs(event.gamma) < 180) {
-			var gamma = Math.round(Math.abs(event.gamma/90*255));
-			
-		} else {
-			var gamma = Math.round(((180-Math.abs(event.gamma))/90*255)-255);
-			
-		}
+		if(Math.round(event.alpha) > 250){
+            walk();
+        }
 
-		newColor = "rgba(" + beta + "," + alpha + "," + gamma + ",1.00)";
-        document.querySelector('#salida').value = `${Math.round(event.alpha)} // ${Math.round(event.beta)} // ${Math.round(event.gamma)}`;
-		
-		
-		// console.log(event.alpha);
-		
-		// $("body").css("background-color", newColor);
-		
-		// if (event.alpha > 160 && event.alpha < 180) {
-		// 	console.log("north");
-		// 	$("body").trigger("click");
-			
-		// }
-		
+        document.querySelector('#salida').value = `${Math.round(event.alpha)} // ${Math.round(event.beta)} // ${Math.round(event.gamma)}`;	
 	}
-
 })
 
 function walk() {
