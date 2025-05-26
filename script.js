@@ -481,7 +481,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener("deviceorientation", handleOrientation);
 	
 	function handleOrientation(event) {
-		var absolute = event.absolute;
+		// var absolute = event.absolute;
 		if (event.alpha > 180 && event.alpha < 360) {
 			var alpha = Math.round(Math.abs(event.alpha/360*255));
 			
@@ -505,7 +505,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 
 		newColor = "rgba(" + beta + "," + alpha + "," + gamma + ",1.00)";
-        document.querySelector('#salida').value = `HEY ${absolute} ${event.alpha} ${event.beta} ${event.gamma}`;
+        document.querySelector('#salida').value = `${Math.round(event.alpha)} ${Math.round(event.beta)} ${Math.round(event.gamma)}`;
 		
 		
 		// console.log(event.alpha);
