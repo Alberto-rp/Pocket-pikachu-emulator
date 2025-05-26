@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // BACK BUTTON
     document.querySelector("#back-button").addEventListener('click', () => {
-        if(animStatus != '' && animStatus != 'stand'){
+        if(animStatus == 'clock'){
             clearInterval(intervalAnim)
             document.querySelector("#clockMenu").classList.add('selected')
             basicAnim('start');
@@ -304,7 +304,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     //SHAKE WALK
-    let timeOutLook = undefined; //Prevent start the animation until stop shaking
+    var timeOutLook = undefined; //Prevent start the animation until stop shaking
     document.querySelector('#shake').addEventListener('click', () => {
         let startTime = new Date();
         let screenShaked = document.querySelector('.screenContainer');
@@ -443,12 +443,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if(!enterclicked){
             if(animStatus != ''){
                 clearInterval(intervalAnim);
+                clearTimeout(timeOutLook)
                 animStatus = '';
             }
             document.querySelector("#clockMenu").classList.add('selected')
             document.querySelector("#giftMenu").classList.add('selected')
             document.querySelector("#gamblingMenu").classList.add('selected')
             document.querySelector('.walkCounter').innerHTML = 88888;
+            steps = 0;
             loadAnim(DisplayScreen, null, true, true);
             document.cookie = ''
             localStorage.clear();
