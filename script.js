@@ -505,7 +505,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 
 		newColor = "rgba(" + beta + "," + alpha + "," + gamma + ",1.00)";
-        document.querySelector('#salida').value = `${Math.round(event.alpha)} ${Math.round(event.beta)} ${Math.round(event.gamma)}`;
+        document.querySelector('#salida').value = `${Math.round(event.alpha)} // ${Math.round(event.beta)} // ${Math.round(event.gamma)}`;
 		
 		
 		// console.log(event.alpha);
