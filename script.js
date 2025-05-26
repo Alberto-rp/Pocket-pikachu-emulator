@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Developer screen
     loadAnim(createScreen, null, true);
     if(window.location.href.indexOf('github.io') != -1){
-        // document.querySelector('.developerScreen').classList.add('hide');
+        document.querySelector('.developerScreen').classList.add('hide');
         document.body.style.zoom = "90%";
     }
 
@@ -477,17 +477,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    //PROBAR ESTO CUANDO ESTE SUBIDO A UN HTTPS
-
-    window.addEventListener("deviceorientation", handleOrientation);
-	
+    //TEST PEDOMETER
+    /*window.addEventListener("deviceorientation", handleOrientation);
 	function handleOrientation(event) {
 		if(Math.round(event.alpha) > 250){
             walk();
+            if(animStatus == 'state') {
+                displayState(DisplayScreen);
+            }
         }
 
         document.querySelector('#salida').value = `${Math.round(event.alpha)} // ${Math.round(event.beta)} // ${Math.round(event.gamma)}`;	
-	}
+	}*/
 })
 
 function walk() {
