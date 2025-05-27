@@ -11,7 +11,7 @@
 - [Pocket Pikachu on wikipedia](https://en.wikipedia.org/wiki/Pok%C3%A9mon_Pikachu)
 - [Pocket Pikachu on Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Pok%C3%A9mon_Pikachu)
 
-### Actual functionalities
+## Actual functionalities
 - Sleep Animation from 20 to 7 Hours
 - Eat Animations at 10, 12, 13 and 18 hours
 - Play Animations Randomly between 9-18 hours
