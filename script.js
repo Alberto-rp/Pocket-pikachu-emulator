@@ -556,6 +556,8 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelector("#gamblingMenu").classList.add('selected')
             document.querySelector('.walkCounter').innerHTML = 88888;
             steps = 0;
+            totalSteps = 0;
+            watts = 0;
             loadAnim(DisplayScreen, null, true, true);
             document.cookie = ''
             localStorage.clear();
