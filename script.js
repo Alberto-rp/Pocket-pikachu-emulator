@@ -22,6 +22,12 @@ var watts = (localStorage.getItem("watts") != null)? Number(localStorage.getItem
 var breakfastHours = [10, 12, 13, 18]
 var playHours = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
 
+// Watts
+var GivenCents = 0;
+var GivenDecs = 0;
+var GivenUnits = 0;
+var selectedUnitWatt = 'cent'
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const createScreen = document.querySelector('.createScreen');
@@ -110,7 +116,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if(animStatus == 'pokeball') {
             clearInterval(intervalAnim);
             restartTamagotchi(DisplayScreen, true)
-        }else{
+        }else if(animStatus == 'gift'){
+            let posibleUnits = ['cent', 'dec', 'unit'];
+            // Seleccionar la siguiente unidad
+            selectedUnitWatt = (posibleUnits.indexOf(selectedUnitWatt) < (posibleUnits.length - 1))? posibleUnits[posibleUnits.indexOf(selectedUnitWatt) + 1] : selectedUnitWatt
+        } else{
             // Init screen (Timeouts to emulate analogic)
             setTimeout(() => {
                 document.querySelector('.walkCounter').innerHTML = steps;
@@ -152,12 +162,25 @@ document.addEventListener('DOMContentLoaded', () => {
                                 }
                                 break;
                             case "giftMenu":
+                                // Clean states
                                 basicAnim('stop', true);
                                 clearAllTimeouts();
                                 animStatus = 'gift'
                                 console.log(animStatus)
                                 document.querySelector(`#${menuSelected}`).classList.remove('selected')
-                                displayTotalWatts(DisplayScreen);
+
+                                // Sleep
+                                if (endTime.getHours() >= 20 && endTime.getHours() <= 23 || endTime.getHours() >= 0 && endTime.getHours() < 7){
+                                    loadAnim(DisplayScreen, Anims.gift.sleeping)
+                                }else{
+                                    // Prepare Gift
+                                    displayTotalWatts(DisplayScreen);
+                                    intervalAnim = setInterval(SelectWatts, 500);
+                                    function SelectWatts(){
+                                        displayTotalWatts(DisplayScreen); //If not here doesn't clean the screen
+                                        SelectWattsAmount(DisplayScreen, GivenCents, GivenDecs, GivenUnits, selectedUnitWatt)
+                                    }
+                                }
                                 break;
                         
                             default:
@@ -172,6 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // APAGAR LA PANTALLA
             screenOff = setInterval(switchOff, 60000)
             function switchOff() {
+                resetGivenWatts();
                 clearInterval(intervalAnim);
                 animStatus = ''
                 cleanStates();
@@ -184,13 +208,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // BACK BUTTON
-    let backMenusAllowed = ['clock', 'state', 'gift']
+    let backMenusAllowed = ['clock', 'state']
     document.querySelector("#back-button").addEventListener('click', () => {
-        if(backMenusAllowed.some(anim => anim == animStatus)){
+        if(backMenusAllowed.some(anim => anim == animStatus) || animStatus == 'gift' && selectedUnitWatt == 'cent'){
             clearInterval(intervalAnim);
             clearAllTimeouts();
+            resetGivenWatts();
             document.querySelector("#clockMenu").classList.add('selected')
             basicAnim('start');
+        }else if(animStatus == 'gift' && selectedUnitWatt != 'cent'){
+            let posibleUnits = ['cent', 'dec', 'unit'];
+            // Seleccionar la anterior unidad
+            selectedUnitWatt = (posibleUnits.indexOf(selectedUnitWatt) > 0)? posibleUnits[posibleUnits.indexOf(selectedUnitWatt) - 1] : selectedUnitWatt
         }
     })
 
@@ -229,6 +258,40 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     })
 
+    // TOP BUTTON
+    document.querySelector('#top-button').addEventListener('click', () => {
+        if(animStatus == 'gift'){
+            switch (selectedUnitWatt) {
+                case "cent":
+                    GivenCents = (GivenCents < 9)? (GivenCents + 1) : GivenCents
+                    break;
+                case "dec":
+                    GivenDecs = (GivenDecs < 9)? (GivenDecs + 1) : GivenDecs
+                    break;
+                case "unit":
+                    GivenUnits = (GivenUnits < 9)? (GivenUnits + 1) : GivenUnits
+                    break;
+            }
+        }
+    })
+
+    // BOTTOM BUTTON
+    document.querySelector('#bottom-button').addEventListener('click', () => {
+        if(animStatus == 'gift'){
+            switch (selectedUnitWatt) {
+                case "cent":
+                    GivenCents = (GivenCents > 0)? (GivenCents - 1) : GivenCents
+                    break;
+                case "dec":
+                    GivenDecs = (GivenDecs > 0)? (GivenDecs - 1) : GivenDecs
+                    break;
+                case "unit":
+                    GivenUnits = (GivenUnits > 0)? (GivenUnits - 1) : GivenUnits
+                    break;
+            }
+        }
+    })
+
     //RESET BUTTON
     document.querySelector('#reset-button').addEventListener('click', () => {
         restartTamagotchi(DisplayScreen);
@@ -236,8 +299,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Test Animation
     document.querySelector("#startAnim").addEventListener('click', () => {
-        // sandcastle();
-        displayTotalWatts(DisplayScreen);
+        sandcastle();
+        // displayTotalWatts(DisplayScreen);
     })
 
     // Basic stand animation
@@ -313,7 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
     var actionTimeOut = undefined; //Prevent start the animation until stop shaking
     var auxiliarTimeout = undefined;
     var auxiliarTimeout2 = undefined;
-    
+
     document.querySelector('#shake').addEventListener('click', () => {
         let startTime = new Date();
         let screenShaked = document.querySelector('.screenContainer');
@@ -542,6 +605,13 @@ document.addEventListener('DOMContentLoaded', () => {
         clearTimeout(auxiliarTimeout);
         clearTimeout(auxiliarTimeout2);
     }
+
+    function resetGivenWatts() {
+        GivenCents = 0;
+        GivenDecs = 0;
+        GivenUnits = 0;
+        selectedUnitWatt = 'cent'
+    }
 })
 
 function walk() {
@@ -691,6 +761,7 @@ function displayState(screen) {
     }
 }
 
+// Watts
 function displayTotalWatts(screen) {
     let totalWattsArray = watts.toString().split('').reverse();
     screen.innerHTML = '';
@@ -725,6 +796,29 @@ function displayTotalWatts(screen) {
         }
     
         screen.appendChild(newDiv)
+    }
+}
+
+function SelectWattsAmount(screen, cents, decs, units, currentSelected) {
+    let miliseconds = new Date().getMilliseconds();
+    for(i = 0; i < 1080; i++){
+        if(miliseconds <= 500 && currentSelected == 'unit' || currentSelected != 'unit'){
+            if(Anims.givenWatts.unit[units].some(elem => elem == `num-${i}`)){
+                screen.querySelector(`.num-${i}`).classList.add('clicked');
+            }
+        }
+
+        if(miliseconds <= 500 && currentSelected == 'dec' || currentSelected != 'dec'){
+            if(Anims.givenWatts.dec[decs].some(elem => elem == `num-${i}`)){
+                screen.querySelector(`.num-${i}`).classList.add('clicked');
+            }
+        }
+
+        if(miliseconds <= 500 && currentSelected == 'cent' || currentSelected != 'cent'){
+            if(Anims.givenWatts.cent[cents].some(elem => elem == `num-${i}`)){
+                screen.querySelector(`.num-${i}`).classList.add('clicked');
+            }
+        }
     }
 }
 
