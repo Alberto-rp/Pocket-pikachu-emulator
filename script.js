@@ -130,16 +130,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     randomAnim = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
                     basicAnim('start');
                 }else{
-                    if(animStatus != 'clock'){ // | gift | game
+                    if(animStatus != 'clock' && animStatus != 'gift'){ // | gift | game
                         let menuSelected = document.querySelector('.menuBar .selected').id
                         console.log(menuSelected)
                         switch (menuSelected) {
                             case "clockMenu": //CLOCK
                                 basicAnim('stop', true);
-                                clearTimeout(actionTimeOut);
+                                clearAllTimeouts();
                                 animStatus = 'clock'
                                 console.log(animStatus)
-                                document.querySelector("#clockMenu").classList.remove('selected')
+                                document.querySelector(`#${menuSelected}`).classList.remove('selected')
                                 clockFunc();
                                 intervalAnim = setInterval(clockFunc, 500);
                                 function clockFunc() {
@@ -150,6 +150,14 @@ document.addEventListener('DOMContentLoaded', () => {
         
                                     printHour(DisplayScreen, hours, minutes, pmState);
                                 }
+                                break;
+                            case "giftMenu":
+                                basicAnim('stop', true);
+                                clearAllTimeouts();
+                                animStatus = 'gift'
+                                console.log(animStatus)
+                                document.querySelector(`#${menuSelected}`).classList.remove('selected')
+                                displayTotalWatts(DisplayScreen);
                                 break;
                         
                             default:
@@ -176,9 +184,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // BACK BUTTON
+    let backMenusAllowed = ['clock', 'state', 'gift']
     document.querySelector("#back-button").addEventListener('click', () => {
-        if(animStatus == 'clock' || animStatus == 'state'){
-            clearInterval(intervalAnim)
+        if(backMenusAllowed.some(anim => anim == animStatus)){
+            clearInterval(intervalAnim);
+            clearAllTimeouts();
             document.querySelector("#clockMenu").classList.add('selected')
             basicAnim('start');
         }
@@ -301,6 +311,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //SHAKE WALK
     var actionTimeOut = undefined; //Prevent start the animation until stop shaking
+    var auxiliarTimeout = undefined;
+    var auxiliarTimeout2 = undefined;
+    
     document.querySelector('#shake').addEventListener('click', () => {
         let startTime = new Date();
         let screenShaked = document.querySelector('.screenContainer');
@@ -325,11 +338,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 actionTimeOut = setTimeout(() => {
                     console.log("EING?")
                     basicAnim('stop', true);
-                    setTimeout(() => {
+                    auxiliarTimeout = setTimeout(() => {
                         loadAnim(DisplayScreen, Anims.standBasic.look);
                     }, 500);
             
-                    setTimeout(() => {
+                    auxiliarTimeout2 = setTimeout(() => {
                         basicAnim('start', true);
                     }, 3000);
                 }, 1000);
@@ -337,7 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 actionTimeOut = setTimeout(() => {
                     clearInterval(intervalAnim);
                     sandcastle(true); //Fast digging
-                    setTimeout(() => {
+                    auxiliarTimeout = setTimeout(() => {
                         clearInterval(intervalAnim);
                         sandcastle();
                     }, 6000);
@@ -472,7 +485,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(!enterclicked){
             if(animStatus != ''){
                 clearInterval(intervalAnim);
-                clearTimeout(actionTimeOut)
+                clearAllTimeouts();
                 animStatus = '';
             }
             document.querySelector("#clockMenu").classList.add('selected')
@@ -509,6 +522,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+
+
     //TEST PEDOMETER
     /*window.addEventListener("deviceorientation", handleOrientation);
 	function handleOrientation(event) {
@@ -521,6 +536,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.querySelector('#salida').value = `${Math.round(event.alpha)} // ${Math.round(event.beta)} // ${Math.round(event.gamma)}`;	
 	}*/
+
+    function clearAllTimeouts() {
+        clearTimeout(actionTimeOut);
+        clearTimeout(auxiliarTimeout);
+        clearTimeout(auxiliarTimeout2);
+    }
 })
 
 function walk() {
