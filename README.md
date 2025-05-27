@@ -4,8 +4,10 @@
 - I'm trying to replicate it by reverse engineering, watching the behavior of mine and making it here.
 - Still in progress, is not finished yet!
 - Of course, this is a non-profit fan project, all rights to this content belong to its rightful creators.
+- If you want to try it click [here](https://alberto-rp.github.io/Pocket-pikachu-emulator/)
 
 ## links of interest
 
+- [Try Pocket Pikachu Emulator](https://alberto-rp.github.io/Pocket-pikachu-emulator/)
 - [Pocket Pikachu on wikipedia](https://en.wikipedia.org/wiki/Pok%C3%A9mon_Pikachu)
 - [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Pok%C3%A9mon_Pikachu)
