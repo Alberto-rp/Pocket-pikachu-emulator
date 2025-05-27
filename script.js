@@ -4,8 +4,8 @@ fetch('./anims.json')
 .then((response) => response.json())
 .then((data) => {
     Anims = data;
-    // Anims.edit = Anims.start.leftGiggle;
-    Anims.edit = Anims.sandcastle.sand2;
+    // EDIT ANIMATION
+    Anims.edit = Anims.gift.giftExample;
 });
 
 // Anim vars
@@ -73,6 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Output
         // console.log(clickedPixels)
+        navigator.clipboard.writeText(exitString)
         console.log(exitString)
     })
 
@@ -225,7 +226,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Test Animation
     document.querySelector("#startAnim").addEventListener('click', () => {
-        sandcastle();
+        // sandcastle();
+        displayTotalWatts(DisplayScreen);
     })
 
     // Basic stand animation
@@ -661,6 +663,43 @@ function displayState(screen) {
         }
         // milcent
         if(totalStepArray.length == 6 && Anims.totalSteps.milcent[totalStepArray[5]].some(elem => elem == `num-${i}`)){
+            newDiv.classList.add('clicked');
+        }
+    
+        screen.appendChild(newDiv)
+    }
+}
+
+function displayTotalWatts(screen) {
+    let totalWattsArray = watts.toString().split('').reverse();
+    screen.innerHTML = '';
+
+    for(i = 0; i < 1080; i++){
+        let newDiv = document.createElement("div");
+        newDiv.classList.add('pixel');
+        newDiv.classList.add(`num-${i}`);
+
+        // State
+        if(Anims.gift.base.some(elem => elem == `num-${i}`)){
+            newDiv.classList.add('clicked');
+        }
+
+
+        /* Watts */
+        // Unit
+        if(Anims.watts.unit[totalWattsArray[0]].some(elem => elem == `num-${i}`)){
+            newDiv.classList.add('clicked');
+        }
+        // Decen
+        if(totalWattsArray.length >= 2 && Anims.watts.dec[totalWattsArray[1]].some(elem => elem == `num-${i}`)){
+            newDiv.classList.add('clicked');
+        }
+        // cent
+        if(totalWattsArray.length >= 3 && Anims.watts.cent[totalWattsArray[2]].some(elem => elem == `num-${i}`)){
+            newDiv.classList.add('clicked');
+        }
+        // mil
+        if(totalWattsArray.length >= 4 && Anims.watts.mil[totalWattsArray[3]].some(elem => elem == `num-${i}`)){
             newDiv.classList.add('clicked');
         }
     

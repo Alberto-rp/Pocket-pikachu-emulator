@@ -30,6 +30,98 @@
       "nomnom" : ["num-76", "num-77", "num-78", "num-79", "num-80", "num-81", "num-99", "num-100", "num-101", "num-102", "num-103", "num-104", "num-113", "num-114", "num-115", "num-118", "num-119", "num-120", "num-121", "num-131", "num-132", "num-133", "num-134", "num-137", "num-138", "num-139", "num-151", "num-152", "num-158", "num-159", "num-160", "num-161", "num-162", "num-163", "num-164", "num-165", "num-166", "num-172", "num-173", "num-189", "num-190", "num-206", "num-207", "num-227", "num-228", "num-240", "num-241", "num-263", "num-277", "num-280", "num-281", "num-282", "num-298", "num-302", "num-303", "num-309", "num-310", "num-314", "num-315", "num-318", "num-334", "num-342", "num-350", "num-354", "num-369", "num-372", "num-373", "num-375", "num-381", "num-383", "num-384", "num-387", "num-390", "num-405", "num-408", "num-409", "num-411", "num-412", "num-413", "num-414", "num-415", "num-416", "num-417", "num-419", "num-420", "num-423", "num-425", "num-426", "num-441", "num-447", "num-453", "num-459", "num-460", "num-478", "num-494", "num-495", "num-496", "num-497", "num-515", "num-516", "num-518", "num-519", "num-525", "num-526", "num-528", "num-529", "num-530", "num-533", "num-551", "num-554", "num-556", "num-560", "num-562", "num-565", "num-568", "num-586", "num-590", "num-593", "num-594", "num-595", "num-598", "num-602", "num-603", "num-604", "num-605", "num-615", "num-617", "num-619", "num-622", "num-626", "num-634", "num-638", "num-641", "num-658", "num-661", "num-662", "num-663", "num-669", "num-670", "num-671", "num-674", "num-676", "num-687", "num-688", "num-689", "num-690", "num-691", "num-694", "num-700", "num-704", "num-710", "num-712", "num-721", "num-722", "num-723", "num-724", "num-725", "num-727", "num-730", "num-736", "num-740", "num-746", "num-747", "num-757", "num-759", "num-760", "num-761", "num-763", "num-766", "num-768", "num-769", "num-770", "num-771", "num-777", "num-778", "num-779", "num-780", "num-782", "num-783", "num-793", "num-795", "num-796", "num-797", "num-799", "num-802", "num-804", "num-805", "num-806", "num-807", "num-808", "num-809", "num-810", "num-811", "num-812", "num-813", "num-814", "num-815", "num-816", "num-818", "num-830", "num-831", "num-832", "num-833", "num-835", "num-838", "num-839", "num-840", "num-852", "num-853", "num-854", "num-868", "num-869", "num-870", "num-871", "num-872", "num-873", "num-874", "num-875", "num-876", "num-877", "num-878", "num-879", "num-880", "num-881", "num-882", "num-883", "num-884", "num-885", "num-886", "num-887", "num-888", "num-889", "num-890", "num-891", "num-892", "num-893", "num-894", "num-895", "num-903", "num-932", "num-939", "num-968", "num-975", "num-979", "num-983", "num-987", "num-991", "num-995", "num-999", "num-1004", "num-1011", "num-1013", "num-1015", "num-1017", "num-1019", "num-1021", "num-1023", "num-1025", "num-1027", "num-1029", "num-1031", "num-1033", "num-1035", "num-1037", "num-1040", "num-1047", "num-1049", "num-1051", "num-1053", "num-1055", "num-1057", "num-1059", "num-1061", "num-1063", "num-1065", "num-1067", "num-1069", "num-1071", "num-1073", "num-1076"],
       "nomnom2" : ["num-40", "num-41", "num-42", "num-43", "num-44", "num-45", "num-63", "num-64", "num-65", "num-66", "num-67", "num-68", "num-77", "num-78", "num-79", "num-82", "num-83", "num-84", "num-85", "num-95", "num-96", "num-97", "num-98", "num-101", "num-102", "num-103", "num-115", "num-116", "num-122", "num-123", "num-124", "num-125", "num-126", "num-127", "num-128", "num-129", "num-130", "num-136", "num-137", "num-153", "num-154", "num-170", "num-171", "num-191", "num-192", "num-204", "num-205", "num-227", "num-241", "num-263", "num-266", "num-267", "num-273", "num-274", "num-277", "num-298", "num-306", "num-314", "num-316", "num-317", "num-318", "num-334", "num-337", "num-338", "num-346", "num-347", "num-350", "num-351", "num-354", "num-370", "num-373", "num-374", "num-378", "num-382", "num-383", "num-386", "num-390", "num-406", "num-414", "num-422", "num-426", "num-442", "num-458", "num-461", "num-462", "num-479", "num-493", "num-496", "num-516", "num-528", "num-531", "num-532", "num-533", "num-545", "num-552", "num-554", "num-555", "num-561", "num-562", "num-564", "num-569", "num-578", "num-584", "num-587", "num-590", "num-592", "num-596", "num-598", "num-601", "num-604", "num-623", "num-626", "num-629", "num-630", "num-631", "num-634", "num-637", "num-639", "num-640", "num-641", "num-658", "num-662", "num-670", "num-674", "num-677", "num-687", "num-688", "num-689", "num-690", "num-691", "num-694", "num-697", "num-698", "num-699", "num-705", "num-706", "num-707", "num-710", "num-712", "num-721", "num-722", "num-723", "num-724", "num-725", "num-727", "num-730", "num-736", "num-740", "num-746", "num-748", "num-757", "num-759", "num-760", "num-761", "num-763", "num-766", "num-772", "num-776", "num-782", "num-783", "num-793", "num-795", "num-796", "num-797", "num-799", "num-802", "num-804", "num-805", "num-806", "num-807", "num-808", "num-809", "num-810", "num-811", "num-812", "num-813", "num-814", "num-815", "num-816", "num-818", "num-830", "num-831", "num-832", "num-833", "num-835", "num-838", "num-839", "num-840", "num-852", "num-853", "num-854", "num-868", "num-869", "num-870", "num-871", "num-872", "num-873", "num-874", "num-875", "num-876", "num-877", "num-878", "num-879", "num-880", "num-881", "num-882", "num-883", "num-884", "num-885", "num-886", "num-887", "num-888", "num-889", "num-890", "num-891", "num-892", "num-893", "num-894", "num-895", "num-903", "num-932", "num-939", "num-968", "num-975", "num-979", "num-983", "num-987", "num-991", "num-995", "num-999", "num-1004", "num-1011", "num-1013", "num-1015", "num-1017", "num-1019", "num-1021", "num-1023", "num-1025", "num-1027", "num-1029", "num-1031", "num-1033", "num-1035", "num-1037", "num-1040", "num-1047", "num-1049", "num-1051", "num-1053", "num-1055", "num-1057", "num-1059", "num-1061", "num-1063", "num-1065", "num-1067", "num-1069", "num-1071", "num-1073", "num-1076"]
    },
+   "gift" : {
+      "base" : ["num-56", "num-58", "num-60", "num-66", "num-69", "num-92", "num-94", "num-96", "num-99", "num-100", "num-101", "num-102", "num-103", "num-104", "num-105", "num-106", "num-128", "num-129", "num-130", "num-131", "num-132", "num-134", "num-136", "num-138", "num-141", "num-165", "num-167", "num-170", "num-171", "num-172", "num-174", "num-177", "num-216", "num-218", "num-220", "num-222", "num-224", "num-226", "num-228", "num-230", "num-232", "num-234", "num-236", "num-238", "num-240", "num-242", "num-244", "num-246", "num-248", "num-250", "num-367", "num-368", "num-371", "num-374", "num-375", "num-402", "num-410", "num-413", "num-437", "num-440", "num-441", "num-443", "num-445", "num-446", "num-447", "num-448", "num-449", "num-450", "num-473", "num-477", "num-479", "num-482", "num-485", "num-510", "num-511", "num-512", "num-513", "num-515", "num-518", "num-521", "num-676", "num-678", "num-680", "num-712", "num-714", "num-716", "num-748", "num-749", "num-750", "num-751", "num-752", "num-785", "num-787"],
+      "giftExample" : ["num-2", "num-3", "num-4", "num-6", "num-7", "num-8", "num-10", "num-11", "num-12", "num-14", "num-15", "num-16", "num-38", "num-40", "num-42", "num-44", "num-46", "num-48", "num-50", "num-52", "num-56", "num-58", "num-60", "num-66", "num-69", "num-74", "num-75", "num-76", "num-78", "num-79", "num-80", "num-82", "num-83", "num-84", "num-86", "num-87", "num-88", "num-92", "num-94", "num-96", "num-99", "num-100", "num-101", "num-102", "num-103", "num-104", "num-105", "num-106", "num-110", "num-112", "num-114", "num-116", "num-118", "num-120", "num-122", "num-124", "num-128", "num-129", "num-130", "num-131", "num-132", "num-134", "num-136", "num-138", "num-141", "num-146", "num-147", "num-148", "num-150", "num-151", "num-152", "num-154", "num-155", "num-156", "num-158", "num-159", "num-160", "num-165", "num-167", "num-170", "num-171", "num-172", "num-174", "num-177", "num-216", "num-218", "num-220", "num-222", "num-224", "num-226", "num-228", "num-230", "num-232", "num-234", "num-236", "num-238", "num-240", "num-242", "num-244", "num-246", "num-248", "num-250", "num-367", "num-368", "num-371", "num-374", "num-375", "num-402", "num-410", "num-413", "num-437", "num-440", "num-441", "num-443", "num-445", "num-446", "num-447", "num-448", "num-449", "num-450", "num-473", "num-477", "num-479", "num-482", "num-485", "num-510", "num-511", "num-512", "num-513", "num-515", "num-518", "num-521", "num-627", "num-628", "num-629", "num-631", "num-632", "num-633", "num-635", "num-636", "num-637", "num-663", "num-665", "num-667", "num-669", "num-671", "num-673", "num-676", "num-678", "num-680", "num-699", "num-701", "num-703", "num-705", "num-707", "num-709", "num-712", "num-714", "num-716", "num-735", "num-737", "num-739", "num-741", "num-743", "num-745", "num-748", "num-749", "num-750", "num-751", "num-752", "num-771", "num-772", "num-773", "num-775", "num-776", "num-777", "num-779", "num-780", "num-781", "num-785", "num-787"]
+   },
+   "watts" : {
+      "unit" : [
+         ["num-14", "num-15", "num-16", "num-50", "num-52", "num-86", "num-88", "num-122", "num-124", "num-158", "num-159", "num-160"],
+         ["num-16", "num-52", "num-88", "num-124", "num-160"],
+         ["num-14", "num-15", "num-16", "num-52", "num-86", "num-87", "num-88", "num-122", "num-158", "num-159", "num-160"],
+         ["num-14", "num-15", "num-16", "num-52", "num-86", "num-87", "num-88", "num-124", "num-158", "num-159", "num-160"],
+         ["num-14", "num-16", "num-50", "num-52", "num-86", "num-87", "num-88", "num-124", "num-160"],
+         ["num-14", "num-15", "num-16", "num-50", "num-86", "num-87", "num-88", "num-124", "num-158", "num-159", "num-160"],
+         ["num-14", "num-15", "num-16", "num-50", "num-86", "num-87", "num-88", "num-122", "num-124", "num-158", "num-159", "num-160"],
+         ["num-14", "num-15", "num-16", "num-50", "num-52", "num-86", "num-88", "num-124", "num-160"],
+         ["num-14", "num-15", "num-16", "num-50", "num-52", "num-86", "num-87", "num-88", "num-122", "num-124", "num-158", "num-159", "num-160"],
+         ["num-14", "num-15", "num-16", "num-50", "num-52", "num-86", "num-87", "num-88", "num-124", "num-158", "num-159", "num-160"]
+      ],
+      "dec" : [
+         ["num-10", "num-11", "num-12", "num-46", "num-48", "num-82", "num-84", "num-118", "num-120", "num-154", "num-155", "num-156"],
+         ["num-12", "num-48", "num-84", "num-120", "num-156"],
+         ["num-10", "num-11", "num-12", "num-48", "num-82", "num-83", "num-84", "num-118", "num-154", "num-155", "num-156"],
+         ["num-10", "num-11", "num-12", "num-48", "num-82", "num-83", "num-84", "num-120", "num-154", "num-155", "num-156"],
+         ["num-10", "num-12", "num-46", "num-48", "num-82", "num-83", "num-84", "num-120", "num-156"],
+         ["num-10", "num-11", "num-12", "num-46", "num-82", "num-83", "num-84", "num-120", "num-154", "num-155", "num-156"],
+         ["num-10", "num-11", "num-12", "num-46", "num-82", "num-83", "num-84", "num-118", "num-120", "num-154", "num-155", "num-156"],
+         ["num-10", "num-11", "num-12", "num-46", "num-48", "num-82", "num-84", "num-120", "num-156"],
+         ["num-10", "num-11", "num-12", "num-46", "num-48", "num-82", "num-83", "num-84", "num-118", "num-120", "num-154", "num-155", "num-156"],
+         ["num-10", "num-11", "num-12", "num-46", "num-48", "num-82", "num-83", "num-84", "num-120", "num-154", "num-155", "num-156"]
+      ],
+      "cent" : [
+         ["num-6", "num-7", "num-8", "num-42", "num-44", "num-78", "num-80", "num-114", "num-116", "num-150", "num-151", "num-152"],
+         ["num-8", "num-44", "num-80", "num-116", "num-152"],
+         ["num-6", "num-7", "num-8", "num-44", "num-78", "num-79", "num-80", "num-114", "num-150", "num-151", "num-152"],
+         ["num-6", "num-7", "num-8", "num-44", "num-78", "num-79", "num-80", "num-116", "num-150", "num-151", "num-152"],
+         ["num-6", "num-8", "num-42", "num-44", "num-78", "num-79", "num-80", "num-116", "num-152"],
+         ["num-6", "num-7", "num-8", "num-42", "num-78", "num-79", "num-80", "num-116", "num-150", "num-151", "num-152"],
+         ["num-6", "num-7", "num-8", "num-42", "num-78", "num-79", "num-80", "num-114", "num-116", "num-150", "num-151", "num-152"],
+         ["num-6", "num-7", "num-8", "num-42", "num-44", "num-78", "num-80", "num-116", "num-152"],
+         ["num-6", "num-7", "num-8", "num-42", "num-44", "num-78", "num-79", "num-80", "num-114", "num-116", "num-150", "num-151", "num-152"],
+         ["num-6", "num-7", "num-8", "num-42", "num-44", "num-78", "num-79", "num-80", "num-116", "num-150", "num-151", "num-152"]
+      ],
+      "mil" : [
+         ["num-2", "num-3", "num-4", "num-38", "num-40", "num-74", "num-76", "num-110", "num-112", "num-146", "num-147", "num-148"],
+         ["num-4", "num-40", "num-76", "num-112", "num-148"],
+         ["num-2", "num-3", "num-4", "num-40", "num-74", "num-75", "num-76", "num-110", "num-146", "num-147", "num-148"],
+         ["num-2", "num-3", "num-4", "num-40", "num-74", "num-75", "num-76", "num-112", "num-146", "num-147", "num-148"],
+         ["num-2", "num-4", "num-38", "num-40", "num-74", "num-75", "num-76", "num-112", "num-148"],
+         ["num-2", "num-3", "num-4", "num-38", "num-74", "num-75", "num-76", "num-112", "num-146", "num-147", "num-148"],
+         ["num-2", "num-3", "num-4", "num-38", "num-74", "num-75", "num-76", "num-110", "num-112", "num-146", "num-147", "num-148"],
+         ["num-2", "num-3", "num-4", "num-38", "num-40", "num-74", "num-76", "num-112", "num-148"],
+         ["num-2", "num-3", "num-4", "num-38", "num-40", "num-74", "num-75", "num-76", "num-110", "num-112", "num-146", "num-147", "num-148"],
+         ["num-2", "num-3", "num-4", "num-38", "num-40", "num-74", "num-75", "num-76", "num-112", "num-146", "num-147", "num-148"]
+      ]
+   },
+   "givenWatts" : {
+      "unit": [
+         ["num-635", "num-636", "num-637", "num-671", "num-673", "num-707", "num-709", "num-743", "num-745", "num-779", "num-780", "num-781"],
+         ["num-637", "num-673", "num-709", "num-745", "num-781"],
+         ["num-635", "num-636", "num-637", "num-673", "num-707", "num-708", "num-709", "num-743", "num-779", "num-780", "num-781"],
+         ["num-635", "num-636", "num-637", "num-673", "num-707", "num-708", "num-709", "num-745", "num-779", "num-780", "num-781"],
+         ["num-635", "num-637", "num-671", "num-673", "num-707", "num-708", "num-709", "num-745", "num-781"],
+         ["num-635", "num-636", "num-637", "num-671", "num-707", "num-708", "num-709", "num-745", "num-779", "num-780", "num-781"],
+         ["num-635", "num-636", "num-637", "num-671", "num-707", "num-708", "num-709", "num-743", "num-745", "num-779", "num-780", "num-781"],
+         ["num-635", "num-636", "num-637", "num-671", "num-673", "num-707", "num-709", "num-745", "num-781"],
+         ["num-635", "num-636", "num-637", "num-671", "num-673", "num-707", "num-708", "num-709", "num-743", "num-745", "num-779", "num-780", "num-781"],
+         ["num-635", "num-636", "num-637", "num-671", "num-673", "num-707", "num-708", "num-709", "num-745", "num-779", "num-780", "num-781"]
+      ],
+      "dec": [
+         ["num-631", "num-632", "num-633", "num-667", "num-669", "num-703", "num-705", "num-739", "num-741", "num-775", "num-776", "num-777"],
+         ["num-633", "num-669", "num-705", "num-741", "num-777"],
+         ["num-631", "num-632", "num-633", "num-669", "num-703", "num-704", "num-705", "num-739", "num-775", "num-776", "num-777"],
+         ["num-631", "num-632", "num-633", "num-669", "num-703", "num-704", "num-705", "num-741", "num-775", "num-776", "num-777"],
+         ["num-631", "num-633", "num-667", "num-669", "num-703", "num-704", "num-705", "num-741", "num-777"],
+         ["num-631", "num-632", "num-633", "num-667", "num-703", "num-704", "num-705", "num-741", "num-775", "num-776", "num-777"],
+         ["num-631", "num-632", "num-633", "num-667", "num-703", "num-704", "num-705", "num-739", "num-741", "num-775", "num-776", "num-777"],
+         ["num-631", "num-632", "num-633", "num-667", "num-669", "num-703", "num-705", "num-741", "num-777"],
+         ["num-631", "num-632", "num-633", "num-667", "num-669", "num-703", "num-704", "num-705", "num-739", "num-741", "num-775", "num-776", "num-777"],
+         ["num-631", "num-632", "num-633", "num-667", "num-669", "num-703", "num-704", "num-705", "num-741", "num-775", "num-776", "num-777"]
+      ],
+      "cent": [
+         ["num-627", "num-628", "num-629", "num-663", "num-665", "num-699", "num-701", "num-735", "num-737", "num-771", "num-772", "num-773"],
+         ["num-629", "num-665", "num-701", "num-737", "num-773"],
+         ["num-627", "num-628", "num-629", "num-665", "num-699", "num-700", "num-701", "num-735", "num-771", "num-772", "num-773"],
+         ["num-627", "num-628", "num-629", "num-665", "num-699", "num-700", "num-701", "num-737", "num-771", "num-772", "num-773"],
+         ["num-627", "num-629", "num-663", "num-665", "num-699", "num-700", "num-701", "num-737", "num-773"],
+         ["num-627", "num-628", "num-629", "num-663", "num-699", "num-700", "num-701", "num-737", "num-771", "num-772", "num-773"],
+         ["num-627", "num-628", "num-629", "num-663", "num-699", "num-700", "num-701", "num-735", "num-737", "num-771", "num-772", "num-773"],
+         ["num-627", "num-628", "num-629", "num-663", "num-665", "num-699", "num-701", "num-737", "num-773"],
+         ["num-627", "num-628", "num-629", "num-663", "num-665", "num-699", "num-700", "num-701", "num-735", "num-737", "num-771", "num-772", "num-773"],
+         ["num-627", "num-628", "num-629", "num-663", "num-665", "num-699", "num-700", "num-701", "num-737", "num-771", "num-772", "num-773"]
+      ]
+   },
    "clock" : {
       "dots" : ["num-226", "num-298"],
       "alarmOff" : ["num-516", "num-551", "num-552", "num-553", "num-559", "num-560", "num-563", "num-564", "num-565", "num-567", "num-568", "num-569", "num-586", "num-590", "num-594", "num-597", "num-599", "num-603", "num-622", "num-626", "num-630", "num-633", "num-635", "num-636", "num-637", "num-639", "num-640", "num-641", "num-658", "num-662", "num-666", "num-669", "num-671", "num-675", "num-693", "num-694", "num-695", "num-696", "num-697", "num-698", "num-699", "num-703", "num-704", "num-707", "num-711", "num-732"],
