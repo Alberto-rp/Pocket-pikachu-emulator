@@ -20,7 +20,7 @@ var steps = (localStorage.getItem("steps") != null)? Number(localStorage.getItem
 var totalSteps = (localStorage.getItem("totalSteps") != null)? Number(localStorage.getItem("totalSteps")) : 0;
 var watts = (localStorage.getItem("watts") != null)? Number(localStorage.getItem("watts")) : 0;
 var breakfastHours = [10, 12, 13, 18]
-var playHours = [9, 10, 11, 12, 13, 16, 17, 18];
+var playHours = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         switch (menuSelected) {
                             case "clockMenu": //CLOCK
                                 basicAnim('stop', true);
-                                clearTimeout(timeOutLook);
+                                clearTimeout(actionTimeOut);
                                 animStatus = 'clock'
                                 console.log(animStatus)
                                 document.querySelector("#clockMenu").classList.remove('selected')
@@ -298,13 +298,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     //SHAKE WALK
-    var timeOutLook = undefined; //Prevent start the animation until stop shaking
+    var actionTimeOut = undefined; //Prevent start the animation until stop shaking
     document.querySelector('#shake').addEventListener('click', () => {
         let startTime = new Date();
         let screenShaked = document.querySelector('.screenContainer');
         let buttons = document.querySelector('.buttonsContainer');
 
-        clearTimeout(timeOutLook);
+        clearTimeout(actionTimeOut);
         
         // Shake the screen
         screenShaked.style.marginTop = '-15px';
@@ -320,7 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (startTime.getHours() >= 7 && startTime.getHours() < 20) { //Prevent during sleeping
             if(animStatus == 'stand') { // Make Pikachu look 
-                timeOutLook = setTimeout(() => {
+                actionTimeOut = setTimeout(() => {
                     console.log("EING?")
                     basicAnim('stop', true);
                     setTimeout(() => {
@@ -330,14 +330,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     setTimeout(() => {
                         basicAnim('start', true);
                     }, 3000);
-                }, 2000);
+                }, 1000);
             }else if(animStatus == 'sandcastle'){
-                clearInterval(intervalAnim);
-                sandcastle(true); //Fast digging
-                setTimeout(() => {
+                actionTimeOut = setTimeout(() => {
                     clearInterval(intervalAnim);
-                    sandcastle();
-                }, 4000);
+                    sandcastle(true); //Fast digging
+                    setTimeout(() => {
+                        clearInterval(intervalAnim);
+                        sandcastle();
+                    }, 6000);
+                }, 1000);
             }
         }else{
             console.log("Pikachu is sleeping")
@@ -468,7 +470,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(!enterclicked){
             if(animStatus != ''){
                 clearInterval(intervalAnim);
-                clearTimeout(timeOutLook)
+                clearTimeout(actionTimeOut)
                 animStatus = '';
             }
             document.querySelector("#clockMenu").classList.add('selected')
