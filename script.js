@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // Anims.edit = Anims.start.leftGiggle;
-    Anims.edit = Anims.start.rightGigle;
+    Anims.edit = Anims.sandcastle.sand2;
 });
 
 // Anim vars
@@ -13,13 +13,14 @@ var saved = null;
 var clickedPixels = [];
 var intervalAnim;
 var animStatus = ''
+var randomAnim;
 
 // Steps
 var steps = (localStorage.getItem("steps") != null)? Number(localStorage.getItem("steps")) : 0;
 var totalSteps = (localStorage.getItem("totalSteps") != null)? Number(localStorage.getItem("totalSteps")) : 0;
 var watts = (localStorage.getItem("watts") != null)? Number(localStorage.getItem("watts")) : 0;
-var breakfastHours = [10, 12, 18]
-var playHours = [9, 10, 11, 12, 16, 17, 18];
+var breakfastHours = [10, 12, 13, 18]
+var playHours = [9, 10, 11, 12, 13, 16, 17, 18];
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -125,6 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Basic start
             setTimeout(() => {
                 if(animStatus == ''){
+                    randomAnim = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
                     basicAnim('start');
                 }else{
                     if(animStatus != 'clock'){ // | gift | game
@@ -132,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         console.log(menuSelected)
                         switch (menuSelected) {
                             case "clockMenu": //CLOCK
-                                basicAnim('stop');
+                                basicAnim('stop', true);
                                 clearTimeout(timeOutLook);
                                 animStatus = 'clock'
                                 console.log(animStatus)
@@ -182,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     // STATE BUTTON
-    var allowedAnims = ['stand', 'sandcastle'];
+    var allowedAnims = ['stand', 'sandcastle', 'breakfast'];
     var menus = ['clockMenu', 'giftMenu', 'gamblingMenu'];
 
     document.querySelector("#state-button").addEventListener('click', () => {
@@ -231,7 +233,6 @@ document.addEventListener('DOMContentLoaded', () => {
         animStatus = 'stand'
         let startTime = new Date();
         let sleepCounter = 1
-        let randomAnim = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
         let coockieHadBreakfast = document.cookie.split("; ").find((row) => row.startsWith("had_breakfast="))?.split("=")[1];
         console.log(randomAnim);
 
