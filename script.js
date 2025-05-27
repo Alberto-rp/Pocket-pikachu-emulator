@@ -587,8 +587,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-
-
     //TEST PEDOMETER
     /*window.addEventListener("deviceorientation", handleOrientation);
 	function handleOrientation(event) {
