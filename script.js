@@ -182,20 +182,21 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     // STATE BUTTON
+    var allowedAnims = ['stand', 'sandcastle'];
+    var menus = ['clockMenu', 'giftMenu', 'gamblingMenu'];
+
     document.querySelector("#state-button").addEventListener('click', () => {
-        if(animStatus == 'stand' || animStatus == 'sandcastle'){
+        if(allowedAnims.some(anim => anim == animStatus)){
             cleanStates();
             animStatus = 'state'
             clearInterval(intervalAnim)
-            // loadAnim(DisplayScreen, Anims.status.ok)
             displayState(DisplayScreen);
         }
     })
 
     // RIGHT BUTTON
-    var menus = ['clockMenu', 'giftMenu', 'gamblingMenu'];
     document.querySelector('#right-button').addEventListener('click', () => {
-        if(animStatus != '' && animStatus == 'stand' || animStatus == 'sandcastle'){
+        if(animStatus != '' && allowedAnims.some(anim => anim == animStatus)){
             let selected = menus.find(item => document.querySelector(`#${item}`).classList.contains('selected'))
             let nextMenu = (menus.indexOf(selected) < (menus.length - 1))? (menus.indexOf(selected) + 1) : menus.indexOf(selected)
             // console.log('right')
@@ -206,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // LEFT BUTTON
     document.querySelector('#left-button').addEventListener('click', () => {
-        if(animStatus != '' && animStatus == 'stand' || animStatus == 'sandcastle'){
+        if(animStatus != '' && allowedAnims.some(anim => anim == animStatus)){
             let selected = menus.find(item => document.querySelector(`#${item}`).classList.contains('selected'))
             let nextMenu = (menus.indexOf(selected) > 0)? (menus.indexOf(selected) - 1) : menus.indexOf(selected)
             // console.log('right')
@@ -258,9 +259,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     var timeDiff = endTime - startTime; //in ms
                     timeDiff /= 1000;
                     secondsElapsed = Math.round(timeDiff)
-            
-                    // console.log(startTime.getHours())
-                    // console.log(secondsElapsed)
         
                     // Sleep
                     if (endTime.getHours() >= 20 && endTime.getHours() <= 23 ||
@@ -457,10 +455,8 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if(sandCounter <= 1){
                 loadAnim(DisplayScreen, Anims.sandcastle.sand2)
-                console.log(sandCounter);
             }else {
                 loadAnim(DisplayScreen, Anims.sandcastle.sand1)
-                console.log(sandCounter);
                 sandCounter = 0;
             }
             sandCounter++
