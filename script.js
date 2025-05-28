@@ -344,7 +344,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     clearInterval(intervalAnim);
                     console.log("stop")
                 }
-            
+                
                 function animate(avoidLook = false) {
                     // Check the time pased
                     endTime = new Date();
@@ -618,6 +618,38 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('#salida').value = `${Math.round(event.alpha)} // ${Math.round(event.beta)} // ${Math.round(event.gamma)}`;	
 	}*/
 
+    // FRIENDSHIP LEVEL UPDATE SYSTEM
+    function updateFriendshipLevel(amount, isGift, isAnim){
+        friendshipLevel = (localStorage.getItem("friendshipLevel") != null)? Number(localStorage.getItem("friendshipLevel")) : friendshipLevel;
+
+        // If ammount is 0, friendship level drops by 100
+        if(Number(amount) == 0){
+            friendshipLevel -= 100;
+        }else{
+            friendshipLevel += Number(amount);
+        }
+
+        localStorage.setItem("friendshipLevel", friendshipLevel)
+        console.log(`Friendship level updated: ${friendshipLevel}`);
+        
+        if(isGift) {
+            watts -= Number(amount);
+            localStorage.setItem("watts", watts)
+        }
+
+        if(isAnim){
+            clearInterval(intervalAnim);
+            clearAllTimeouts();
+            resetGivenWatts();
+            document.querySelector("#clockMenu").classList.add('selected')
+
+            // if(amount > 0 && amount <= 100){
+                yawnAnim();
+            // }
+        }
+    }
+
+    // Aux funcs
     function clearAllTimeouts() {
         clearTimeout(actionTimeOut);
         clearTimeout(auxiliarTimeout);
@@ -631,30 +663,6 @@ document.addEventListener('DOMContentLoaded', () => {
         selectedUnitWatt = 'cent'
     }
 
-    // FRIENDSHIP LEVEL UPDATE SYSTEM
-    function updateFriendshipLevel(amount, isGift, isAnim){
-    friendshipLevel = (localStorage.getItem("friendshipLevel") != null)? Number(localStorage.getItem("friendshipLevel")) : friendshipLevel;
-    friendshipLevel += Number(amount);
-    localStorage.setItem("friendshipLevel", friendshipLevel)
-
-    console.log(friendshipLevel);
-    
-    if(isGift) {
-        watts -= Number(amount);
-        localStorage.setItem("watts", watts)
-    }
-
-    if(isAnim){
-        clearInterval(intervalAnim);
-        clearAllTimeouts();
-        resetGivenWatts();
-        document.querySelector("#clockMenu").classList.add('selected')
-
-        // if(amount > 0 && amount <= 100){
-            yawnAnim();
-        // }
-    }
-}
 })
 
 function walk() {
