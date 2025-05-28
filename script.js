@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.gift.giftExample;
+    Anims.edit = Anims.givenWatts.cent[0];
 });
 
 // Anim vars
@@ -27,6 +27,7 @@ var GivenCents = 0;
 var GivenDecs = 0;
 var GivenUnits = 0;
 var selectedUnitWatt = 'cent'
+var givenAmountWatts = 0
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -117,9 +118,19 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(intervalAnim);
             restartTamagotchi(DisplayScreen, true)
         }else if(animStatus == 'gift'){
-            let posibleUnits = ['cent', 'dec', 'unit'];
-            // Seleccionar la siguiente unidad
-            selectedUnitWatt = (posibleUnits.indexOf(selectedUnitWatt) < (posibleUnits.length - 1))? posibleUnits[posibleUnits.indexOf(selectedUnitWatt) + 1] : selectedUnitWatt
+            if(selectedUnitWatt != 'give'){
+                let posibleUnits = ['cent', 'dec', 'unit', 'give'];
+                // Seleccionar la siguiente unidad
+                selectedUnitWatt = (posibleUnits.indexOf(selectedUnitWatt) < (posibleUnits.length - 1))? posibleUnits[posibleUnits.indexOf(selectedUnitWatt) + 1] : selectedUnitWatt
+            }else if(selectedUnitWatt == 'give' && givenAmountWatts <= watts){
+                console.log(`${givenAmountWatts} was given`);
+                clearInterval(intervalAnim);
+                clearAllTimeouts();
+                resetGivenWatts();
+                document.querySelector("#clockMenu").classList.add('selected')
+                // happyAnim
+                basicAnim('start'); //with timeout
+            }
         } else{
             // Init screen (Timeouts to emulate analogic)
             setTimeout(() => {
@@ -217,9 +228,13 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelector("#clockMenu").classList.add('selected')
             basicAnim('start');
         }else if(animStatus == 'gift' && selectedUnitWatt != 'cent'){
-            let posibleUnits = ['cent', 'dec', 'unit'];
+            let posibleUnits = ['cent', 'dec', 'unit', 'give'];
             // Seleccionar la anterior unidad
-            selectedUnitWatt = (posibleUnits.indexOf(selectedUnitWatt) > 0)? posibleUnits[posibleUnits.indexOf(selectedUnitWatt) - 1] : selectedUnitWatt
+            if(selectedUnitWatt != 'give'){
+                selectedUnitWatt = (posibleUnits.indexOf(selectedUnitWatt) > 0)? posibleUnits[posibleUnits.indexOf(selectedUnitWatt) - 1] : selectedUnitWatt
+            }else{
+                selectedUnitWatt = 'cent'
+            }
         }
     })
 
@@ -761,7 +776,7 @@ function displayState(screen) {
     }
 }
 
-// Watts
+// PRESENT WATTS
 function displayTotalWatts(screen) {
     let totalWattsArray = watts.toString().split('').reverse();
     screen.innerHTML = '';
@@ -801,6 +816,7 @@ function displayTotalWatts(screen) {
 
 function SelectWattsAmount(screen, cents, decs, units, currentSelected) {
     let miliseconds = new Date().getMilliseconds();
+    givenAmountWatts = Number(`${GivenCents}${GivenDecs }${GivenUnits}`)
     for(i = 0; i < 1080; i++){
         if(miliseconds <= 500 && currentSelected == 'unit' || currentSelected != 'unit'){
             if(Anims.givenWatts.unit[units].some(elem => elem == `num-${i}`)){
@@ -817,6 +833,21 @@ function SelectWattsAmount(screen, cents, decs, units, currentSelected) {
         if(miliseconds <= 500 && currentSelected == 'cent' || currentSelected != 'cent'){
             if(Anims.givenWatts.cent[cents].some(elem => elem == `num-${i}`)){
                 screen.querySelector(`.num-${i}`).classList.add('clicked');
+            }
+        }
+
+        if(miliseconds <= 500 && currentSelected == 'give'){
+            if(givenAmountWatts <= watts){
+                if(Anims.gift.give.some(elem => elem == `num-${i}`)){
+                    screen.querySelector(`.num-${i}`).classList.add('clicked');
+                }    
+            }else{
+                if(Anims.gift.notEnouff.some(elem => elem == `num-${i}`)){
+                    screen.querySelector(`.num-${i}`).classList.add('clicked');
+                }
+                auxiliarTimeout = setTimeout(() => {
+                    selectedUnitWatt = 'cent'
+                }, 500);    
             }
         }
     }
