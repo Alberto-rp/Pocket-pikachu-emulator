@@ -18,7 +18,8 @@ var randomAnim;
 // Steps
 var steps = (localStorage.getItem("steps") != null)? Number(localStorage.getItem("steps")) : 0;
 var totalSteps = (localStorage.getItem("totalSteps") != null)? Number(localStorage.getItem("totalSteps")) : 0;
-var watts = (localStorage.getItem("watts") != null)? Number(localStorage.getItem("watts")) : 0;
+var watts = (localStorage.getItem("watts") != null)? Number(localStorage.getItem("watts")) : 500;
+var friendshipLevel = (localStorage.getItem("friendshipLevel") != null)? Number(localStorage.getItem("friendshipLevel")) : 0;
 var breakfastHours = [10, 12, 13, 18]
 var playHours = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
 
@@ -127,9 +128,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 clearInterval(intervalAnim);
                 clearAllTimeouts();
                 resetGivenWatts();
-                document.querySelector("#clockMenu").classList.add('selected')
-                // happyAnim
-                basicAnim('start'); //with timeout
+
+                // Give present to Pikachu / Update friendship level
+                updateFriendshipLevel(givenAmountWatts, true, true);
             }
         } else{
             // Init screen (Timeouts to emulate analogic)
@@ -409,6 +410,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if(animStatus == 'state') {
                 displayState(DisplayScreen);
             }
+            if(animStatus == 'gift') {
+                displayTotalWatts(DisplayScreen);
+            }
         }, 250);
 
         if (startTime.getHours() >= 7 && startTime.getHours() < 20) { //Prevent during sleeping
@@ -441,10 +445,9 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     // CELEBRATE ANIMATIONS
-    function happyAnim() {
-        basicAnim('stop', true);
-        animStatus = 'happy'
-        console.log("startHappy")
+    function yawnAnim() {
+        animStatus = 'yawnHappy'
+        console.log(animStatus)
         intervalAnim = setInterval(animate, 500);
         startTime = new Date();
 
@@ -570,12 +573,12 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelector("#giftMenu").classList.add('selected')
             document.querySelector("#gamblingMenu").classList.add('selected')
             document.querySelector('.walkCounter').innerHTML = 88888;
+            localStorage.clear();
             steps = 0;
             totalSteps = 0;
-            watts = 0;
+            watts = 500;
+            localStorage.setItem("watts", watts)
             loadAnim(DisplayScreen, null, true, true);
-            document.cookie = ''
-            localStorage.clear();
     
             setTimeout(() => {
                 cleanStates();
@@ -627,6 +630,31 @@ document.addEventListener('DOMContentLoaded', () => {
         GivenUnits = 0;
         selectedUnitWatt = 'cent'
     }
+
+    // FRIENDSHIP LEVEL UPDATE SYSTEM
+    function updateFriendshipLevel(amount, isGift, isAnim){
+    friendshipLevel = (localStorage.getItem("friendshipLevel") != null)? Number(localStorage.getItem("friendshipLevel")) : friendshipLevel;
+    friendshipLevel += Number(amount);
+    localStorage.setItem("friendshipLevel", friendshipLevel)
+
+    console.log(friendshipLevel);
+    
+    if(isGift) {
+        watts -= Number(amount);
+        localStorage.setItem("watts", watts)
+    }
+
+    if(isAnim){
+        clearInterval(intervalAnim);
+        clearAllTimeouts();
+        resetGivenWatts();
+        document.querySelector("#clockMenu").classList.add('selected')
+
+        // if(amount > 0 && amount <= 100){
+            yawnAnim();
+        // }
+    }
+}
 })
 
 function walk() {
