@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.givenWatts.cent[0];
+    Anims.edit = Anims.tongueMad.tongue2;
 });
 
 // Anim vars
@@ -181,16 +181,20 @@ document.addEventListener('DOMContentLoaded', () => {
                                 console.log(animStatus)
                                 document.querySelector(`#${menuSelected}`).classList.remove('selected')
 
-                                // Sleep
-                                if (endTime.getHours() >= 20 && endTime.getHours() <= 23 || endTime.getHours() >= 0 && endTime.getHours() < 7){
-                                    loadAnim(DisplayScreen, Anims.gift.sleeping)
+                                if(friendshipLevel <= -1500){
+                                    loadAnim(DisplayScreen, Anims.gift.whereIsPikachu)
                                 }else{
-                                    // Prepare Gift
-                                    displayTotalWatts(DisplayScreen);
-                                    intervalAnim = setInterval(SelectWatts, 500);
-                                    function SelectWatts(){
-                                        displayTotalWatts(DisplayScreen); //If not here doesn't clean the screen
-                                        SelectWattsAmount(DisplayScreen, GivenCents, GivenDecs, GivenUnits, selectedUnitWatt)
+                                    // Sleep
+                                    if (endTime.getHours() >= 20 && endTime.getHours() <= 23 || endTime.getHours() >= 0 && endTime.getHours() < 7){
+                                        loadAnim(DisplayScreen, Anims.gift.sleeping)
+                                    }else{
+                                        // Prepare Gift
+                                        displayTotalWatts(DisplayScreen);
+                                        intervalAnim = setInterval(SelectWatts, 500);
+                                        function SelectWatts(){
+                                            displayTotalWatts(DisplayScreen); //If not here doesn't clean the screen
+                                            SelectWattsAmount(DisplayScreen, GivenCents, GivenDecs, GivenUnits, selectedUnitWatt)
+                                        }
                                     }
                                 }
                                 break;
@@ -239,7 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     })
 
-    // STATE BUTTON
+    // STATE BUTTON / FRIENDSHIP BUTTON
     var allowedAnims = ['stand', 'sandcastle', 'breakfast'];
     var menus = ['clockMenu', 'giftMenu', 'gamblingMenu'];
 
@@ -450,6 +454,9 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(animStatus)
         intervalAnim = setInterval(animate, 500);
         startTime = new Date();
+        auxiliarTimeout = setTimeout(() => {
+            document.querySelector("#clockMenu").classList.add('selected')
+        }, 500);
 
         function animate() {
             // Check the time pased
@@ -641,7 +648,6 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(intervalAnim);
             clearAllTimeouts();
             resetGivenWatts();
-            document.querySelector("#clockMenu").classList.add('selected')
 
             // if(amount > 0 && amount <= 100){
                 yawnAnim();
@@ -766,15 +772,29 @@ function printHour(screen, hours, minutes, pmState){
 
 function displayState(screen) {
     let totalStepArray = totalSteps.toString().split('').reverse();
+    let currentState = '';
     screen.innerHTML = '';
+
+    /* Calcular el state */
+    if(friendshipLevel <= -1500){
+        currentState = 'left'
+    }else if(friendshipLevel > -1500 && friendshipLevel <= -500){
+        currentState = 'mad'
+    }else if(friendshipLevel > -500 && friendshipLevel <= 500){
+        currentState = 'ok'
+    }else if(friendshipLevel > 500 && friendshipLevel <= 1500){
+        currentState = 'likes'
+    }else if(friendshipLevel > 1500){
+        currentState = 'loves'
+
+    }
+
 
     for(i = 0; i < 1080; i++){
         let newDiv = document.createElement("div");
         newDiv.classList.add('pixel');
         newDiv.classList.add(`num-${i}`);
 
-        /* Calcular el state */
-        let currentState = "ok"
 
         // State
         if(Anims.status[currentState].some(elem => elem == `num-${i}`)){
