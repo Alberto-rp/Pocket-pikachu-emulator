@@ -7,7 +7,7 @@
 
 ## links of interest
 
-- [Pocket Pikachu Emulator](https://alberto-rp.github.io/Pocket-pikachu-emulator/)
+- [Pocket Pikachu Emulator](http://www.pokpik.life/)
 - [Pocket Pikachu on wikipedia](https://en.wikipedia.org/wiki/Pok%C3%A9mon_Pikachu)
 - [Pocket Pikachu on Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Pok%C3%A9mon_Pikachu)
 
