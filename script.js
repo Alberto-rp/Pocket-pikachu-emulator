@@ -590,7 +590,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 cleanStates();
                 document.querySelector('.walkCounter').innerHTML = '';
-                localStorage.setItem("InitTamagotchi", true)
+                // localStorage.setItem("InitTamagotchi", true)
                 loadAnim(DisplayScreen, null, true);
                 pokeinit();
             }, 3000);
@@ -605,6 +605,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadAnim(DisplayScreen, null, true);
             }, 1500);
             setTimeout(() => {
+                localStorage.setItem("InitTamagotchi", true)
                 document.querySelector('.walkCounter').innerHTML = steps;
                 document.querySelector("#clockMenu").classList.add('selected')
                 basicAnim('start', true);
