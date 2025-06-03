@@ -319,7 +319,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Test Animation
     document.querySelector("#startAnim").addEventListener('click', () => {
-        sandcastle();
+        // sandcastle();
+        tongueAnim();
         // displayTotalWatts(DisplayScreen);
     })
 
@@ -448,7 +449,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     })
 
-    // CELEBRATE ANIMATIONS
+    /* CELEBRATE ANIMATIONS */
+    // Yawn Anim
     function yawnAnim() {
         animStatus = 'yawnHappy'
         console.log(animStatus)
@@ -479,6 +481,40 @@ document.addEventListener('DOMContentLoaded', () => {
                 basicAnim('start', true);
             }
             
+        }
+    }
+
+    // Tongue Anim
+    function tongueAnim() {
+        animStatus = 'tongueAnim'
+        console.log(animStatus)
+        intervalAnim = setInterval(animate, 250);
+        startTime = new Date();
+        auxiliarTimeout = setTimeout(() => {
+            document.querySelector("#clockMenu").classList.add('selected')
+        }, 500);
+
+        function animate() {
+            // Check the time pased
+            endTime = new Date();
+            var timeDiff = endTime - startTime; //in ms
+            milisecondsElapsed = timeDiff.toFixed(1);
+
+
+            loadAnim(DisplayScreen, Anims.tongueMad.start);
+            if(milisecondsElapsed > 2000) loadAnim(DisplayScreen, Anims.tongueMad.tongue1);
+            if(milisecondsElapsed > 2500) loadAnim(DisplayScreen, Anims.tongueMad.tongue2);
+            if(milisecondsElapsed > 3000) loadAnim(DisplayScreen, Anims.tongueMad.tongue3);
+            if(milisecondsElapsed > 4000) loadAnim(DisplayScreen, Anims.tongueMad.tongue2);
+            if(milisecondsElapsed > 4500) loadAnim(DisplayScreen, Anims.tongueMad.tongue3);
+            if(milisecondsElapsed > 5500) loadAnim(DisplayScreen, Anims.tongueMad.tongue2);
+            if(milisecondsElapsed > 6000) loadAnim(DisplayScreen, Anims.tongueMad.tongue3);
+            if(milisecondsElapsed > 7000) loadAnim(DisplayScreen, Anims.tongueMad.tongue2);
+            if(milisecondsElapsed > 7500) loadAnim(DisplayScreen, Anims.tongueMad.start);
+            if(milisecondsElapsed > 9500) {
+                clearInterval(intervalAnim);
+                basicAnim('start', true);
+            }
         }
     }
 
@@ -650,9 +686,11 @@ document.addEventListener('DOMContentLoaded', () => {
             clearAllTimeouts();
             resetGivenWatts();
 
-            // if(amount > 0 && amount <= 100){
+            if(amount == 0){
+                tongueAnim();
+            }else if(amount > 0){
                 yawnAnim();
-            // }
+            }
         }
     }
 
