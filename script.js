@@ -729,12 +729,16 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelector("#giftMenu").classList.add('selected')
             document.querySelector("#gamblingMenu").classList.add('selected')
             document.querySelector('.walkCounter').innerHTML = 88888;
+            loadAnim(DisplayScreen, null, true, true);
+
+            // Clear the stored data
             localStorage.clear();
             steps = 0;
             totalSteps = 0;
             watts = 500;
-            localStorage.setItem("watts", watts)
-            loadAnim(DisplayScreen, null, true, true);
+            friendshipLevel = 0;
+            localStorage.setItem("watts", watts);
+            localStorage.setItem("friendshipLevel", friendshipLevel);
     
             setTimeout(() => {
                 cleanStates();
@@ -743,6 +747,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadAnim(DisplayScreen, null, true);
                 pokeinit();
             }, 3000);
+            
         }else{
             setTimeout(() => {
                 loadAnim(DisplayScreen, Anims.start.pop1)
