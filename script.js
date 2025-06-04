@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.backFromLeft.dizzyLeft;
+    Anims.edit = Anims.brushTeeth.brush1;
 });
 
 // Anim vars
@@ -29,6 +29,7 @@ var GivenDecs = 0;
 var GivenUnits = 0;
 var selectedUnitWatt = 'cent'
 var givenAmountWatts = 0
+var coockieHadBreakfast = document.cookie.split("; ").find((row) => row.startsWith("had_breakfast="))?.split("=")[1];
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -150,6 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 if(animStatus == ''){
                     randomAnim = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
+                    coockieHadBreakfast = document.cookie.split("; ").find((row) => row.startsWith("had_breakfast="))?.split("=")[1];
                     basicAnim();
                 }else{
                     if(animStatus != 'clock' && animStatus != 'gift'){ // | gift | game
@@ -323,7 +325,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector("#startAnim").addEventListener('click', () => {
         // sandcastle();
         // tongueAnim();
-        backFromLeft();
+        // backFromLeft();
+        brushTeeth();
         // displayTotalWatts(DisplayScreen);
     })
 
@@ -332,7 +335,6 @@ document.addEventListener('DOMContentLoaded', () => {
         animStatus = 'stand'
         let startTime = new Date();
         let sleepCounter = 1
-        let coockieHadBreakfast = document.cookie.split("; ").find((row) => row.startsWith("had_breakfast="))?.split("=")[1];
         console.log(randomAnim);
         console.log("start")
         
@@ -378,7 +380,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 //breakfastHours = [10, 12, 18]
                 if( breakfastHours.some(elem => elem == startTime.getHours()) && coockieHadBreakfast != 'true') {
                     breakFast();
-                }else{
+                }else{ //Hacer aqui comprobacion cookie brushTeeth
                     if(friendshipLevel <= -500){ // If pikachu is mad he doesn't play
                         animStatus = 'standMad'
                         animate(true);
@@ -517,6 +519,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         clearInterval(intervalAnim);
                         sandcastle();
                     }, 6000);
+                    consecutiveSteps = 0;
+                }, 1000);
+            }else if(animStatus == 'brushTeeth'){
+                actionTimeOut = setTimeout(() => {
+                    clearInterval(intervalAnim);
+                    brushTeeth(true); //Fast digging
+                    auxiliarTimeout = setTimeout(() => {
+                        clearInterval(intervalAnim);
+                        brushTeeth();
+                    }, 4000);
                     consecutiveSteps = 0;
                 }, 1000);
             }
@@ -701,10 +713,6 @@ document.addEventListener('DOMContentLoaded', () => {
         loadAnim(DisplayScreen, Anims.sandcastle.sand1)
         intervalAnim = (!shake)? setInterval(animate, 2000) : setInterval(animate, 500);
 
-        // Declare cookie
-        var now = new Date();
-        now.setTime(now.getTime() + 3600 * 1000); // Agregamos 1 hora en milisegundos
-
         function animate() {
             endTime = new Date();
             
@@ -715,6 +723,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 sandCounter = 0;
             }
             sandCounter++
+        }
+    }
+
+    // Brush teeth anim
+    function brushTeeth(shake) {
+        animStatus = 'brushTeeth'
+        console.log(animStatus)
+        let animCounter = 1;
+        loadAnim(DisplayScreen, Anims.brushTeeth.brush1)
+        intervalAnim = (!shake)? setInterval(animate, 1500) : setInterval(animate, 500);
+
+        function animate() {
+            endTime = new Date();
+            
+            if(animCounter <= 1){
+                loadAnim(DisplayScreen, Anims.brushTeeth.brush2)
+            }else {
+                loadAnim(DisplayScreen, Anims.brushTeeth.brush1)
+                animCounter = 0;
+            }
+            animCounter++
         }
     }
 
@@ -747,7 +776,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadAnim(DisplayScreen, null, true);
                 pokeinit();
             }, 3000);
-            
+
         }else{
             setTimeout(() => {
                 loadAnim(DisplayScreen, Anims.start.pop1)
