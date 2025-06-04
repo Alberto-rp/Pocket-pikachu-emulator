@@ -757,7 +757,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem("InitTamagotchi", true)
                 document.querySelector('.walkCounter').innerHTML = steps;
                 document.querySelector("#clockMenu").classList.add('selected')
-                basicAnim(true);
+                basicAnim(true, true);
             }, 3000);
         }
     }
