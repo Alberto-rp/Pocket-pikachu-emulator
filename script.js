@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.standMad.stand;
+    Anims.edit = Anims.backFromLeft.dizzyLeft;
 });
 
 // Anim vars
@@ -246,7 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     // STATE BUTTON / FRIENDSHIP BUTTON
-    var allowedAnims = ['stand', 'standMad', 'sandcastle', 'breakfast'];
+    var allowedAnims = ['stand', 'standMad', 'left', 'sandcastle', 'breakfast'];
     var menus = ['clockMenu', 'giftMenu', 'gamblingMenu'];
 
     document.querySelector("#state-button").addEventListener('click', () => {
@@ -322,12 +322,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Test Animation
     document.querySelector("#startAnim").addEventListener('click', () => {
         // sandcastle();
-        tongueAnim();
+        // tongueAnim();
+        backFromLeft();
         // displayTotalWatts(DisplayScreen);
     })
 
     // Basic stand animation
-    function basicAnim(avoidActivity=false) {
+    function basicAnim(avoidActivity=false, avoidSleep=false) {
         animStatus = 'stand'
         let startTime = new Date();
         let sleepCounter = 1
@@ -340,19 +341,18 @@ document.addEventListener('DOMContentLoaded', () => {
             let showShock = 1
             animate();
             intervalAnim = setInterval(animate, 500);
-                
-                function animate() {
-                    if(showShock == 1){
-                        loadAnim(DisplayScreen, Anims.standLeft)
-                        showShock++
-                    }else {
-                        showShock = 1
-                        loadAnim(DisplayScreen, null, true);
-                    }
+            function animate() {
+                if(showShock == 1){
+                    loadAnim(DisplayScreen, Anims.standLeft)
+                    showShock++
+                }else {
+                    showShock = 1
+                    loadAnim(DisplayScreen, null, true);
                 }
+            }
         }else{
             // Sleep
-            if (startTime.getHours() >= 20 && startTime.getHours() <= 23 ||
+            if (!avoidSleep && startTime.getHours() >= 20 && startTime.getHours() <= 23 ||
                 startTime.getHours() >= 0 && startTime.getHours() < 7){
                 animate();
                 intervalAnim = setInterval(animate, 1000);
@@ -373,6 +373,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             }else {
+                // if avoid Sleep, limpiar cookie de acostarse
                 // Breakfast
                 //breakfastHours = [10, 12, 18]
                 if( breakfastHours.some(elem => elem == startTime.getHours()) && coockieHadBreakfast != 'true') {
@@ -442,6 +443,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //SHAKE WALK
     var actionTimeOut = undefined; //Prevent start the animation until stop shaking
+    var consecutiveSteps = 0
     var auxiliarTimeout = undefined;
     var auxiliarTimeout2 = undefined;
 
@@ -449,6 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let startTime = new Date();
         let screenShaked = document.querySelector('.screenContainer');
         let buttons = document.querySelector('.buttonsContainer');
+        consecutiveSteps++
 
         clearTimeout(actionTimeOut);
         
@@ -466,8 +469,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 displayTotalWatts(DisplayScreen);
             }
         }, 250);
-
-        if (startTime.getHours() >= 7 && startTime.getHours() < 20) { //Prevent during sleeping
+        
+        if(animStatus == 'left'){
+            actionTimeOut = setTimeout(() => {
+                if(consecutiveSteps >= 20){
+                    console.log("vuelve")
+                    clearInterval(intervalAnim);
+                    backFromLeft();
+                }
+                console.log(`${consecutiveSteps} consecutive steps`)
+                consecutiveSteps = 0;
+            }, 1000);
+        }else if (startTime.getHours() >= 7 && startTime.getHours() < 20) { //Prevent during sleeping
             if(animStatus == 'stand') { // Make Pikachu look 
                 actionTimeOut = setTimeout(() => {
                     console.log("EING?")
@@ -480,6 +493,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     auxiliarTimeout2 = setTimeout(() => {
                         basicAnim(true);
                     }, 3000);
+                    consecutiveSteps = 0;
                 }, 1000);
             }else if(animStatus == 'standMad') { // Make Pikachu look 
                 actionTimeOut = setTimeout(() => {
@@ -493,6 +507,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     auxiliarTimeout2 = setTimeout(() => {
                         basicAnim();
                     }, 4000);
+                    consecutiveSteps = 0;
                 }, 1000);
             }else if(animStatus == 'sandcastle'){
                 actionTimeOut = setTimeout(() => {
@@ -502,10 +517,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         clearInterval(intervalAnim);
                         sandcastle();
                     }, 6000);
+                    consecutiveSteps = 0;
                 }, 1000);
             }
         }else{
             console.log("Pikachu is sleeping")
+            consecutiveSteps = 0;
         }
 
     })
@@ -576,6 +593,41 @@ document.addEventListener('DOMContentLoaded', () => {
                 clearInterval(intervalAnim);
                 basicAnim(true);
             }
+        }
+    }
+
+    // ComeBack from left Anim
+    function backFromLeft() {
+        animStatus = 'backFromLeft'
+        let animHits = 1;
+        console.log(animStatus)
+        intervalAnim = setInterval(animate, 500);
+        startTime = new Date();
+
+        function animate() {
+            if(animHits == 1 || animHits == 3){
+                loadAnim(DisplayScreen, Anims.backFromLeft.fall);
+            }
+            if(animHits == 2 || animHits == 4){
+                loadAnim(DisplayScreen, Anims.backFromLeft.hit);
+            }
+            if(animHits == 5 || animHits == 7){
+                loadAnim(DisplayScreen, Anims.backFromLeft.dizzyRight);
+            }  
+            if(animHits == 6 || animHits == 8){
+                loadAnim(DisplayScreen, Anims.backFromLeft.dizzyLeft);
+            }
+            if(animHits == 9){
+                loadAnim(DisplayScreen, Anims.standMad.stand);
+                friendshipLevel = -1400;
+                localStorage.setItem("friendshipLevel", friendshipLevel);
+                auxiliarTimeout = setTimeout(() => {
+                    clearInterval(intervalAnim);
+                    basicAnim(true, true);
+                }, 1000);
+            }  
+
+            animHits++
         }
     }
 
