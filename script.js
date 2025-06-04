@@ -333,99 +333,111 @@ document.addEventListener('DOMContentLoaded', () => {
         let sleepCounter = 1
         let coockieHadBreakfast = document.cookie.split("; ").find((row) => row.startsWith("had_breakfast="))?.split("=")[1];
         console.log(randomAnim);
-
-        // Sleep
-        if (startTime.getHours() >= 20 && startTime.getHours() <= 23 ||
-            startTime.getHours() >= 0 && startTime.getHours() < 7){
-
-            console.log("start")
+        console.log("start")
+        
+        if(friendshipLevel <= -1500){ // If pikachu left he doesn't sleep or play
+            animStatus = 'left'
+            let showShock = 1
             animate();
-            intervalAnim = setInterval(animate, 1000);
-            
-            function animate() {
-                // Check the time pased
-                endTime = new Date();
-                var timeDiff = endTime - startTime; //in ms
-                timeDiff /= 1000;
-                secondsElapsed = Math.round(timeDiff)
-
-                if(sleepCounter <= 1){
-                    loadAnim(DisplayScreen, Anims.sleep.sleep1)
-                    sleepCounter++
-                }else{
-                    loadAnim(DisplayScreen, Anims.sleep.sleep2)
-                    sleepCounter = (sleepCounter < 2)? (sleepCounter + 1) : 1;
-                }
-            }
-        }else {
-            // Breakfast
-            //breakfastHours = [10, 12, 18]
-            if( breakfastHours.some(elem => elem == startTime.getHours()) && coockieHadBreakfast != 'true') {
-                breakFast();
-            }else{
-                if(friendshipLevel <= -500){
-                    // If pikachu is mad he doesn't play
-                    animStatus = 'standMad'
-                    console.log("start")
-                    animate(true);
-                    intervalAnim = setInterval(animate, 1000);
-    
-                    function animate() {
-                        // Check the time pased
-                        endTime = new Date();
-                        var timeDiff = endTime - startTime; //in ms
-                        timeDiff /= 1000;
-                        secondsElapsed = Math.round(timeDiff)
-            
-                        if(secondsElapsed % 6 == 0 && secondsElapsed != 0){
-                            loadAnim(DisplayScreen, Anims.standMad.extend)
-                            // animStatus = 'extend'
-                        }else {
-                            loadAnim(DisplayScreen, Anims.standMad.stand)
-                        }
+            intervalAnim = setInterval(animate, 500);
+                
+                function animate() {
+                    if(showShock == 1){
+                        loadAnim(DisplayScreen, Anims.standLeft)
+                        showShock++
+                    }else {
+                        showShock = 1
+                        loadAnim(DisplayScreen, null, true);
                     }
-
-                }else{ //Friendship level OK
-                    if(!avoidActivity && playHours.some(elem => elem == startTime.getHours()) && randomAnim > 5){
-                        sandcastle();
+                }
+        }else{
+            // Sleep
+            if (startTime.getHours() >= 20 && startTime.getHours() <= 23 ||
+                startTime.getHours() >= 0 && startTime.getHours() < 7){
+                animate();
+                intervalAnim = setInterval(animate, 1000);
+                
+                function animate() {
+                    // Check the time pased
+                    endTime = new Date();
+                    var timeDiff = endTime - startTime; //in ms
+                    timeDiff /= 1000;
+                    secondsElapsed = Math.round(timeDiff)
+    
+                    if(sleepCounter <= 1){
+                        loadAnim(DisplayScreen, Anims.sleep.sleep1)
+                        sleepCounter++
                     }else{
-                        console.log("start")
+                        loadAnim(DisplayScreen, Anims.sleep.sleep2)
+                        sleepCounter = (sleepCounter < 2)? (sleepCounter + 1) : 1;
+                    }
+                }
+            }else {
+                // Breakfast
+                //breakfastHours = [10, 12, 18]
+                if( breakfastHours.some(elem => elem == startTime.getHours()) && coockieHadBreakfast != 'true') {
+                    breakFast();
+                }else{
+                    if(friendshipLevel <= -500){ // If pikachu is mad he doesn't play
+                        animStatus = 'standMad'
                         animate(true);
                         intervalAnim = setInterval(animate, 1000);
-                        
-                        function animate(avoidLook = false) {
+        
+                        function animate() {
                             // Check the time pased
                             endTime = new Date();
                             var timeDiff = endTime - startTime; //in ms
                             timeDiff /= 1000;
                             secondsElapsed = Math.round(timeDiff)
                 
-                            if(secondsElapsed % 20 == 0 && !avoidLook){
-                                loadAnim(DisplayScreen, Anims.standBasic.look)
-                                animStatus = 'look'
-                            }else if(secondsElapsed % 4 == 0 && secondsElapsed != 0){
-                                loadAnim(DisplayScreen, Anims.standBasic.extend)
+                            if(secondsElapsed % 4 == 0 && secondsElapsed != 0){
+                                loadAnim(DisplayScreen, Anims.standMad.extend)
                                 // animStatus = 'extend'
                             }else {
-                                if(animStatus == 'look'){
-                                    // Para que mire durante 2 segundos
-                                    setTimeout(() => {
-                                        loadAnim(DisplayScreen, Anims.standBasic.stand)
-                                    }, 1000);
-                                }else{
-                                    loadAnim(DisplayScreen, Anims.standBasic.stand)
-                                }
-                                animStatus = 'stand'
+                                loadAnim(DisplayScreen, Anims.standMad.stand)
                             }
+                        }
+    
+                    }else{ //Friendship level OK
+                        if(!avoidActivity && playHours.some(elem => elem == startTime.getHours()) && randomAnim > 5){
+                            sandcastle();
+                        }else{
+                            animate(true);
+                            intervalAnim = setInterval(animate, 1000);
                             
+                            function animate(avoidLook = false) {
+                                // Check the time pased
+                                endTime = new Date();
+                                var timeDiff = endTime - startTime; //in ms
+                                timeDiff /= 1000;
+                                secondsElapsed = Math.round(timeDiff)
+                    
+                                if(secondsElapsed % 20 == 0 && !avoidLook){
+                                    loadAnim(DisplayScreen, Anims.standBasic.look)
+                                    animStatus = 'look'
+                                }else if(secondsElapsed % 4 == 0 && secondsElapsed != 0){
+                                    loadAnim(DisplayScreen, Anims.standBasic.extend)
+                                    // animStatus = 'extend'
+                                }else {
+                                    if(animStatus == 'look'){
+                                        // Para que mire durante 2 segundos
+                                        setTimeout(() => {
+                                            loadAnim(DisplayScreen, Anims.standBasic.stand)
+                                        }, 1000);
+                                    }else{
+                                        loadAnim(DisplayScreen, Anims.standBasic.stand)
+                                    }
+                                    animStatus = 'stand'
+                                }
+                                
+                            }
                         }
                     }
+        
                 }
     
             }
-
         }
-
     }
 
     //SHAKE WALK
