@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.brushTeeth.brush1;
+    Anims.edit = Anims.buildingBlocks.try;
 });
 
 // Anim vars
@@ -20,7 +20,7 @@ var steps = (localStorage.getItem("steps") != null)? Number(localStorage.getItem
 var totalSteps = (localStorage.getItem("totalSteps") != null)? Number(localStorage.getItem("totalSteps")) : 0;
 var watts = (localStorage.getItem("watts") != null)? Number(localStorage.getItem("watts")) : 500;
 var friendshipLevel = (localStorage.getItem("friendshipLevel") != null)? Number(localStorage.getItem("friendshipLevel")) : 0;
-var eatingtHours = [10, 12, 13, 18, 17]
+var eatingtHours = [10, 12, 13, 18]
 var playHours = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
 
 // Watts
@@ -908,6 +908,7 @@ function loadAnim(screen, anim, clear, full){
         newDiv.classList.add(`num-${i}`);
         
         // Se puede sumar o restar a la i de abajo para mover a izq o der
+        // Si la i se suma con 36 se mueve una fila arriba todo
         // Crear otra func con mas de una anim de entrada y mas de un some / clock / game
         if(!clear && anim.some(elem => elem == `num-${i}`) || full){
             newDiv.classList.add('clicked');
