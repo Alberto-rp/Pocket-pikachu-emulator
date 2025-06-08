@@ -20,7 +20,7 @@ var steps = (localStorage.getItem("steps") != null)? Number(localStorage.getItem
 var totalSteps = (localStorage.getItem("totalSteps") != null)? Number(localStorage.getItem("totalSteps")) : 0;
 var watts = (localStorage.getItem("watts") != null)? Number(localStorage.getItem("watts")) : 500;
 var friendshipLevel = (localStorage.getItem("friendshipLevel") != null)? Number(localStorage.getItem("friendshipLevel")) : 0;
-var breakfastHours = [10, 12, 13, 18]
+var eatingtHours = [10, 12, 13, 18, 17]
 var playHours = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
 
 // Watts
@@ -30,6 +30,7 @@ var GivenUnits = 0;
 var selectedUnitWatt = 'cent'
 var givenAmountWatts = 0
 var coockieHadBreakfast = document.cookie.split("; ").find((row) => row.startsWith("had_breakfast="))?.split("=")[1];
+var coockieHasBrushed = document.cookie.split("; ").find((row) => row.startsWith("has_brushed="))?.split("=")[1];
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -152,6 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if(animStatus == ''){
                     randomAnim = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
                     coockieHadBreakfast = document.cookie.split("; ").find((row) => row.startsWith("had_breakfast="))?.split("=")[1];
+                    coockieHasBrushed = document.cookie.split("; ").find((row) => row.startsWith("has_brushed="))?.split("=")[1];
                     basicAnim();
                 }else{
                     if(animStatus != 'clock' && animStatus != 'gift'){ // | gift | game
@@ -248,7 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     // STATE BUTTON / FRIENDSHIP BUTTON
-    var allowedAnims = ['stand', 'standMad', 'left', 'sandcastle', 'breakfast'];
+    var allowedAnims = ['stand', 'standMad', 'left', 'brushTeeth', 'sandcastle', 'breakfast'];
     var menus = ['clockMenu', 'giftMenu', 'gamblingMenu'];
 
     document.querySelector("#state-button").addEventListener('click', () => {
@@ -377,9 +379,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }else {
                 // if avoid Sleep, limpiar cookie de acostarse
                 // Breakfast
-                //breakfastHours = [10, 12, 18]
-                if( breakfastHours.some(elem => elem == startTime.getHours()) && coockieHadBreakfast != 'true') {
-                    breakFast();
+                //eatingtHours = [10, 12, 18]
+                if( eatingtHours.some(elem => elem == startTime.getHours()) && coockieHasBrushed != 'true') {
+                    if(coockieHadBreakfast != 'true'){
+                        breakFast();
+                    }else if(coockieHasBrushed != 'true'){ //cockie tooth
+                        brushTeeth();
+                    }
                 }else{ //Hacer aqui comprobacion cookie brushTeeth
                     if(friendshipLevel <= -500){ // If pikachu is mad he doesn't play
                         animStatus = 'standMad'
@@ -670,8 +676,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     eatCounter++
                 }
     
-                //breakfastHours = [10, 12, 18]
-                if(!breakfastHours.some(elem => elem == endTime.getHours())) {
+                //eatingtHours = [10, 12, 18]
+                if(!eatingtHours.some(elem => elem == endTime.getHours())) {
                     clearInterval(intervalAnim);
                     basicAnim(true);
                 }
@@ -733,6 +739,12 @@ document.addEventListener('DOMContentLoaded', () => {
         let animCounter = 1;
         loadAnim(DisplayScreen, Anims.brushTeeth.brush1)
         intervalAnim = (!shake)? setInterval(animate, 1500) : setInterval(animate, 500);
+
+        // Declare cookie
+        var now = new Date();
+        now.setTime(now.getTime() + 3600 * 1000); // Agregamos 1 hora en milisegundos
+        document.cookie = "has_brushed=true; expires=" + now + "; path=/";
+        console.log("Cookie bushTeeth declared")
 
         function animate() {
             endTime = new Date();
@@ -966,11 +978,11 @@ function displayState(screen) {
         currentState = 'left'
     }else if(friendshipLevel > -1500 && friendshipLevel <= -500){
         currentState = 'mad'
-    }else if(friendshipLevel > -500 && friendshipLevel <= 500){
+    }else if(friendshipLevel > -500 && friendshipLevel <= 1500){
         currentState = 'ok'
-    }else if(friendshipLevel > 500 && friendshipLevel <= 1500){
+    }else if(friendshipLevel > 1500 && friendshipLevel <= 3000){
         currentState = 'likes'
-    }else if(friendshipLevel > 1500){
+    }else if(friendshipLevel > 3000){
         currentState = 'loves'
 
     }
