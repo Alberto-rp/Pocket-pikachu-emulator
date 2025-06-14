@@ -14,6 +14,7 @@ var clickedPixels = [];
 var intervalAnim;
 var animStatus = ''
 var randomAnim;
+var throwBlocks = false;
 
 // Steps
 var steps = (localStorage.getItem("steps") != null)? Number(localStorage.getItem("steps")) : 0;
@@ -181,6 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             case "giftMenu":
                                 // Clean states
                                 // basicAnim('stop', true);
+                                let timeStart = new Date();
                                 clearInterval(intervalAnim);
                                 clearAllTimeouts();
                                 animStatus = 'gift'
@@ -191,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     loadAnim(DisplayScreen, Anims.gift.whereIsPikachu)
                                 }else{
                                     // Sleep
-                                    if (endTime.getHours() >= 20 && endTime.getHours() <= 23 || endTime.getHours() >= 0 && endTime.getHours() < 7){
+                                    if (timeStart.getHours() >= 20 && timeStart.getHours() <= 23 || timeStart.getHours() >= 0 && timeStart.getHours() < 7){
                                         loadAnim(DisplayScreen, Anims.gift.sleeping)
                                     }else{
                                         // Prepare Gift
@@ -237,7 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
             clearAllTimeouts();
             resetGivenWatts();
             document.querySelector("#clockMenu").classList.add('selected')
-            basicAnim('start');
+            basicAnim(false);
         }else if(animStatus == 'gift' && selectedUnitWatt != 'cent'){
             let posibleUnits = ['cent', 'dec', 'unit', 'give'];
             // Seleccionar la anterior unidad
@@ -250,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     // STATE BUTTON / FRIENDSHIP BUTTON
-    var allowedAnims = ['stand', 'standMad', 'left', 'brushTeeth', 'sandcastle', 'breakfast'];
+    var allowedAnims = ['stand', 'standMad', 'left', 'brushTeeth', 'sandcastle', 'buildingBlocks', 'breakfast'];
     var menus = ['clockMenu', 'giftMenu', 'gamblingMenu'];
 
     document.querySelector("#state-button").addEventListener('click', () => {
@@ -325,11 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Test Animation
     document.querySelector("#startAnim").addEventListener('click', () => {
-        // sandcastle();
-        // tongueAnim();
-        // backFromLeft();
-        brushTeeth();
-        // displayTotalWatts(DisplayScreen);
+        buildingBlocks();
     })
 
     // Basic stand animation
@@ -408,8 +406,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
     
                     }else{ //Friendship level OK
+                        console.log(randomAnim);
                         if(!avoidActivity && playHours.some(elem => elem == startTime.getHours()) && randomAnim > 5){
-                            sandcastle();
+                            if(randomAnim >= 5 && randomAnim <= 7){
+                                sandcastle();
+                            }else{
+                                buildingBlocks();
+                            }
                         }else{
                             animate(true);
                             intervalAnim = setInterval(animate, 1000);
@@ -536,6 +539,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         brushTeeth();
                     }, 4000);
                     consecutiveSteps = 0;
+                }, 1000);
+            }else if(animStatus == 'buildingBlocks'){
+                actionTimeOut = setTimeout(() => {
+                    throwBlocks = true;
                 }, 1000);
             }
         }else{
@@ -698,7 +705,7 @@ document.addEventListener('DOMContentLoaded', () => {
         now.setTime(now.getTime() + 3600 * 1000); // Agregamos 1 hora en milisegundos
 
         function animate() {
-            endTime = new Date();
+            // endTime = new Date();
             pokecounter++
 
             if(pokecounter <= 4 || pokecounter == 6 || pokecounter == 8){
@@ -720,7 +727,6 @@ document.addEventListener('DOMContentLoaded', () => {
         intervalAnim = (!shake)? setInterval(animate, 2000) : setInterval(animate, 500);
 
         function animate() {
-            endTime = new Date();
             
             if(sandCounter <= 1){
                 loadAnim(DisplayScreen, Anims.sandcastle.sand2)
@@ -729,6 +735,59 @@ document.addEventListener('DOMContentLoaded', () => {
                 sandCounter = 0;
             }
             sandCounter++
+        }
+    }
+
+    // BuildingBlocks anim
+    function buildingBlocks() {
+        animStatus = 'buildingBlocks'
+        console.log(animStatus)
+        let buildCounter = 1;
+        let shakeCounter = 1;
+        loadAnim(DisplayScreen, Anims.buildingBlocks.hold)
+        intervalAnim = setInterval(animate, 1200);
+        
+        function animate() {
+            
+            if(buildCounter <= 1){
+                loadAnim(DisplayScreen, Anims.buildingBlocks.try)
+            }else if(buildCounter == 2) {
+                loadAnim(DisplayScreen, Anims.buildingBlocks.holdTry)
+                clearInterval(intervalAnim);
+                intervalAnim = setInterval(shaking, 125);
+                buildCounter = 0;
+            }
+
+            buildCounter++
+        }
+
+        function shaking() {
+            if(shakeCounter % 2 == 0 && shakeCounter < 9 || throwBlocks && shakeCounter % 2 == 0 && shakeCounter < 18){
+                loadAnim(DisplayScreen, Anims.buildingBlocks.shake)
+            }else if(shakeCounter < 9 || throwBlocks && shakeCounter < 18){
+                loadAnim(DisplayScreen, Anims.buildingBlocks.holdTry)
+            }else if(!throwBlocks){
+                loadAnim(DisplayScreen, Anims.buildingBlocks.holdTry)
+                clearInterval(intervalAnim);
+                shakeCounter = 0;
+                auxiliarTimeout = setTimeout(() => {
+                    loadAnim(DisplayScreen, Anims.buildingBlocks.hold)
+                    intervalAnim = setInterval(animate, 1200);
+                }, 1200);
+            }else{
+                clearInterval(intervalAnim);
+                auxiliarTimeout = setTimeout(() => {
+                    loadAnim(DisplayScreen, Anims.buildingBlocks.fall)
+                    shakeCounter = 0;
+                    throwBlocks = false;
+                }, 1000);
+                auxiliarTimeout2 = setTimeout(() => {
+                    updateFriendshipLevel(-30, false, false);
+                    basicAnim(true);
+                }, 4000);
+
+            }
+            shakeCounter++
         }
     }
 
@@ -747,7 +806,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("Cookie bushTeeth declared")
 
         function animate() {
-            endTime = new Date();
+            // endTime = new Date();
             
             if(animCounter <= 1){
                 loadAnim(DisplayScreen, Anims.brushTeeth.brush2)
