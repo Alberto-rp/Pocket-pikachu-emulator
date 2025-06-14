@@ -423,23 +423,13 @@ document.addEventListener('DOMContentLoaded', () => {
                                 var timeDiff = endTime - startTime; //in ms
                                 timeDiff /= 1000;
                                 secondsElapsed = Math.round(timeDiff)
+                                animStatus = 'stand'
                     
-                                if(secondsElapsed % 20 == 0 && !avoidLook){
-                                    loadAnim(DisplayScreen, Anims.standBasic.look)
-                                    animStatus = 'look'
-                                }else if(secondsElapsed % 4 == 0 && secondsElapsed != 0){
+                                if(secondsElapsed % 4 == 0 && secondsElapsed != 0){
                                     loadAnim(DisplayScreen, Anims.standBasic.extend)
                                     // animStatus = 'extend'
                                 }else {
-                                    if(animStatus == 'look'){
-                                        // Para que mire durante 2 segundos
-                                        setTimeout(() => {
-                                            loadAnim(DisplayScreen, Anims.standBasic.stand)
-                                        }, 1000);
-                                    }else{
-                                        loadAnim(DisplayScreen, Anims.standBasic.stand)
-                                    }
-                                    animStatus = 'stand'
+                                    loadAnim(DisplayScreen, Anims.standBasic.stand)
                                 }
                                 
                             }
@@ -783,6 +773,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, 1000);
                 auxiliarTimeout2 = setTimeout(() => {
                     updateFriendshipLevel(-30, false, false);
+                    randomAnim = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
                     basicAnim(true);
                 }, 4000);
 
