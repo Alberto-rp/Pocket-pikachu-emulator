@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.buildingBlocks.try;
+    Anims.edit = Anims.buildingBlocks.holdTry;
 });
 
 // Anim vars
@@ -381,7 +381,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Breakfast
                 //eatingtHours = [10, 12, 18]
                 if( eatingtHours.some(elem => elem == startTime.getHours()) && coockieHasBrushed != 'true') {
-                    if(coockieHadBreakfast != 'true'){
+                    if(coockieHadBreakfast != 'true' && startTime.getMinutes() <= 30){
                         breakFast();
                     }else if(coockieHasBrushed != 'true'){ //cockie tooth
                         brushTeeth();
