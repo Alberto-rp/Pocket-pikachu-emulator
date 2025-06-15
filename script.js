@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.buildingBlocks.holdTry;
+    Anims.edit = Anims.happy2.rightStep;
 });
 
 // Anim vars
@@ -327,7 +327,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Test Animation
     document.querySelector("#startAnim").addEventListener('click', () => {
-        buildingBlocks();
+        // buildingBlocks();
+        happySteps();
     })
 
     // Basic stand animation
@@ -574,6 +575,34 @@ document.addEventListener('DOMContentLoaded', () => {
                 basicAnim(true);
             }
             
+        }
+    }
+
+    function happySteps() {
+        animStatus = 'happySteps'
+        console.log(animStatus)
+        let animHits = 1
+        intervalAnim = setInterval(animate, 1000);
+        auxiliarTimeout = setTimeout(() => {
+            document.querySelector("#clockMenu").classList.add('selected')
+        }, 500);
+        
+        function animate() {
+            
+            if(animHits % 2 != 0 && animHits < 9){
+                loadAnim(DisplayScreen, Anims.happy2.start)
+            }else if(animHits == 2 || animHits == 6){
+                loadAnim(DisplayScreen, Anims.happy2.rightStep)
+            }else if(animHits == 4 || animHits == 8){
+                loadAnim(DisplayScreen, Anims.happy2.leftStep)
+            }else if(animHits == 9){
+                loadAnim(DisplayScreen, Anims.happy2.start)
+                clearInterval(intervalAnim);
+                auxiliarTimeout2 = setTimeout(() => {
+                    basicAnim(true);
+                }, 2000);
+            }
+            animHits++
         }
     }
 
@@ -897,8 +926,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if(amount == 0){
                 tongueAnim();
-            }else if(amount > 0){
+            }else if(amount > 0 && amount < 100){
                 yawnAnim();
+            }else if(amount >= 100){
+                happySteps();
             }
         }
     }
