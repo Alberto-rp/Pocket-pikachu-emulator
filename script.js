@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.happy2.rightStep;
+    Anims.edit = Anims.sleep.frontSleep;
 });
 
 // Anim vars
@@ -32,6 +32,7 @@ var selectedUnitWatt = 'cent'
 var givenAmountWatts = 0
 var coockieHadBreakfast = document.cookie.split("; ").find((row) => row.startsWith("had_breakfast="))?.split("=")[1];
 var coockieHasBrushed = document.cookie.split("; ").find((row) => row.startsWith("has_brushed="))?.split("=")[1];
+var coockieHasGoneSleep = document.cookie.split("; ").find((row) => row.startsWith("has_gone_sleep="))?.split("=")[1];
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -155,6 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     randomAnim = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
                     coockieHadBreakfast = document.cookie.split("; ").find((row) => row.startsWith("had_breakfast="))?.split("=")[1];
                     coockieHasBrushed = document.cookie.split("; ").find((row) => row.startsWith("has_brushed="))?.split("=")[1];
+                    coockieHasGoneSleep = document.cookie.split("; ").find((row) => row.startsWith("has_gone_sleep="))?.split("=")[1];
                     basicAnim();
                 }else{
                     if(animStatus != 'clock' && animStatus != 'gift'){ // | gift | game
@@ -357,21 +359,40 @@ document.addEventListener('DOMContentLoaded', () => {
             // Sleep
             if (!avoidSleep && startTime.getHours() >= 20 && startTime.getHours() <= 23 ||
                 startTime.getHours() >= 0 && startTime.getHours() < 7){
-                animate();
-                intervalAnim = setInterval(animate, 1000);
-                
-                function animate() {
-                    // Check the time pased
-                    endTime = new Date();
-                    var timeDiff = endTime - startTime; //in ms
-                    timeDiff /= 1000;
-                    secondsElapsed = Math.round(timeDiff)
-    
+
+                    if(startTime.getHours() == 20 || randomAnim >= 5) {
+                        slepAnim = Anims.sleep.frontSleep;
+                        slepAnim2 = Anims.sleep.frontSleep2;
+                    }else {
+                        slepAnim = Anims.sleep.sideSleep;
+                        slepAnim2 = Anims.sleep.sideSleep2;
+                    } 
+
+                if(startTime.getHours() == 20 && coockieHasGoneSleep != 'true'){
+                    // Declare cookie
+                    var now = new Date();
+                    now.setTime(now.getTime() + 3600 * 1000); // Agregamos 1 hora en milisegundos
+                    document.cookie = "has_gone_sleep=true; expires=" + now + "; path=/";
+                    console.log("Cookie Sleep declared");
+
+                    loadAnim(DisplayScreen, Anims.sleep.goingToSleep)
+                    auxiliarTimeout = setTimeout(() => {
+                        loadAnim(DisplayScreen, Anims.sleep.enteringBed)
+                    }, 2000);
+                    auxiliarTimeout2 = setTimeout(() => {
+                        intervalAnim = setInterval(animate, 1200);
+                    }, 3000);
+                }else{
+                    loadAnim(DisplayScreen, slepAnim)
+                    intervalAnim = setInterval(animate, 1200);
+                }
+
+                function animate() {   
                     if(sleepCounter <= 1){
-                        loadAnim(DisplayScreen, Anims.sleep.sleep1)
+                        loadAnim(DisplayScreen, slepAnim2)
                         sleepCounter++
                     }else{
-                        loadAnim(DisplayScreen, Anims.sleep.sleep2)
+                        loadAnim(DisplayScreen, slepAnim)
                         sleepCounter = (sleepCounter < 2)? (sleepCounter + 1) : 1;
                     }
                 }
