@@ -17,8 +17,7 @@
 - Play Animations Randomly between 9-18 hours
 - Clock Menu (without alarm)
 - Step Counter (Based on the shake button)
-- Gift Menu (Not finished)
-- State Menu (Not finished)
+- Gift Menu
+- State Menu
 - Friendship-system (Not finished - pending)
-- Functional Step Counter (Pending)
 - Game-system (pending)
