@@ -136,7 +136,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Give present to Pikachu / Update friendship level
                 updateFriendshipLevel(givenAmountWatts, true, true);
             }
-        } else{
+        }else if(animStatus == 'settings'){
+            if(selectedMenu == 'reset'){
+                steps = 0;
+                document.querySelector('.walkCounter').innerHTML = steps;
+                localStorage.setItem("steps", steps);
+            }
+        }else{
             // Init screen (Timeouts to emulate analogic)
             setTimeout(() => {
                 document.querySelector('.walkCounter').innerHTML = steps;
@@ -234,9 +240,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // BACK BUTTON
-    let backMenusAllowed = ['clock', 'state']
+    let backMenusAllowed = ['clock', 'state', 'settings']
     document.querySelector("#back-button").addEventListener('click', () => {
         if(backMenusAllowed.some(anim => anim == animStatus) || animStatus == 'gift' && selectedUnitWatt == 'cent'){
+            selectedMenu = posibleMenus[1]
             clearInterval(intervalAnim);
             clearAllTimeouts();
             resetGivenWatts();
@@ -254,15 +261,29 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     // STATE BUTTON / FRIENDSHIP BUTTON
-    var allowedAnims = ['stand', 'standMad', 'left', 'brushTeeth', 'sandcastle', 'buildingBlocks', 'breakfast'];
-    var menus = ['clockMenu', 'giftMenu', 'gamblingMenu'];
+    let allowedAnims = ['stand', 'standMad', 'left', 'brushTeeth', 'sandcastle', 'buildingBlocks', 'breakfast'];
+    let menus = ['clockMenu', 'giftMenu', 'gamblingMenu'];
 
     document.querySelector("#state-button").addEventListener('click', () => {
         if(allowedAnims.some(anim => anim == animStatus)){
             cleanStates();
             animStatus = 'state'
             clearInterval(intervalAnim)
+            clearAllTimeouts();
             displayState(DisplayScreen);
+        }
+    })
+
+    // START BUTTON / SETTINGS
+    let posibleMenus = ['reset', 'sound', 'time'];
+    let selectedMenu = posibleMenus[1]
+    document.querySelector("#menu-button").addEventListener('click', () => {
+        if(allowedAnims.some(anim => anim == animStatus)){
+            cleanStates();
+            animStatus = 'settings'
+            clearInterval(intervalAnim)
+            clearAllTimeouts();
+            loadAnim(DisplayScreen, Anims.settings.sound)
         }
     })
 
@@ -302,6 +323,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     GivenUnits = (GivenUnits < 9)? (GivenUnits + 1) : GivenUnits
                     break;
             }
+        }else if(animStatus == 'settings') {
+            let indexSelected = posibleMenus.indexOf(selectedMenu);
+            selectedMenu = (indexSelected > 0)? posibleMenus[indexSelected - 1] : selectedMenu;
+            loadAnim(DisplayScreen, Anims.settings[selectedMenu])
         }
     })
 
@@ -319,6 +344,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     GivenUnits = (GivenUnits > 0)? (GivenUnits - 1) : GivenUnits
                     break;
             }
+        }else if(animStatus == 'settings') {
+            let indexSelected = posibleMenus.indexOf(selectedMenu);
+            selectedMenu = (indexSelected < 2)? posibleMenus[indexSelected + 1] : selectedMenu;
+            loadAnim(DisplayScreen, Anims.settings[selectedMenu])
         }
     })
 
