@@ -363,7 +363,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     // Basic stand animation
-    function basicAnim(avoidActivity=false, avoidSleep=false, avoidGreeting=false) {
+    function basicAnim(avoidActivity=false, avoidSleep=false, avoidGreeting=false, avoidEat=false) {
         animStatus = 'stand'
         let startTime = new Date();
         let sleepCounter = 1
@@ -429,7 +429,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // if avoid Sleep, limpiar cookie de acostarse
                 // Breakfast
                 //eatingtHours = [10, 12, 18]
-                if( eatingtHours.some(elem => elem == startTime.getHours()) && coockieHasBrushed != 'true') {
+                if( !avoidEat && eatingtHours.some(elem => elem == startTime.getHours()) && coockieHasBrushed != 'true') {
                     if(coockieHadBreakfast != 'true' && startTime.getMinutes() <= 30){
                         breakFast();
                     }else if(coockieHasBrushed != 'true'){ //cockie tooth
@@ -465,6 +465,9 @@ document.addEventListener('DOMContentLoaded', () => {
                                 buildingBlocks();
                             }
                         }else{
+                            // To avoid play after throw blocks
+                            randomAnim = 5;
+
                             if(friendshipLevel > -500 && friendshipLevel <= 1500){ // OK status
                                 animate(true);
                                 intervalAnim = setInterval(animate, 1000);
@@ -642,10 +645,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 clearInterval(intervalAnim);
                 if(!likeOrLove){
                     // Para no jugar despues de un gift
-                    basicAnim(true);
+                    basicAnim(true, false, false, true);
                 }else{
                     // Para no volver a saludar
-                    basicAnim(true, false , true);
+                    basicAnim(true, false , true, true);
                 }
             }
             
@@ -724,7 +727,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadAnim(DisplayScreen, Anims.happy2.start)
                 clearInterval(intervalAnim);
                 auxiliarTimeout2 = setTimeout(() => {
-                    basicAnim(true);
+                    basicAnim(true, false, true, true);
                 }, 2000);
             }
             animHits++
@@ -760,7 +763,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if(milisecondsElapsed > 7500) loadAnim(DisplayScreen, Anims.tongueMad.start);
             if(milisecondsElapsed > 9500) {
                 clearInterval(intervalAnim);
-                basicAnim(true);
+                basicAnim(true, false, true, true);
             }
         }
     }
@@ -792,7 +795,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem("friendshipLevel", friendshipLevel);
                 auxiliarTimeout = setTimeout(() => {
                     clearInterval(intervalAnim);
-                    basicAnim(true, true);
+                    basicAnim(true, true, true, true);
                 }, 1000);
             }  
 
@@ -928,7 +931,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 auxiliarTimeout2 = setTimeout(() => {
                     updateFriendshipLevel(-30, false, false);
                     randomAnim = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
-                    basicAnim(true);
+                    basicAnim(true, false, true, true);
                 }, 4000);
 
             }
@@ -1007,7 +1010,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem("InitTamagotchi", true)
                 document.querySelector('.walkCounter').innerHTML = steps;
                 document.querySelector("#clockMenu").classList.add('selected')
-                basicAnim(true, true);
+                basicAnim(true, true, false, true);
             }, 3000);
         }
     }
