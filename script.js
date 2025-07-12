@@ -664,12 +664,12 @@ document.addEventListener('DOMContentLoaded', () => {
             loadAnim(DisplayScreen, Anims.standLike.lookLeft)
             auxiliarTimeout = setTimeout(() => {
                 loadAnim(DisplayScreen, Anims.standLike.lookRight)
-            }, 500);
+            }, 600);
 
             auxiliarTimeout2 = setTimeout(() => {
                 loadAnim(DisplayScreen, Anims.standLike.happyStand1)
                 intervalAnim = setInterval(animateStand, 2000);
-            }, 1000);
+            }, 1200);
         }
         
         function animate() {    
