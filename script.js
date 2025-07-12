@@ -248,7 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
             clearAllTimeouts();
             resetGivenWatts();
             document.querySelector("#clockMenu").classList.add('selected')
-            basicAnim(false);
+            basicAnim(false, false, true);
         }else if(animStatus == 'gift' && selectedUnitWatt != 'cent'){
             let posibleUnits = ['cent', 'dec', 'unit', 'give'];
             // Seleccionar la anterior unidad
@@ -261,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     // STATE BUTTON / FRIENDSHIP BUTTON
-    let allowedAnims = ['stand', 'standMad', 'left', 'brushTeeth', 'sandcastle', 'buildingBlocks', 'breakfast'];
+    let allowedAnims = ['stand', 'standMad', 'standLike', 'left', 'brushTeeth', 'sandcastle', 'buildingBlocks', 'breakfast'];
     let menus = ['clockMenu', 'giftMenu', 'gamblingMenu'];
 
     document.querySelector("#state-button").addEventListener('click', () => {
@@ -359,11 +359,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Test Animation
     document.querySelector("#startAnim").addEventListener('click', () => {
         // buildingBlocks();
-        happySteps();
+        standLike();
     })
 
     // Basic stand animation
-    function basicAnim(avoidActivity=false, avoidSleep=false) {
+    function basicAnim(avoidActivity=false, avoidSleep=false, avoidGreeting=false) {
         animStatus = 'stand'
         let startTime = new Date();
         let sleepCounter = 1
@@ -465,25 +465,34 @@ document.addEventListener('DOMContentLoaded', () => {
                                 buildingBlocks();
                             }
                         }else{
-                            animate(true);
-                            intervalAnim = setInterval(animate, 1000);
-                            
-                            function animate(avoidLook = false) {
-                                // Check the time pased
-                                endTime = new Date();
-                                var timeDiff = endTime - startTime; //in ms
-                                timeDiff /= 1000;
-                                secondsElapsed = Math.round(timeDiff)
-                                animStatus = 'stand'
-                    
-                                if(secondsElapsed % 4 == 0 && secondsElapsed != 0){
-                                    loadAnim(DisplayScreen, Anims.standBasic.extend)
-                                    // animStatus = 'extend'
-                                }else {
-                                    loadAnim(DisplayScreen, Anims.standBasic.stand)
-                                }
+                            if(friendshipLevel > -500 && friendshipLevel <= 1500){ // OK status
+                                animate(true);
+                                intervalAnim = setInterval(animate, 1000);
                                 
+                                function animate() {
+                                    // Check the time pased
+                                    endTime = new Date();
+                                    var timeDiff = endTime - startTime; //in ms
+                                    timeDiff /= 1000;
+                                    secondsElapsed = Math.round(timeDiff)
+                                    animStatus = 'stand'
+                        
+                                    if(secondsElapsed % 4 == 0 && secondsElapsed != 0){
+                                        loadAnim(DisplayScreen, Anims.standBasic.extend)
+                                        // animStatus = 'extend'
+                                    }else {
+                                        loadAnim(DisplayScreen, Anims.standBasic.stand)
+                                    }
+                                    
+                                }
+                            }else if(friendshipLevel > 1500){ // Like status
+                                if(!avoidGreeting){
+                                    yawnAnim(true)
+                                }else{
+                                    standLike();                                
+                                }
                             }
+
                         }
                     }
         
@@ -585,6 +594,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 actionTimeOut = setTimeout(() => {
                     throwBlocks = true;
                 }, 1000);
+            }else if(animStatus == 'standLike'){
+                actionTimeOut = setTimeout(() => {
+                    console.log("EING?")
+                    clearInterval(intervalAnim);
+                    standLike(true);
+                    // auxiliarTimeout = setTimeout(() => {
+                    // }, 1000);
+                    consecutiveSteps = 0;
+                }, 1000);
             }
         }else{
             console.log("Pikachu is sleeping")
@@ -595,7 +613,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* CELEBRATE ANIMATIONS */
     // Yawn Anim
-    function yawnAnim() {
+    function yawnAnim(likeOrLove = false) {
         animStatus = 'yawnHappy'
         console.log(animStatus)
         intervalAnim = setInterval(animate, 500);
@@ -622,9 +640,66 @@ document.addEventListener('DOMContentLoaded', () => {
             if(secondsElapsed > 8.0) loadAnim(DisplayScreen, Anims.happy1.happyStand);
             if(secondsElapsed > 9.0) {
                 clearInterval(intervalAnim);
-                basicAnim(true);
+                if(!likeOrLove){
+                    // Para no jugar despues de un gift
+                    basicAnim(true);
+                }else{
+                    // Para no volver a saludar
+                    basicAnim(true, false , true);
+                }
             }
             
+        }
+    }
+
+    function standLike(look = false) {
+        animStatus = 'standLike'
+        console.log(animStatus)
+        let animHits = 1
+
+        if(!look){
+            loadAnim(DisplayScreen, Anims.standLike.left)
+            intervalAnim = setInterval(animate, 500);
+        }else{
+            loadAnim(DisplayScreen, Anims.standLike.lookLeft)
+            auxiliarTimeout = setTimeout(() => {
+                loadAnim(DisplayScreen, Anims.standLike.lookRight)
+            }, 500);
+
+            auxiliarTimeout2 = setTimeout(() => {
+                loadAnim(DisplayScreen, Anims.standLike.happyStand1)
+                intervalAnim = setInterval(animateStand, 2000);
+            }, 1000);
+        }
+        
+        function animate() {    
+            if(animHits < 7){
+                loadAnim(DisplayScreen, Anims.standLike.left)
+            }else if(animHits == 7){
+                loadAnim(DisplayScreen, Anims.standLike.backRight)
+            }else if(animHits == 8){
+                loadAnim(DisplayScreen, Anims.standLike.backLeft)
+            }else if (animHits < 16){
+                loadAnim(DisplayScreen, Anims.standLike.right)
+            }else if(animHits == 16){
+                loadAnim(DisplayScreen, Anims.standLike.backLeft)
+            }else if(animHits == 17){
+                loadAnim(DisplayScreen, Anims.standLike.backRight)
+            }else{
+                loadAnim(DisplayScreen, Anims.standLike.left)
+                animHits = 0
+            }
+            animHits++
+        }
+
+        function animateStand() {
+            if(animHits == 1){
+                loadAnim(DisplayScreen, Anims.standLike.happyStand2)
+            }else{
+                loadAnim(DisplayScreen, Anims.standLike.happyStand1)
+                animHits = 0
+            }
+            animHits++
         }
     }
 
