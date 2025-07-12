@@ -490,7 +490,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 }
                             }else if(friendshipLevel > 1500){ // Like status
                                 if(!avoidGreeting){
-                                    yawnAnim(true)
+                                    yawnAnim()
                                 }else{
                                     standLike();                                
                                 }
@@ -616,7 +616,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* CELEBRATE ANIMATIONS */
     // Yawn Anim
-    function yawnAnim(likeOrLove = false) {
+    function yawnAnim() {
         animStatus = 'yawnHappy'
         console.log(animStatus)
         intervalAnim = setInterval(animate, 500);
@@ -643,13 +643,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if(secondsElapsed > 8.0) loadAnim(DisplayScreen, Anims.happy1.happyStand);
             if(secondsElapsed > 9.0) {
                 clearInterval(intervalAnim);
-                if(!likeOrLove){
-                    // Para no jugar despues de un gift
-                    basicAnim(true, false, false, true);
-                }else{
-                    // Para no volver a saludar
-                    basicAnim(true, false , true, true);
-                }
+                // Para no jugar o saludar despues de un gift
+                basicAnim(true, false, true, true);
             }
             
         }
