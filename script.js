@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.standLike.backLeft;
+    Anims.edit = Anims.standLike.happyStand1;
 });
 
 // Anim vars
