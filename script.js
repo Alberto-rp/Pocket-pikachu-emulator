@@ -980,7 +980,7 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.clear();
             steps = 0;
             totalSteps = 0;
-            watts = 500;
+            watts = 2500;
             friendshipLevel = 0;
             localStorage.setItem("watts", watts);
             localStorage.setItem("friendshipLevel", friendshipLevel);
