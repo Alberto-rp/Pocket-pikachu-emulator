@@ -1,5 +1,5 @@
 // Load animations
-var Anims = {hours: [], minutesDecen: [], minutesUnit: []};
+let Anims = {};
 fetch('./anims.json')
 .then((response) => response.json())
 .then((data) => {
