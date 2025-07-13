@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.standLike.happyStand1;
+    Anims.edit = Anims.game.base;
 });
 
 // Anim vars
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateFriendshipLevel(givenAmountWatts, true, true);
             }
         }else if(animStatus == 'settings'){
-            if(selectedMenu == 'reset'){
+            if(selectedSettingMenu == 'reset'){
                 steps = 0;
                 document.querySelector('.walkCounter').innerHTML = steps;
                 localStorage.setItem("steps", steps);
@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     coockieHasGoneSleep = document.cookie.split("; ").find((row) => row.startsWith("has_gone_sleep="))?.split("=")[1];
                     basicAnim();
                 }else{
-                    if(animStatus != 'clock' && animStatus != 'gift'){ // | gift | game
+                    if(animStatus != 'clock' && animStatus != 'gift' && animStatus != 'game'){ // | gift | game
                         let menuSelected = document.querySelector('.menuBar .selected').id
                         console.log(menuSelected)
                         switch (menuSelected) {
@@ -214,8 +214,18 @@ document.addEventListener('DOMContentLoaded', () => {
                                     }
                                 }
                                 break;
-                        
-                            default:
+                            case "gameMenu":
+                                // Clean states
+                                clearInterval(intervalAnim);
+                                clearAllTimeouts();
+                                animStatus = 'game'
+                                console.log(animStatus)
+                                document.querySelector(`#${menuSelected}`).classList.remove('selected');
+
+                                // Avoid to turn off the screen during game (Ponerlo de nuevo en el back)
+                                clearInterval(screenOff);
+
+                                loadAnim(DisplayScreen, Anims.game.base)
                                 break;
                         }
                     }
@@ -240,14 +250,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // BACK BUTTON
-    let backMenusAllowed = ['clock', 'state', 'settings']
+    let backMenusAllowed = ['clock', 'state', 'settings', 'game']
     document.querySelector("#back-button").addEventListener('click', () => {
         if(backMenusAllowed.some(anim => anim == animStatus) || animStatus == 'gift' && selectedUnitWatt == 'cent'){
-            selectedMenu = posibleMenus[1]
+            selectedSettingMenu = settingsMenus[1]
             clearInterval(intervalAnim);
             clearAllTimeouts();
             resetGivenWatts();
             document.querySelector("#clockMenu").classList.add('selected')
+
+            // APAGAR LA PANTALLA AL MINUTO
+            clearInterval(screenOff);
+            
+            screenOff = setInterval(switchOff, 60000)
+            function switchOff() {
+                resetGivenWatts();
+                clearInterval(intervalAnim);
+                animStatus = ''
+                cleanStates();
+                document.querySelector('.walkCounter').innerHTML = '';
+                loadAnim(DisplayScreen, null, true);
+                clearInterval(screenOff);
+            }
+
             basicAnim(false, false, true);
         }else if(animStatus == 'gift' && selectedUnitWatt != 'cent'){
             let posibleUnits = ['cent', 'dec', 'unit', 'give'];
@@ -262,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // STATE BUTTON / FRIENDSHIP BUTTON
     let allowedAnims = ['stand', 'standMad', 'standLike', 'left', 'brushTeeth', 'sandcastle', 'buildingBlocks', 'breakfast'];
-    let menus = ['clockMenu', 'giftMenu', 'gamblingMenu'];
+    let menus = ['clockMenu', 'giftMenu', 'gameMenu'];
 
     document.querySelector("#state-button").addEventListener('click', () => {
         if(allowedAnims.some(anim => anim == animStatus)){
@@ -275,8 +300,8 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     // START BUTTON / SETTINGS
-    let posibleMenus = ['reset', 'sound', 'time'];
-    let selectedMenu = posibleMenus[1]
+    let settingsMenus = ['reset', 'sound', 'time'];
+    let selectedSettingMenu = settingsMenus[1]
     document.querySelector("#menu-button").addEventListener('click', () => {
         if(allowedAnims.some(anim => anim == animStatus)){
             cleanStates();
@@ -324,9 +349,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     break;
             }
         }else if(animStatus == 'settings') {
-            let indexSelected = posibleMenus.indexOf(selectedMenu);
-            selectedMenu = (indexSelected > 0)? posibleMenus[indexSelected - 1] : selectedMenu;
-            loadAnim(DisplayScreen, Anims.settings[selectedMenu])
+            let indexSelected = settingsMenus.indexOf(selectedSettingMenu);
+            selectedSettingMenu = (indexSelected > 0)? settingsMenus[indexSelected - 1] : selectedSettingMenu;
+            loadAnim(DisplayScreen, Anims.settings[selectedSettingMenu])
         }
     })
 
@@ -345,9 +370,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     break;
             }
         }else if(animStatus == 'settings') {
-            let indexSelected = posibleMenus.indexOf(selectedMenu);
-            selectedMenu = (indexSelected < 2)? posibleMenus[indexSelected + 1] : selectedMenu;
-            loadAnim(DisplayScreen, Anims.settings[selectedMenu])
+            let indexSelected = settingsMenus.indexOf(selectedSettingMenu);
+            selectedSettingMenu = (indexSelected < 2)? settingsMenus[indexSelected + 1] : selectedSettingMenu;
+            loadAnim(DisplayScreen, Anims.settings[selectedSettingMenu])
         }
     })
 
@@ -970,7 +995,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             document.querySelector("#clockMenu").classList.add('selected')
             document.querySelector("#giftMenu").classList.add('selected')
-            document.querySelector("#gamblingMenu").classList.add('selected')
+            document.querySelector("#gameMenu").classList.add('selected')
             document.querySelector('.walkCounter').innerHTML = 88888;
             loadAnim(DisplayScreen, null, true, true);
 
@@ -1315,6 +1340,6 @@ function SelectWattsAmount(screen, cents, decs, units, currentSelected) {
 function cleanStates() {
     document.querySelector("#clockMenu").classList.remove('selected')
     document.querySelector("#giftMenu").classList.remove('selected')
-    document.querySelector("#gamblingMenu").classList.remove('selected')
+    document.querySelector("#gameMenu").classList.remove('selected')
 }
 
