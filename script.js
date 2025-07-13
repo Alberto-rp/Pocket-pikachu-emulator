@@ -15,6 +15,10 @@ var intervalAnim;
 var animStatus = ''
 var randomAnim;
 var throwBlocks = false;
+// Intervals and Timeouts
+var actionTimeOut = undefined; 
+var auxiliarTimeout = undefined;
+var auxiliarTimeout2 = undefined;
 
 // Steps
 var steps = (localStorage.getItem("steps") != null)? Number(localStorage.getItem("steps")) : 0;
@@ -23,6 +27,7 @@ var watts = (localStorage.getItem("watts") != null)? Number(localStorage.getItem
 var friendshipLevel = (localStorage.getItem("friendshipLevel") != null)? Number(localStorage.getItem("friendshipLevel")) : 0;
 var eatingtHours = [10, 12, 13, 18]
 var playHours = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
+var consecutiveSteps = 0;
 
 // Watts
 var GivenCents = 0;
@@ -33,6 +38,18 @@ var givenAmountWatts = 0
 var coockieHadBreakfast = document.cookie.split("; ").find((row) => row.startsWith("had_breakfast="))?.split("=")[1];
 var coockieHasBrushed = document.cookie.split("; ").find((row) => row.startsWith("has_brushed="))?.split("=")[1];
 var coockieHasGoneSleep = document.cookie.split("; ").find((row) => row.startsWith("has_gone_sleep="))?.split("=")[1];
+
+//Roulette
+let roulete = {};
+roulete.gameStarted = false;
+roulete.posibleStep = ['bet', 'try', 1, 2, 3];
+roulete.selectedStep = roulete.posibleStep[0];
+roulete.slot1 = ['seven', 'flower', 'pika', 'seven', 'fish', 'flower', 'seven', 'fish'];
+roulete.slot2 = ['seven', 'fish', 'flower', 'pika', 'seven', 'fish', 'flower', 'pika'];
+roulete.slot3 = ['seven', 'fish', 'flower', 'pika', 'fish', 'flower', 'pika', 'fish'];
+roulete.selectedSlot1 = (localStorage.getItem("selectedSlot1") != null)? Number(localStorage.getItem("selectedSlot1")) : 0;
+roulete.selectedSlot2 = (localStorage.getItem("selectedSlot2") != null)? Number(localStorage.getItem("selectedSlot2")) : 0;
+roulete.selectedSlot3 = (localStorage.getItem("selectedSlot3") != null)? Number(localStorage.getItem("selectedSlot3")) : 0;
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -136,6 +153,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Give present to Pikachu / Update friendship level
                 updateFriendshipLevel(givenAmountWatts, true, true);
             }
+        }else if(animStatus == 'game'){
+            // roulete.posibleStep = ['bet', 'try', 1, 2, 3];
+            let {posibleStep, selectedStep} = roulete; //Desestructuracion de objeto
+
+            // Seleccionar la siguiente unidad
+            roulete.selectedStep = (posibleStep.indexOf(selectedStep) < (posibleStep.length - 1))? posibleStep[posibleStep.indexOf(selectedStep) + 1] : selectedStep
+
         }else if(animStatus == 'settings'){
             if(selectedSettingMenu == 'reset'){
                 steps = 0;
@@ -197,6 +221,9 @@ document.addEventListener('DOMContentLoaded', () => {
                                 console.log(animStatus)
                                 document.querySelector(`#${menuSelected}`).classList.remove('selected')
 
+                                // Avoid to turn off the screen during game
+                                clearInterval(screenOff);
+
                                 if(friendshipLevel <= -1500){
                                     loadAnim(DisplayScreen, Anims.gift.whereIsPikachu)
                                 }else{
@@ -222,10 +249,15 @@ document.addEventListener('DOMContentLoaded', () => {
                                 console.log(animStatus)
                                 document.querySelector(`#${menuSelected}`).classList.remove('selected');
 
-                                // Avoid to turn off the screen during game (Ponerlo de nuevo en el back)
+                                // Avoid to turn off the screen during game
                                 clearInterval(screenOff);
 
-                                loadAnim(DisplayScreen, Anims.game.base)
+                                displayTotalWatts(DisplayScreen, 'game');
+                                intervalAnim = setInterval(initGame, 500);
+                                function initGame(){
+                                    displayTotalWatts(DisplayScreen, 'game'); //If not here doesn't clean the screen
+                                    rouletteGame(DisplayScreen, roulete.selectedSlot1, roulete.selectedSlot2, roulete.selectedSlot3);
+                                }
                                 break;
                         }
                     }
@@ -261,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // APAGAR LA PANTALLA AL MINUTO
             clearInterval(screenOff);
-            
+
             screenOff = setInterval(switchOff, 60000)
             function switchOff() {
                 resetGivenWatts();
@@ -531,17 +563,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     //SHAKE WALK
-    var actionTimeOut = undefined; //Prevent start the animation until stop shaking
-    var consecutiveSteps = 0
-    var auxiliarTimeout = undefined;
-    var auxiliarTimeout2 = undefined;
-
     document.querySelector('#shake').addEventListener('click', () => {
         let startTime = new Date();
         let screenShaked = document.querySelector('.screenContainer');
         let buttons = document.querySelector('.buttonsContainer');
         consecutiveSteps++
 
+        // To avoid to the action until shake is over
         clearTimeout(actionTimeOut);
         
         // Shake the screen
@@ -627,8 +655,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.log("EING?")
                     clearInterval(intervalAnim);
                     standLike(true);
-                    // auxiliarTimeout = setTimeout(() => {
-                    // }, 1000);
                     consecutiveSteps = 0;
                 }, 1000);
             }
@@ -1080,23 +1106,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 happySteps();
             }
         }
-    }
-
-    // Aux funcs
-    function clearAllTimeouts() {
-        clearTimeout(actionTimeOut);
-        clearTimeout(auxiliarTimeout);
-        clearTimeout(auxiliarTimeout2);
-    }
-
-    function resetGivenWatts() {
-        GivenCents = 0;
-        GivenDecs = 0;
-        GivenUnits = 0;
-        selectedUnitWatt = 'cent'
-    }
-
+    }    
 })
+
+// Aux funcs
+function clearAllTimeouts() {
+    clearTimeout(actionTimeOut);
+    clearTimeout(auxiliarTimeout);
+    clearTimeout(auxiliarTimeout2);
+}
+
+function resetGivenWatts() {
+    GivenCents = 0;
+    GivenDecs = 0;
+    GivenUnits = 0;
+    selectedUnitWatt = 'cent'
+}
 
 function walk() {
     // Update steps
@@ -1129,6 +1154,7 @@ function walk() {
     }
 }
 
+// CARGA DE ANIMACIONES
 function loadAnim(screen, anim, clear, full){
     screen.innerHTML = '';
     for(i = 0; i < 1080; i++){
@@ -1261,7 +1287,7 @@ function displayState(screen) {
 }
 
 // PRESENT WATTS
-function displayTotalWatts(screen) {
+function displayTotalWatts(screen, menu='gift') {
     let totalWattsArray = watts.toString().split('').reverse();
     screen.innerHTML = '';
 
@@ -1271,8 +1297,14 @@ function displayTotalWatts(screen) {
         newDiv.classList.add(`num-${i}`);
 
         // State
-        if(Anims.gift.base.some(elem => elem == `num-${i}`)){
-            newDiv.classList.add('clicked');
+        if(menu == 'gift'){
+            if(Anims.gift.base.some(elem => elem == `num-${i}`)){
+                newDiv.classList.add('clicked');
+            }
+        }else if(menu == 'game'){
+            if(Anims.game.base.some(elem => elem == `num-${i}`)){
+                newDiv.classList.add('clicked');
+            }
         }
 
 
@@ -1334,6 +1366,63 @@ function SelectWattsAmount(screen, cents, decs, units, currentSelected) {
                 }, 500);    
             }
         }
+    }
+}
+
+function rouletteGame(screen, selSlot1, selSlot2, selSlot3) {
+    let miliseconds = new Date().getMilliseconds();
+    let selectedSlot1 = roulete.slot1[selSlot1];
+    let selectedSlot2 = roulete.slot2[selSlot2];
+    let selectedSlot3 = roulete.slot3[selSlot3];
+
+    for(i = 0; i < 1080; i++){
+
+        // Bet text
+        if(miliseconds <= 500 && roulete.selectedStep == 'bet' || roulete.selectedStep != 'bet' && watts >= 5){
+            if(Anims.game.bet.some(elem => elem == `num-${i}`)){
+                screen.querySelector(`.num-${i}`).classList.add('clicked');
+            }
+        }
+
+        // Slot1
+        if(Anims.game.roulette1[selectedSlot1][selectedSlot1].some(elem => elem == `num-${i}`)){
+            screen.querySelector(`.num-${i}`).classList.add('clicked');
+        }
+        // Slot2
+        if(Anims.game.roulette2[selectedSlot2][selectedSlot2].some(elem => elem == `num-${i}`)){
+            screen.querySelector(`.num-${i}`).classList.add('clicked');
+        }
+        // Slot3
+        if(Anims.game.roulette3[selectedSlot3][selectedSlot3].some(elem => elem == `num-${i}`)){
+            screen.querySelector(`.num-${i}`).classList.add('clicked');
+        }
+        
+        if(roulete.selectedStep == 'try' && miliseconds <= 500){
+            if(watts < 5){
+                if(Anims.game.notEnouff.some(elem => elem == `num-${i}`)){
+                    screen.querySelector(`.num-${i}`).classList.add('clicked');
+                }
+                auxiliarTimeout2 = setTimeout(() => {
+                    roulete.selectedStep = roulete.posibleStep[0];
+                }, 500);    
+            }else{
+                // StartGame
+                // clearInterval(intervalAnim);
+                // clearAllTimeouts();
+                roulete.selectedStep = roulete.posibleStep[2];
+                watts -= 5;
+                console.log('restado')
+                localStorage.setItem("watts", watts)
+                roulete.gameStarted = true;
+            }
+        }
+    }
+
+    // Fuera del for
+    if(roulete.gameStarted){
+        console.log("Seguimos")
+        console.log(roulete.selectedStep)
+        console.log(roulete.selectedStep)
     }
 }
 
