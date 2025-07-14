@@ -284,8 +284,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // BACK BUTTON
     let backMenusAllowed = ['clock', 'state', 'settings', 'game']
     document.querySelector("#back-button").addEventListener('click', () => {
-        if(backMenusAllowed.some(anim => anim == animStatus) || animStatus == 'gift' && selectedUnitWatt == 'cent'){
-            selectedSettingMenu = settingsMenus[1]
+        if(backMenusAllowed.some(anim => anim == animStatus) && !(animStatus == 'game' && roulete.gameStarted) || animStatus == 'gift' && selectedUnitWatt == 'cent'){
+            selectedSettingMenu = settingsMenus[1];
             clearInterval(intervalAnim);
             clearAllTimeouts();
             resetGivenWatts();
@@ -1402,27 +1402,117 @@ function rouletteGame(screen, selSlot1, selSlot2, selSlot3) {
                 if(Anims.game.notEnouff.some(elem => elem == `num-${i}`)){
                     screen.querySelector(`.num-${i}`).classList.add('clicked');
                 }
-                auxiliarTimeout2 = setTimeout(() => {
+                auxiliarTimeout = setTimeout(() => {
                     roulete.selectedStep = roulete.posibleStep[0];
                 }, 500);    
             }else{
-                // StartGame
-                // clearInterval(intervalAnim);
-                // clearAllTimeouts();
-                roulete.selectedStep = roulete.posibleStep[2];
+                // Pay the bet
                 watts -= 5;
-                console.log('restado')
                 localStorage.setItem("watts", watts)
+                
+                // Start the Game
+                roulete.selectedStep = roulete.posibleStep[2]; //Select slot 1
                 roulete.gameStarted = true;
+                // auxiliarTimeout = setTimeout(() => {
+                // }, 50); //To update the watts
             }
         }
     }
 
     // Fuera del for
     if(roulete.gameStarted){
-        console.log("Seguimos")
-        console.log(roulete.selectedStep)
-        console.log(roulete.selectedStep)
+        console.log("Start Game")
+        let auxArray = ['Come', '', 'Gone'];
+        let counter = 2; //Start in 2 cause the first item is exiting
+
+        clearInterval(intervalAnim);
+        clearAllTimeouts();
+        printBaseScreen();
+
+        // To avoid let the screen empty without 7s
+        for(i = 0; i < 1080; i++){
+            // Slot1
+            if(Anims.game.roulette1[selectedSlot1][selectedSlot1].some(elem => elem == `num-${i}`)){
+                screen.querySelector(`.num-${i}`).classList.add('clicked');
+            }
+            // Slot2
+            if(Anims.game.roulette2[selectedSlot2][selectedSlot2].some(elem => elem == `num-${i}`)){
+                screen.querySelector(`.num-${i}`).classList.add('clicked');
+            }
+            // Slot3
+            if(Anims.game.roulette3[selectedSlot3][selectedSlot3].some(elem => elem == `num-${i}`)){
+                screen.querySelector(`.num-${i}`).classList.add('clicked');
+            }
+        }
+        
+        // intervalAnim = setInterval(initGame, 166);
+        intervalAnim = setInterval(initGame, 166);
+        function initGame(){
+
+            // Cambiar esta funcion por una que limpie solo el interior del recuadro, y duplicar la funcion init game por cada slot
+            printBaseScreen();
+
+            // Update the selected slot
+            selectedSlot1 = roulete.slot1[roulete.selectedSlot1];
+            selectedSlot2 = roulete.slot2[roulete.selectedSlot2];
+            selectedSlot3 = roulete.slot3[roulete.selectedSlot3];
+
+            // Print the item or the item exiting (never item come)
+            for(i = 0; i < 1080; i++){
+                if(Anims.game.roulette1[selectedSlot1][`${selectedSlot1}${auxArray[counter]}`].some(elem => elem == `num-${i}`)){
+                    screen.querySelector(`.num-${i}`).classList.add('clicked');
+                }
+                if(Anims.game.roulette2[selectedSlot2][`${selectedSlot2}${auxArray[counter]}`].some(elem => elem == `num-${i}`)){
+                    screen.querySelector(`.num-${i}`).classList.add('clicked');
+                }
+                if(Anims.game.roulette3[selectedSlot3][`${selectedSlot3}${auxArray[counter]}`].some(elem => elem == `num-${i}`)){
+                    screen.querySelector(`.num-${i}`).classList.add('clicked');
+                }
+            }
+
+            // If the main item is exiting, print the next item coming
+            if(counter == 2){
+                let {selectedSlot1, slot1, selectedSlot2, slot2, selectedSlot3, slot3} = roulete;
+
+                // Check the next item; if end of array return to element 0
+                let selectedNextSlot1 = (selectedSlot1 != slot1.length - 1)? slot1[roulete.selectedSlot1 + 1] : slot1[0];
+                let selectedNextSlot2 = (selectedSlot2 != slot2.length - 1)? slot2[roulete.selectedSlot2 + 1] : slot2[0];
+                let selectedNextSlot3 = (selectedSlot3 != slot3.length - 1)? slot3[roulete.selectedSlot3 + 1] : slot3[0];
+
+                // Print the next item coming (never the item or the item exiting)
+                for(i = 0; i < 1080; i++){
+                    if(Anims.game.roulette1[selectedNextSlot1][`${selectedNextSlot1}${auxArray[0]}`].some(elem => elem == `num-${i}`)){
+                        screen.querySelector(`.num-${i}`).classList.add('clicked');
+                    }
+                    if(Anims.game.roulette2[selectedNextSlot2][`${selectedNextSlot2}${auxArray[0]}`].some(elem => elem == `num-${i}`)){
+                        screen.querySelector(`.num-${i}`).classList.add('clicked');
+                    }
+                    if(Anims.game.roulette3[selectedNextSlot3][`${selectedNextSlot3}${auxArray[0]}`].some(elem => elem == `num-${i}`)){
+                        screen.querySelector(`.num-${i}`).classList.add('clicked');
+                    }
+                }
+
+                //Selecciona el siguiente slot
+                roulete.selectedSlot1 = (selectedSlot1 != slot1.length - 1)? (selectedSlot1 + 1) : 0;
+                roulete.selectedSlot2 = (selectedSlot2 != slot2.length - 1)? (selectedSlot2 + 1) : 0;
+                roulete.selectedSlot3 = (selectedSlot3 != slot3.length - 1)? (selectedSlot3 + 1) : 0;
+                counter = 1;
+            }else{
+                counter++
+            }
+        }
+
+        // Screen and watts
+        function printBaseScreen() {
+            displayTotalWatts(screen, 'game');
+            for(i = 0; i < 1080; i++){
+                if(Anims.game.bet.some(elem => elem == `num-${i}`)){
+                        screen.querySelector(`.num-${i}`).classList.add('clicked');
+                }
+            }
+        }
+
+        // console.log(roulete.selectedStep)
     }
 }
 
