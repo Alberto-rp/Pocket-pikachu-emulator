@@ -21,4 +21,4 @@
 - Gift Menu
 - State Menu
 - Friendship-system (Not finished - pending)
-- Game-system (pending)
+- Game-system NOT-FINISHED (can turn the rulette but get's blocked)
