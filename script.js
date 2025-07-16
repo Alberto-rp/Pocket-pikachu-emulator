@@ -1332,29 +1332,30 @@ function displayTotalWatts(screen, menu='gift') {
     }
 }
 
+// let {printBet} = roulete.printBet;
+let printGive = true;
 function SelectWattsAmount(screen, cents, decs, units, currentSelected) {
-    let miliseconds = new Date().getMilliseconds();
     givenAmountWatts = Number(`${GivenCents}${GivenDecs }${GivenUnits}`)
     for(i = 0; i < 1080; i++){
-        if(miliseconds <= 500 && currentSelected == 'unit' || currentSelected != 'unit'){
+        if(printGive && currentSelected == 'unit' || currentSelected != 'unit'){
             if(Anims.givenWatts.unit[units].some(elem => elem == `num-${i}`)){
                 screen.querySelector(`.num-${i}`).classList.add('clicked');
             }
         }
 
-        if(miliseconds <= 500 && currentSelected == 'dec' || currentSelected != 'dec'){
+        if(printGive && currentSelected == 'dec' || currentSelected != 'dec'){
             if(Anims.givenWatts.dec[decs].some(elem => elem == `num-${i}`)){
                 screen.querySelector(`.num-${i}`).classList.add('clicked');
             }
         }
 
-        if(miliseconds <= 500 && currentSelected == 'cent' || currentSelected != 'cent'){
+        if(printGive && currentSelected == 'cent' || currentSelected != 'cent'){
             if(Anims.givenWatts.cent[cents].some(elem => elem == `num-${i}`)){
                 screen.querySelector(`.num-${i}`).classList.add('clicked');
             }
         }
 
-        if(miliseconds <= 500 && currentSelected == 'give'){
+        if(printGive && currentSelected == 'give'){
             if(givenAmountWatts <= watts){
                 if(Anims.gift.give.some(elem => elem == `num-${i}`)){
                     screen.querySelector(`.num-${i}`).classList.add('clicked');
@@ -1369,6 +1370,8 @@ function SelectWattsAmount(screen, cents, decs, units, currentSelected) {
             }
         }
     }
+
+    printGive = !printGive;
 }
 
 let {printBet} = roulete.printBet;
