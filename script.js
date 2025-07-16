@@ -55,6 +55,12 @@ roulete.selectedSlot3 = (localStorage.getItem("selectedSlot3") != null)? Number(
 roulete.intervalRoulette1 = undefined;
 roulete.intervalRoulette2 = undefined;
 roulete.intervalRoulette3 = undefined;
+roulete.stopSlot1 = false;
+roulete.stopSlot2 = false;
+roulete.stopSlot3 = false;
+roulete.forcedSlot1 = '';
+roulete.forcedSlot2 = '';
+roulete.forcedSlot3 = '';
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -160,24 +166,31 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }else if(animStatus == 'game'){
             // roulete.posibleStep = ['bet', 'try', 1, 2, 3];
-            let {posibleStep, selectedStep} = roulete; //Desestructuracion de objeto
+            let {posibleStep, selectedStep, selectedSlot1, selectedSlot2, selectedSlot3} = roulete; //Desestructuracion de objeto
 
             if(selectedStep == 1){
-                clearInterval(roulete.intervalRoulette1);
-                console.log(selectedSlot1)
+                selSlot1 = roulete.slot1[roulete.selectedSlot1];
+                roulete.stopSlot1 = true;
+                roulete.forcedSlot1 = '';
+                // roulete.forcedSlot1 = 'fish'; //If it's necesary to force a victory
             }
             if(selectedStep == 2){
-                clearInterval(roulete.intervalRoulette2);
-                console.log(selectedSlot2)
+                selSlot2 = roulete.slot2[roulete.selectedSlot2];
+                roulete.stopSlot2 = true;
+                roulete.forcedSlot2 = '';
+                // roulete.forcedSlot2 = 'fish'; //If it's necesary to force a victory
             }
             if(selectedStep == 3){
-                clearInterval(roulete.intervalRoulette3);
-                console.log(selectedSlot3)
+                selSlot3 = roulete.slot3[roulete.selectedSlot3];
+                roulete.stopSlot3 = true;
+                roulete.forcedSlot3 = '';
+                // roulete.forcedSlot3 = 'fish'; //If it's necesary to force a victory
             }
 
-            // Seleccionar la siguiente unidad
-            roulete.selectedStep = (posibleStep.indexOf(selectedStep) < (posibleStep.length - 1))? posibleStep[posibleStep.indexOf(selectedStep) + 1] : selectedStep
-            console.log(roulete)
+            // Move foward the next step; Try step is managed in rouletteGame();
+            if(selectedStep != 'try'){
+                roulete.selectedStep = (posibleStep.indexOf(selectedStep) < (posibleStep.length - 1))? posibleStep[posibleStep.indexOf(selectedStep) + 1] : selectedStep
+            }
 
         }else if(animStatus == 'settings'){
             if(selectedSettingMenu == 'reset'){
@@ -309,6 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector("#back-button").addEventListener('click', () => {
         if(backMenusAllowed.some(anim => anim == animStatus) && !(animStatus == 'game' && roulete.gameStarted) || animStatus == 'gift' && selectedUnitWatt == 'cent'){
             selectedSettingMenu = settingsMenus[1];
+            roulete.selectedStep = roulete.posibleStep[0];
             clearInterval(intervalAnim);
             clearAllTimeouts();
             resetGivenWatts();
@@ -468,28 +482,32 @@ document.addEventListener('DOMContentLoaded', () => {
             // Sleep
             if (!avoidSleep && startTime.getHours() >= 20 && startTime.getHours() <= 23 ||
                 startTime.getHours() >= 0 && startTime.getHours() < 7){
+                
+                // Update the cookieValue after goinToSleep, to avoid error of multiple times going to sleep
+                coockieHasGoneSleep = document.cookie.split("; ").find((row) => row.startsWith("has_gone_sleep="))?.split("=")[1];
 
-                    if(startTime.getHours() == 20 || randomAnim >= 5) {
-                        slepAnim = Anims.sleep.frontSleep;
-                        slepAnim2 = Anims.sleep.frontSleep2;
-                    }else {
-                        slepAnim = Anims.sleep.sideSleep;
-                        slepAnim2 = Anims.sleep.sideSleep2;
-                    } 
+                if(startTime.getHours() == 20 || randomAnim >= 5) {
+                    slepAnim = Anims.sleep.frontSleep;
+                    slepAnim2 = Anims.sleep.frontSleep2;
+                }else {
+                    slepAnim = Anims.sleep.sideSleep;
+                    slepAnim2 = Anims.sleep.sideSleep2;
+                } 
 
                 if(startTime.getHours() == 20 && coockieHasGoneSleep != 'true'){
-                    // Declare cookie
-                    var now = new Date();
-                    now.setTime(now.getTime() + 3600 * 1000); // Agregamos 1 hora en milisegundos
-                    document.cookie = "has_gone_sleep=true; expires=" + now + "; path=/";
-                    console.log("Cookie Sleep declared");
-
                     loadAnim(DisplayScreen, Anims.sleep.goingToSleep)
                     auxiliarTimeout = setTimeout(() => {
                         loadAnim(DisplayScreen, Anims.sleep.enteringBed)
                     }, 2000);
                     auxiliarTimeout2 = setTimeout(() => {
+                        // Start Sleeping
                         intervalAnim = setInterval(animate, 1200);
+
+                        // Declare cookie
+                        var now = new Date();
+                        now.setTime(now.getTime() + 3600 * 1000); // Agregamos 1 hora en milisegundos
+                        document.cookie = "has_gone_sleep=true; expires=" + now + "; path=/";
+                        console.log("Cookie Sleep declared");
                     }, 3000);
                 }else{
                     loadAnim(DisplayScreen, slepAnim)
@@ -1197,6 +1215,14 @@ function loadAnim(screen, anim, clear, full){
     }
 }
 
+function loadLocatedAnim(screen, anim){
+    for(i = 0; i < 1080; i++){
+        if(anim.some(elem => elem == `num-${i}`)){
+            screen.querySelector(`.num-${i}`).classList.add('clicked');
+        }
+    }
+}
+
 
 function printHour(screen, hours, minutes, pmState){
     screen.innerHTML = '';
@@ -1472,9 +1498,9 @@ function rouletteGame(screen, selSlot1, selSlot2, selSlot3) {
         displayTotalWatts(screen, 'game', true);
         
         // Main roulette intervals
-        roulete.intervalRoulette1 = setInterval(initSlot1, 166);
-        roulete.intervalRoulette2 = setInterval(initSlot2, 170);
-        roulete.intervalRoulette3 = setInterval(initSlot3, 174);
+        roulete.intervalRoulette1 = setInterval(initSlot1, 166); //166
+        roulete.intervalRoulette2 = setInterval(initSlot2, 170); //170
+        roulete.intervalRoulette3 = setInterval(initSlot3, 174); //174
 
         function initSlot1(){
             cleanSlot(1);
@@ -1487,6 +1513,12 @@ function rouletteGame(screen, selSlot1, selSlot2, selSlot3) {
                 if(Anims.game.roulette1[selectedSlot1][`${selectedSlot1}${auxArray[counter]}`].some(elem => elem == `num-${i}`)){
                     screen.querySelector(`.num-${i}`).classList.add('clicked');
                 }
+            }
+
+            // Stop the slot
+            if(roulete.stopSlot1 && auxArray[counter] == '' && (roulete.forcedSlot1 == '' || roulete.forcedSlot1 == selectedSlot1)){
+                clearInterval(roulete.intervalRoulette1);
+                localStorage.setItem("selectedSlot1", roulete.selectedSlot1)
             }
 
             // If the main item is exiting, print the next item coming
@@ -1524,6 +1556,12 @@ function rouletteGame(screen, selSlot1, selSlot2, selSlot3) {
                 }
             }
 
+            // Stop the slot
+            if(roulete.stopSlot2 && auxArray[counter2] == '' && (roulete.forcedSlot2 == '' || roulete.forcedSlot2 == selectedSlot2)){
+                clearInterval(roulete.intervalRoulette2);
+                localStorage.setItem("selectedSlot2", roulete.selectedSlot2)
+            }
+
             // If the main item is exiting, print the next item coming
             if(counter2 == 2){
                 let {selectedSlot2, slot2} = roulete;
@@ -1559,6 +1597,15 @@ function rouletteGame(screen, selSlot1, selSlot2, selSlot3) {
                 }
             }
 
+            // Stop the slot
+            if(roulete.stopSlot3 && auxArray[counter3] == '' && (roulete.forcedSlot3 == '' || roulete.forcedSlot3 == selectedSlot3)){
+                clearInterval(roulete.intervalRoulette3);
+                localStorage.setItem("selectedSlot3", roulete.selectedSlot3)
+
+                // Inicializar una variable para seguir arriba o iniciar aqui las movidas de game
+                // CheckVictory();
+            }
+
             // If the main item is exiting, print the next item coming
             if(counter3 == 2){
                 let {selectedSlot3, slot3} = roulete;
@@ -1588,10 +1635,9 @@ function rouletteGame(screen, selSlot1, selSlot2, selSlot3) {
                 }
             }
         }
-
-        // console.log(roulete.selectedStep)
     }
 }
+
 
 function cleanStates() {
     document.querySelector("#clockMenu").classList.remove('selected')
