@@ -20,5 +20,5 @@
 - Settings Menu (Only reset option enabled)
 - Gift Menu
 - State Menu
-- Friendship-system (Not finished - pending)
-- Game-system NOT-FINISHED (can turn the rulette but get's blocked)
+- Slot machine (with a special hack if you walk 100 steps or if you loose 5 times)
+- Friendship-system (Love state pending)

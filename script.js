@@ -5,8 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.game.base;
-    Anims.edit = Anims.game.cleanerSlot1;
+    Anims.edit = Anims.game.bet;
 });
 
 // Anim vars
@@ -61,6 +60,8 @@ roulete.stopSlot3 = false;
 roulete.forcedSlot1 = '';
 roulete.forcedSlot2 = '';
 roulete.forcedSlot3 = '';
+roulete.totalLosses = 0;
+roulete.hackSteps = 0;
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -165,26 +166,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateFriendshipLevel(givenAmountWatts, true, true);
             }
         }else if(animStatus == 'game'){
-            // roulete.posibleStep = ['bet', 'try', 1, 2, 3];
             let {posibleStep, selectedStep, selectedSlot1, selectedSlot2, selectedSlot3} = roulete; //Desestructuracion de objeto
 
             if(selectedStep == 1){
                 selSlot1 = roulete.slot1[roulete.selectedSlot1];
                 roulete.stopSlot1 = true;
                 roulete.forcedSlot1 = '';
-                // roulete.forcedSlot1 = 'fish'; //If it's necesary to force a victory
+                if(roulete.totalLosses == 5){
+                    roulete.forcedSlot1 = 'fish'; //If it's necesary to force a victory
+                }else if(roulete.hackSteps == 100){
+                    roulete.forcedSlot1 = 'seven';
+                }
             }
-            if(selectedStep == 2){
+            if(selectedStep == 2 && roulete.stopSlot1){
                 selSlot2 = roulete.slot2[roulete.selectedSlot2];
                 roulete.stopSlot2 = true;
                 roulete.forcedSlot2 = '';
-                // roulete.forcedSlot2 = 'fish'; //If it's necesary to force a victory
+                if(roulete.totalLosses == 5){
+                    roulete.forcedSlot2 = 'fish'; //If it's necesary to force a victory
+                }else if(roulete.hackSteps == 100){
+                    roulete.forcedSlot2 = 'seven';
+                }
             }
-            if(selectedStep == 3){
+            if(selectedStep == 3 && roulete.stopSlot2){
                 selSlot3 = roulete.slot3[roulete.selectedSlot3];
                 roulete.stopSlot3 = true;
                 roulete.forcedSlot3 = '';
-                // roulete.forcedSlot3 = 'fish'; //If it's necesary to force a victory
+                if(roulete.totalLosses == 5){
+                    roulete.forcedSlot3 = 'fish'; //If it's necesary to force a victory
+                }else if(roulete.hackSteps == 100){
+                    roulete.forcedSlot3 = 'seven';
+                    roulete.hackSteps += 1; //To avoid the hack to soon
+                }
             }
 
             // Move foward the next step; Try step is managed in rouletteGame();
@@ -453,7 +466,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Test Animation
     document.querySelector("#startAnim").addEventListener('click', () => {
         // buildingBlocks();
-        yawnAnim();
+        displayTotalWatts(DisplayScreen, 'game', false, 500);
     })
 
     // Basic stand animation
@@ -1170,6 +1183,7 @@ function walk() {
     steps = (steps < 99999)? (steps + 1) : 0;
     let stepsToConvert = (localStorage.getItem("stepsToConvert") != null)? Number(localStorage.getItem("stepsToConvert")) : 0
     stepsToConvert++
+    roulete.hackSteps += 1;
 
     // Update totalSteps
     if(totalSteps < 999999){
@@ -1337,7 +1351,7 @@ function displayState(screen) {
 }
 
 // PRESENT WATTS
-function displayTotalWatts(screen, menu='gift', initialize=false) {
+function displayTotalWatts(screen, menu='gift', initialize=false, win='') {
     let totalWattsArray = watts.toString().split('').reverse();
     let {slot1, slot2, slot3, selectedSlot1, selectedSlot2, selectedSlot3} = roulete;
     screen.innerHTML = '';
@@ -1391,6 +1405,13 @@ function displayTotalWatts(screen, menu='gift', initialize=false) {
         // bet game text
         if(menu == 'game' && initialize){
             if(Anims.game.bet.some(elem => elem == `num-${i}`)){
+                newDiv.classList.add('clicked');
+            }
+        }
+
+        //showWin
+        if(menu == 'game' && win != ''){
+            if(Anims.game[`win${win}`].some(elem => elem == `num-${i}`)){
                 newDiv.classList.add('clicked');
             }
         }
@@ -1489,6 +1510,7 @@ function rouletteGame(screen) {
         let counter = 2; //Start in 2 cause the first item is exiting
         let counter2 = 2; //Start in 2 cause the first item is exiting
         let counter3 = 2; //Start in 2 cause the first item is exiting
+        let endgame = false;
 
         // Stop the initGame() interval
         clearInterval(intervalAnim);
@@ -1599,15 +1621,16 @@ function rouletteGame(screen) {
 
             // Stop the slot
             if(roulete.stopSlot3 && auxArray[counter3] == '' && (roulete.forcedSlot3 == '' || roulete.forcedSlot3 == selectedSlot3)){
+                endgame = true;
                 clearInterval(roulete.intervalRoulette3);
                 localStorage.setItem("selectedSlot3", roulete.selectedSlot3)
 
-                //Check the Victory and reset roulette
-                showResults();
+                // End of the game
+                showResults(screen);
             }
 
             // If the main item is exiting, print the next item coming
-            if(counter3 == 2){
+            if(counter3 == 2 && !endgame){
                 let {selectedSlot3, slot3} = roulete;
 
                 // Check the next item; if end of array return to element 0
@@ -1623,34 +1646,9 @@ function rouletteGame(screen) {
                 //Selecciona el siguiente slot
                 roulete.selectedSlot3 = (selectedSlot3 != slot3.length - 1)? (selectedSlot3 + 1) : 0;
                 counter3 = 1;
-            }else{
+            }else if(!endgame){
                 counter3++
             }
-        }
-
-        function showResults() {
-            let {selectedSlot1, selectedSlot2, selectedSlot3, slot1, slot2, slot3, posibleStep} = roulete;
-
-            if(slot1[selectedSlot1] == slot2[selectedSlot2] && slot2[selectedSlot2] == slot3[selectedSlot3]){
-                console.log("winSituation");
-            }else{
-                resetRoulette();
-                intervalAnim = setInterval(initGame, 500);
-                displayTotalWatts(screen, 'game');
-                function initGame(){
-                    displayTotalWatts(screen, 'game');
-                    rouletteGame(screen);
-                }
-            }
-        }
-
-        function resetRoulette() {
-            roulete.selectedStep = roulete.posibleStep[0];
-            roulete.stopSlot1 = false;
-            roulete.stopSlot2 = false;
-            roulete.stopSlot3 = false;
-            roulete.printBet = false;
-            roulete.gameStarted = false;
         }
 
         function cleanSlot(slot) {
@@ -1660,6 +1658,72 @@ function rouletteGame(screen) {
                 }
             }
         }
+    }
+}
+
+function showResults(screen) {
+    let {selectedSlot1, selectedSlot2, selectedSlot3, slot1, slot2, slot3} = roulete;
+
+    if(slot1[selectedSlot1] == slot2[selectedSlot2] && slot2[selectedSlot2] == slot3[selectedSlot3]){
+        //Win
+        let amount = 0;
+        let anim = amount
+        let intervalSpeed = 350;
+        roulete.totalLosses = 0;
+        
+        switch (slot1[selectedSlot1]) {
+            case 'fish':
+            case 'flower':
+                amount = 30;
+                break;
+            case 'pika':
+                amount = 50;
+                break;
+            case 'seven':
+                amount = 500;
+                intervalSpeed = 150;
+                    break;
+        }
+
+        anim = amount;
+        intervalAnim = setInterval(increase, intervalSpeed);
+
+        function increase() {
+            amount -= 10;
+            watts += 10;
+            displayTotalWatts(screen, 'game', false, anim);
+
+            if(amount == 0){
+                clearInterval(intervalAnim);
+                localStorage.setItem("watts", watts);
+                resetRoulette();
+                restartGame(screen);
+            }
+        }
+    }else{
+        //Loose
+        roulete.totalLosses += 1;
+        resetRoulette();
+        restartGame(screen);
+    }
+}
+
+
+function resetRoulette() {
+    roulete.selectedStep = roulete.posibleStep[0];
+    roulete.stopSlot1 = false;
+    roulete.stopSlot2 = false;
+    roulete.stopSlot3 = false;
+    roulete.printBet = false;
+    roulete.gameStarted = false;
+}
+
+function restartGame(screen) {
+    intervalAnim = setInterval(initGame, 500);
+    displayTotalWatts(screen, 'game');
+    function initGame(){
+        displayTotalWatts(screen, 'game');
+        rouletteGame(screen);
     }
 }
 
