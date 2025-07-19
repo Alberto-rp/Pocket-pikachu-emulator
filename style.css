@@ -1,0 +1,282 @@
+
+@font-face {
+    font-family: 'digital';
+    src: url('fonts/digitalMono7.ttf') format('truetype'); /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
+}
+
+body {
+    background-color: #ffcc00;
+    box-sizing: border-box;
+    margin: 0;
+}
+
+.container {
+    display: flex;
+}
+
+/* TOP MENU */
+.menuBar {
+    display: flex;
+    border-radius: 10px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+.menuBar .img-menu {
+    position: relative;
+    width: 50px;
+    opacity: 0.08;
+}
+.menuBar .img-menu.selected{
+    opacity: 1;
+}
+
+.menuBar .walkCounter {
+    position: absolute;
+    right: 32px;
+    top: 20px;
+    font-family: digital;
+    font-size: 60px;
+    min-width: 136px;
+    color: #333366;
+    display: flex;
+    justify-content: end;
+}
+
+.walkCounter.shadow {
+    opacity: 0.08;
+}
+
+/* SCREENS */
+
+.createScreen, .screen{
+    display: flex;
+    flex-wrap: wrap;
+    height: 300px;
+    min-height: 300px;
+    width: 360px;
+    min-width: 360px;
+}
+
+.createScreen {
+    background-color: rgb(205, 252, 236);
+    margin-right: 20px;
+}
+
+.screen {
+    position: relative;
+    padding: 25px;
+    padding-top: 5px;
+    border-radius: 10px;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
+.background {
+    position: absolute;
+    top: 25px;
+    border-radius: 10px;
+}
+
+.screenContainer {
+    padding: 25px;
+    padding-bottom: 45px;
+    background-color: #1d2632;
+    border-radius: 20px;
+    width: 410px;
+    min-width: 410px;
+    position: relative;
+    overflow: hidden;
+}
+
+
+/* logo pokepika */
+.logo {
+    position: absolute;
+    z-index: 10;
+    width: 300px;
+    left: calc(50% - 150px);
+    bottom: 9px;
+}
+
+/* PIXELS */
+.pixel {
+    width: 8px;
+    height: 8px;
+    margin: 0.5px;
+    padding: 0.5px;
+    /* background-color: rgb(162, 233, 209); */
+}
+
+.createScreen .pixel{
+    background-color: rgb(162, 233, 209);
+}
+
+.pixel.clicked {
+    background-color: #333366;
+}
+
+.pixel:not(.clicked){
+    opacity: 0.5;
+}
+
+/* .num-35, .num-71, .num-107 {
+    background-color: red;
+} */
+
+
+/* BUTTONS */
+.buttonsContainer {
+    margin-top: 20px;
+    width: 450px;
+    height: 200px;
+    position: absolute;
+}
+
+button {
+    cursor: pointer;
+}
+
+.buttonsContainer .backEnter {
+    position: absolute;
+    background-color: #44547b;
+    border: solid 1px black;
+    background-image: url("img/buttonShapeDark.png");
+    border-radius: 100%;
+    height: 60px;
+    width: 60px;
+}
+
+.backEnter:not(#reset-button) {
+    box-shadow: 4px 0px 7px #8d7100;
+}
+
+.buttonsContainer .backEnter:not(#reset-button):active {
+    border: solid 3px black;
+    transform: translateX(1px);
+}
+
+#enter-button {
+    top: 14px;
+    right: 22px;
+}
+
+#back-button {
+    top: 57px;
+    right: 121px;
+}
+
+#reset-button {
+    top: 128px;
+    right: 56px;
+    width: 30px;
+    height: 30px;
+    background-image: url("img/buttonResetShapeDark.png");
+    border: solid 1px black;
+}
+
+#reset-button:active {
+    border: solid 4px black;
+    transform: translateX(-1px);
+}
+
+.buttonsContainer .menuState {
+    position: absolute;
+    background-color: #44547b;
+    border: solid 1px black;
+    background-image: url("img/buttonShapeLongDark.png");
+    border-radius: 100%;
+    height: 30px;
+    width: 64px;
+    box-shadow: 4px 0px 7px #8d7100;
+}
+
+.buttonsContainer .menuState:active {
+    border: solid 3px black;
+    transform: translateX(1px);
+}
+
+#menu-button {
+    top: 160px;
+    right: 136px;
+}
+
+#state-button {
+    top: 160px;
+    right: 251px;
+}
+
+#cruceta {
+    position: absolute;
+    top: 17px;
+    right: 301px;
+    /* -webkit-filter: drop-shadow(5px 5px 5px #222);
+    filter: drop-shadow(5px 5px 5px #222); */
+}
+#cruceta-shadow {
+    position: absolute;
+    width: 31%;
+    top: 12px;
+    right: 297px;
+    -webkit-filter: drop-shadow(5px 5px 5px #222);
+    filter: drop-shadow(2px 2px 7px #222);
+}
+
+#right-button {
+    top: 60px;
+    left: 100px;
+}
+#left-button {
+    top: 60px;
+    left: 12px;
+}
+#top-button {
+    transform: rotate(90deg);
+    top: 17px;
+    left: 56px;
+}
+#bottom-button {
+    transform: rotate(90deg);
+    top: 105px;
+    left: 56px;
+}
+
+.hiden-button {
+    width: 54px;
+    height: 39px;
+    position: absolute;
+    opacity: 0;
+}
+
+/* Ramdom Stuff */
+#bodyTamago {
+    z-index: -1;
+    top: -30px;
+    left: 200px;
+    width: 800px;
+    position: absolute;
+    display: none;
+}
+
+.end{
+    background-color: red;
+}
+
+.developerScreen {
+    margin: 8px;
+}
+.developerScreen.hide {
+    display: none;
+}
+
+#shake {
+    position: absolute;
+    top: 250px;
+    right: calc(50% - 80px);
+    color: white;
+    background-color: #1d2632;
+    border-radius: 15px;
+    padding: 5px 50px;
+    font-family: digital;
+    font-size: 30px;
+}
