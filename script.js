@@ -51,6 +51,7 @@ roulete.slot3 = ['seven', 'fish', 'flower', 'pika', 'fish', 'flower', 'pika', 'f
 roulete.selectedSlot1 = (localStorage.getItem("selectedSlot1") != null)? Number(localStorage.getItem("selectedSlot1")) : 0;
 roulete.selectedSlot2 = (localStorage.getItem("selectedSlot2") != null)? Number(localStorage.getItem("selectedSlot2")) : 0;
 roulete.selectedSlot3 = (localStorage.getItem("selectedSlot3") != null)? Number(localStorage.getItem("selectedSlot3")) : 0;
+roulete.hasWin777 = document.cookie.split("; ").find((row) => row.startsWith("has_win_777="))?.split("=")[1];
 roulete.intervalRoulette1 = undefined;
 roulete.intervalRoulette2 = undefined;
 roulete.intervalRoulette3 = undefined;
@@ -62,7 +63,6 @@ roulete.forcedSlot2 = '';
 roulete.forcedSlot3 = '';
 roulete.totalLosses = 0;
 roulete.hackSteps = 0;
-roulete.hasWin777 = document.cookie.split("; ").find((row) => row.startsWith("has_win_777="))?.split("=")[1];
 
 
 document.addEventListener('DOMContentLoaded', () => {
