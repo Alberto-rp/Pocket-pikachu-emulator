@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.game.bet;
+    Anims.edit = Anims.standLove.aux;
 });
 
 // Anim vars
@@ -62,6 +62,7 @@ roulete.forcedSlot2 = '';
 roulete.forcedSlot3 = '';
 roulete.totalLosses = 0;
 roulete.hackSteps = 0;
+roulete.hasWin777 = document.cookie.split("; ").find((row) => row.startsWith("has_win_777="))?.split("=")[1];
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -1610,6 +1611,8 @@ function rouletteGame(screen) {
             cleanSlot(3);
 
             // Update the selected slot
+            selectedSlot1 = roulete.slot1[roulete.selectedSlot1];
+            selectedSlot2 = roulete.slot2[roulete.selectedSlot2];
             selectedSlot3 = roulete.slot3[roulete.selectedSlot3];
 
             // Print the item or the item exiting (never item come)
@@ -1619,13 +1622,16 @@ function rouletteGame(screen) {
                 }
             }
 
-            // Stop the slot
-            if(roulete.stopSlot3 && auxArray[counter3] == '' && (roulete.forcedSlot3 == '' || roulete.forcedSlot3 == selectedSlot3)){
+            // Stop the slot && avoid seven if the cookie is declared and the other slot are in seven
+            if(roulete.stopSlot3 && auxArray[counter3] == '' 
+                && (roulete.forcedSlot3 == '' || roulete.forcedSlot3 == selectedSlot3) 
+                && (roulete.hasWin777 != 'true' || ((roulete.hasWin777 == 'true' && selectedSlot3 != 'seven') 
+                || (roulete.hasWin777 == 'true' && (selectedSlot1 != 'seven' || selectedSlot2 != 'seven'))))){
+
+                // End of the game
                 endgame = true;
                 clearInterval(roulete.intervalRoulette3);
                 localStorage.setItem("selectedSlot3", roulete.selectedSlot3)
-
-                // End of the game
                 showResults(screen);
             }
 
@@ -1682,6 +1688,10 @@ function showResults(screen) {
             case 'seven':
                 amount = 500;
                 intervalSpeed = 150;
+                var now = new Date();
+                now.setTime(now.getTime() + 21600 * 1000); // Agregamos 6 horas en milisegundos
+                document.cookie = "has_win_777=true; expires=" + now + "; path=/";
+                roulete.hasWin777 = true;
                     break;
         }
 
