@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.standLove.aux;
+    Anims.edit = Anims.standLove.helloLeft;
 });
 
 // Anim vars
@@ -369,7 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     // STATE BUTTON / FRIENDSHIP BUTTON
-    let allowedAnims = ['stand', 'standMad', 'standLike', 'left', 'brushTeeth', 'sandcastle', 'buildingBlocks', 'breakfast'];
+    let allowedAnims = ['stand', 'standMad', 'yawnHappy', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'buildingBlocks', 'breakfast'];
     let menus = ['clockMenu', 'giftMenu', 'gameMenu'];
 
     document.querySelector("#state-button").addEventListener('click', () => {
@@ -467,7 +467,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Test Animation
     document.querySelector("#startAnim").addEventListener('click', () => {
         // buildingBlocks();
-        displayTotalWatts(DisplayScreen, 'game', false, 500);
+        standLove(true);
     })
 
     // Basic stand animation
@@ -600,12 +600,14 @@ document.addEventListener('DOMContentLoaded', () => {
                                     }
                                     
                                 }
-                            }else if(friendshipLevel > 1500){ // Like status
+                            }else if(friendshipLevel > 1500 && friendshipLevel < 3000){ // Like status
                                 if(!avoidGreeting){
                                     yawnAnim()
                                 }else{
                                     standLike();                                
                                 }
+                            }else if(friendshipLevel > 3000){
+                                standLove();
                             }
 
                         }
@@ -712,6 +714,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     standLike(true);
                     consecutiveSteps = 0;
                 }, 1000);
+            }else if(animStatus == 'standLove'){
+                actionTimeOut = setTimeout(() => {
+                    console.log("EING?")
+                    clearInterval(intervalAnim);
+                    standLove(true);
+                    consecutiveSteps = 0;
+                }, 1000);
             }
         }else{
             console.log("Pikachu is sleeping")
@@ -804,6 +813,53 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadAnim(DisplayScreen, Anims.standLike.happyStand1)
                 animHits = 0
             }
+            animHits++
+        }
+    }
+
+    function standLove(look = false) {
+        animStatus = 'standLove' //300ms 3S
+        console.log(animStatus)
+        let animHits = 1
+
+        if(!look){
+            loadAnim(DisplayScreen, Anims.standLove.tailRightUp)
+            intervalAnim = setInterval(animate, 333);
+        }else{
+            intervalAnim = setInterval(greeting, 500);
+        }
+        
+        function animate() {  
+            if(animHits < 8){
+                loadAnim(DisplayScreen, Anims.standLove.tailRightUp)
+            }else if(animHits == 8){
+                loadAnim(DisplayScreen, Anims.standLove.tailRightDown)
+            }else if(animHits == 9){
+                loadAnim(DisplayScreen, Anims.standLove.tailLeftDown)
+            }else if(animHits >= 10 && animHits < 19){
+                loadAnim(DisplayScreen, Anims.standLove.tailLeftUp)
+            }else if(animHits == 19){
+                loadAnim(DisplayScreen, Anims.standLove.tailLeftDown)
+            }else if(animHits == 20){
+                loadAnim(DisplayScreen, Anims.standLove.tailRightDown)
+            }else if(animHits == 21){
+                loadAnim(DisplayScreen, Anims.standLove.tailRightUp)
+                animHits = 1
+            }
+
+            animHits++
+        }
+
+        function greeting() {
+            if (animHits == 1 || animHits == 3){
+                loadAnim(DisplayScreen, Anims.standLove.helloLeft)
+            }else if(animHits == 2 || animHits == 4){
+                loadAnim(DisplayScreen, Anims.standLove.helloRight)
+            }else{
+                clearInterval(intervalAnim);
+                standLove();
+            }
+
             animHits++
         }
     }
