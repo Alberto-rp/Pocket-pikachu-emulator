@@ -730,7 +730,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     /* ////////////////
-    STAND STATE ANIMATIONS 
+        STAND STATE ANIMATIONS 
     //////////////////*/
 
     function standLike(look = false) {
@@ -892,7 +892,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ////////////////
-    CELEBRATE ANIMATIONS 
+        CELEBRATE ANIMATIONS 
     //////////////////*/
 
     // Tongue Anim
@@ -1027,7 +1027,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ////////////////
-    PLAY AND EAT ANIMS
+        PLAY AND EAT ANIMS
     //////////////////*/
 
     // Breakfast Anim
@@ -1169,7 +1169,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ////////////////
-    LOGIC FUNCTIONS
+        LOGIC FUNCTIONS
     //////////////////*/
 
     function restartTamagotchi (DisplayScreen, enterclicked) {
