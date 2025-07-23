@@ -18,7 +18,7 @@
 - Clock Menu (without alarm)
 - Step Counter (Based on the shake button)
 - Settings Menu (Only reset option enabled)
+- Friendship-system (All the stated available without decay)
+- Slot machine (with a special hack if you walk 100 steps or if you loose 5 times)
 - Gift Menu
 - State Menu
-- Slot machine (with a special hack if you walk 100 steps or if you loose 5 times)
-- Friendship-system (Love state pending)
