@@ -467,7 +467,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Test Animation
     document.querySelector("#startAnim").addEventListener('click', () => {
         // buildingBlocks();
-        standLove(true);
+        heartSmiles();
     })
 
     // Basic stand animation
@@ -895,6 +895,40 @@ document.addEventListener('DOMContentLoaded', () => {
     CELEBRATE ANIMATIONS 
     //////////////////*/
 
+    // Tongue Anim
+    function tongueAnim() {
+        animStatus = 'tongueAnim'
+        console.log(animStatus)
+        intervalAnim = setInterval(animate, 250);
+        startTime = new Date();
+        auxiliarTimeout = setTimeout(() => {
+            document.querySelector("#clockMenu").classList.add('selected')
+        }, 500);
+
+        function animate() {
+            // Check the time pased
+            endTime = new Date();
+            var timeDiff = endTime - startTime; //in ms
+            milisecondsElapsed = timeDiff.toFixed(1);
+
+
+            loadAnim(DisplayScreen, Anims.tongueMad.start);
+            if(milisecondsElapsed > 2000) loadAnim(DisplayScreen, Anims.tongueMad.tongue1);
+            if(milisecondsElapsed > 2500) loadAnim(DisplayScreen, Anims.tongueMad.tongue2);
+            if(milisecondsElapsed > 3000) loadAnim(DisplayScreen, Anims.tongueMad.tongue3);
+            if(milisecondsElapsed > 4000) loadAnim(DisplayScreen, Anims.tongueMad.tongue2);
+            if(milisecondsElapsed > 4500) loadAnim(DisplayScreen, Anims.tongueMad.tongue3);
+            if(milisecondsElapsed > 5500) loadAnim(DisplayScreen, Anims.tongueMad.tongue2);
+            if(milisecondsElapsed > 6000) loadAnim(DisplayScreen, Anims.tongueMad.tongue3);
+            if(milisecondsElapsed > 7000) loadAnim(DisplayScreen, Anims.tongueMad.tongue2);
+            if(milisecondsElapsed > 7500) loadAnim(DisplayScreen, Anims.tongueMad.start);
+            if(milisecondsElapsed > 9500) {
+                clearInterval(intervalAnim);
+                basicAnim(true, false, true, true);
+            }
+        }
+    }
+
     // Yawn Anim
     function yawnAnim() {
         animStatus = 'yawnHappy'
@@ -932,6 +966,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function happySteps() {
+        clearInterval(intervalAnim);
         animStatus = 'happySteps'
         console.log(animStatus)
         let animHits = 1
@@ -959,37 +994,35 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Tongue Anim
-    function tongueAnim() {
-        animStatus = 'tongueAnim'
+    function heartSmiles() {
+        clearInterval(intervalAnim);
+        animStatus = 'heartSmiles'
         console.log(animStatus)
-        intervalAnim = setInterval(animate, 250);
-        startTime = new Date();
+        let animHits = 1
+
+        loadAnim(DisplayScreen, Anims.heartSmiles.stand)
+        intervalAnim = setInterval(animate, 1000);
         auxiliarTimeout = setTimeout(() => {
             document.querySelector("#clockMenu").classList.add('selected')
         }, 500);
-
+        
         function animate() {
-            // Check the time pased
-            endTime = new Date();
-            var timeDiff = endTime - startTime; //in ms
-            milisecondsElapsed = timeDiff.toFixed(1);
-
-
-            loadAnim(DisplayScreen, Anims.tongueMad.start);
-            if(milisecondsElapsed > 2000) loadAnim(DisplayScreen, Anims.tongueMad.tongue1);
-            if(milisecondsElapsed > 2500) loadAnim(DisplayScreen, Anims.tongueMad.tongue2);
-            if(milisecondsElapsed > 3000) loadAnim(DisplayScreen, Anims.tongueMad.tongue3);
-            if(milisecondsElapsed > 4000) loadAnim(DisplayScreen, Anims.tongueMad.tongue2);
-            if(milisecondsElapsed > 4500) loadAnim(DisplayScreen, Anims.tongueMad.tongue3);
-            if(milisecondsElapsed > 5500) loadAnim(DisplayScreen, Anims.tongueMad.tongue2);
-            if(milisecondsElapsed > 6000) loadAnim(DisplayScreen, Anims.tongueMad.tongue3);
-            if(milisecondsElapsed > 7000) loadAnim(DisplayScreen, Anims.tongueMad.tongue2);
-            if(milisecondsElapsed > 7500) loadAnim(DisplayScreen, Anims.tongueMad.start);
-            if(milisecondsElapsed > 9500) {
+            if(animHits == 1 || animHits == 5){
+                loadAnim(DisplayScreen, Anims.heartSmiles.loveRight)
+            }else if(animHits == 2 || animHits == 4 || animHits == 6){
+                loadAnim(DisplayScreen, Anims.heartSmiles.stand)
+            }else if(animHits == 3){
+                loadAnim(DisplayScreen, Anims.heartSmiles.loveLeft)
+            }else{
                 clearInterval(intervalAnim);
-                basicAnim(true, false, true, true);
+                // if(friendshipLevel == 'love'){
+                    //     backflip
+                    // } then basic
+                auxiliarTimeout2 = setTimeout(() => {
+                    basicAnim(true, false, true, true);
+                }, 1000);
             }
+            animHits++
         }
     }
 
@@ -1216,8 +1249,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 tongueAnim();
             }else if(amount > 0 && amount < 100){
                 yawnAnim();
-            }else if(amount >= 100){
+            }else if(amount >= 100 && amount <= 299){
                 happySteps();
+            }else if(amount >= 300 && amount <= 399){
+                // if(friendshipLevel == 'mad'){
+                //     backflip
+                // }else if(friendshipLevel == 'love'){
+                //     backflip + heartSmiles();
+                // }else{
+                //     heartSmiles();
+                // }
+                heartSmiles();
+            }else{
+                heartSmiles();
             }
         }
     }    
