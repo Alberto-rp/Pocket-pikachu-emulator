@@ -195,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 roulete.forcedSlot3 = '';
                 if(roulete.totalLosses == 5){
                     roulete.forcedSlot3 = 'fish'; //If it's necesary to force a victory
-                }else if(roulete.hackSteps == 100){
+                }else if(roulete.hackSteps == 100 && roulete.hasWin777 != 'true'){
                     roulete.forcedSlot3 = 'seven';
                     roulete.hackSteps += 1; //To avoid the hack to soon
                 }
