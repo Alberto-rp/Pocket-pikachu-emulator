@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.heartSmiles.stand;
+    Anims.edit = Anims.settingsRel.on;
 });
 
 // Anim vars
@@ -21,6 +21,7 @@ var auxiliarTimeout = undefined;
 var auxiliarTimeout2 = undefined;
 
 // Steps
+let pokeStatus = {};
 var steps = (localStorage.getItem("steps") != null)? Number(localStorage.getItem("steps")) : 0;
 var totalSteps = (localStorage.getItem("totalSteps") != null)? Number(localStorage.getItem("totalSteps")) : 0;
 var watts = (localStorage.getItem("watts") != null)? Number(localStorage.getItem("watts")) : 500;
@@ -28,6 +29,7 @@ var friendshipLevel = (localStorage.getItem("friendshipLevel") != null)? Number(
 var eatingtHours = [10, 12, 13, 18]
 var playHours = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
 var consecutiveSteps = 0;
+pokeStatus.lastConected = (localStorage.getItem("lastConected") != null)? localStorage.getItem("lastConected") : new Date().toDateString();
 
 // Watts
 var GivenCents = 0;
@@ -38,6 +40,10 @@ var givenAmountWatts = 0
 var coockieHadBreakfast = document.cookie.split("; ").find((row) => row.startsWith("had_breakfast="))?.split("=")[1];
 var coockieHasBrushed = document.cookie.split("; ").find((row) => row.startsWith("has_brushed="))?.split("=")[1];
 var coockieHasGoneSleep = document.cookie.split("; ").find((row) => row.startsWith("has_gone_sleep="))?.split("=")[1];
+
+//Settings
+let settings = {};
+settings.relSelected = (localStorage.getItem("relDrop") != null)? localStorage.getItem("relDrop") : 'off';
 
 //Roulette
 let roulete = {};
@@ -73,6 +79,35 @@ document.addEventListener('DOMContentLoaded', () => {
     if(localStorage.getItem("InitTamagotchi") == null){
         restartTamagotchi(DisplayScreen);
     }else{
+
+        // Update friendshipLevel if relDropdown is enabled and days have passed
+        if(settings.relSelected == 'on'){
+            let lastDate = new Date(pokeStatus.lastConected);
+            let today = new Date();
+            let daysPassed = Math.trunc((today - lastDate) / (1000 * 3600 * 24));
+
+            if(daysPassed != 0){
+                // The friendShip Level drops 100 points per day naturally
+                let relDropped = daysPassed * -100;
+                
+                // The max is -1500, it can't drops more
+                if(friendshipLevel > -1500){
+                    if((friendshipLevel + relDropped) > -1500){
+                        updateFriendshipLevel(relDropped, false, false);
+                    }else {
+                        // To avoid drop more than -1500
+                        friendshipLevel = -1500;
+                        localStorage.setItem("friendshipLevel", friendshipLevel)
+                    }
+                }
+            }
+
+        }
+
+        //Update last-conected item
+        pokeStatus.lastConected = new Date().toDateString();
+        localStorage.setItem("lastConected", pokeStatus.lastConected);
+
         //Init Pantalla
         loadAnim(DisplayScreen, null, true);
     }
@@ -206,11 +241,23 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
         }else if(animStatus == 'settings'){
-            if(selectedSettingMenu == 'reset'){
-                steps = 0;
-                document.querySelector('.walkCounter').innerHTML = steps;
-                localStorage.setItem("steps", steps);
+            switch (selectedSettingMenu) {
+                case 'reset':
+                    steps = 0;
+                    document.querySelector('.walkCounter').innerHTML = steps;
+                    localStorage.setItem("steps", steps);
+                    break;
+            
+                case 'relDrop':
+                    // Show the actual setting selected
+                    animStatus = 'settingsRel'
+                    loadAnim(DisplayScreen, Anims.settingsRel[settings.relSelected])
+                    break;
             }
+        }else if(animStatus == 'settingsRel'){
+            settings.relSelected = settings.relSelected == 'off' ? 'on' : 'off';
+            loadAnim(DisplayScreen, Anims.settingsRel[settings.relSelected])
+            localStorage.setItem("relDrop", settings.relSelected);
         }else{
             // Init screen (Timeouts to emulate analogic)
             setTimeout(() => {
@@ -364,6 +411,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }else{
                 selectedUnitWatt = 'cent'
             }
+        }else if(animStatus == 'settingsRel'){
+            animStatus = 'settings'
+            loadAnim(DisplayScreen, Anims.settings.relDrop)
         }
     })
 
@@ -382,7 +432,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     // START BUTTON / SETTINGS
-    let settingsMenus = ['reset', 'sound', 'time'];
+    let settingsMenus = ['reset', 'sound', 'relDrop'];
     let selectedSettingMenu = settingsMenus[1]
     document.querySelector("#menu-button").addEventListener('click', () => {
         if(allowedAnims.some(anim => anim == animStatus)){
