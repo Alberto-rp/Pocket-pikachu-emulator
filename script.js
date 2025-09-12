@@ -1240,8 +1240,10 @@ document.addEventListener('DOMContentLoaded', () => {
             totalSteps = 0;
             watts = 50;
             friendshipLevel = 0;
+            settings.relSelected = 'off';
             localStorage.setItem("watts", watts);
             localStorage.setItem("friendshipLevel", friendshipLevel);
+            localStorage.setItem("relDrop", settings.relSelected);
     
             setTimeout(() => {
                 cleanStates();
