@@ -621,8 +621,8 @@ document.addEventListener('DOMContentLoaded', () => {
     //SHAKE WALK
     document.querySelector('#shake').addEventListener('click', () => {
         let startTime = new Date();
-        let screenShaked = document.querySelector('.screenContainer');
-        let buttons = document.querySelector('.buttonsContainer');
+        let screenShaked = document.querySelector('.screenContainer, .buttonsContainer');
+        let buttonShake = document.querySelector('#shake');
         consecutiveSteps++
 
         // To avoid to the action until shake is over
@@ -630,10 +630,10 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Shake the screen
         screenShaked.style.marginTop = '-15px';
-        buttons.style.marginTop = '35px';
+        buttonShake.style.marginTop = '15px';
         setTimeout(() => {
             screenShaked.style.marginTop = '0px';
-            buttons.style.marginTop = '20px';
+            buttonShake.style.marginTop = '0px';
             walk();
             if(animStatus == 'state') {
                 displayState(DisplayScreen);
