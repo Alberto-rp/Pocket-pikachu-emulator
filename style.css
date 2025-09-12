@@ -14,6 +14,10 @@ body {
     display: flex;
 }
 
+.tamagotchiBody {
+    margin: 0 auto;
+}
+
 /* TOP MENU */
 .menuBar {
     display: flex;
@@ -257,6 +261,8 @@ button {
     position: absolute;
     display: none;
 }
+
+
 
 .end{
     background-color: red;
