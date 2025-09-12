@@ -418,7 +418,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     // STATE BUTTON / FRIENDSHIP BUTTON
-    let allowedAnims = ['stand', 'standMad', 'yawnHappy', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'buildingBlocks', 'breakfast'];
+    let allowedAnims = ['stand', 'standMad', 'sleeping', 'yawnHappy', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'buildingBlocks', 'breakfast'];
     let menus = ['clockMenu', 'giftMenu', 'gameMenu'];
 
     document.querySelector("#state-button").addEventListener('click', () => {
@@ -545,6 +545,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Sleep
             if (!avoidSleep && startTime.getHours() >= 20 && startTime.getHours() <= 23 ||
                 startTime.getHours() >= 0 && startTime.getHours() < 7){
+                animStatus = 'sleeping';
                 
                 // Update the cookieValue after goinToSleep, to avoid error of multiple times going to sleep
                 coockieHasGoneSleep = document.cookie.split("; ").find((row) => row.startsWith("has_gone_sleep="))?.split("=")[1];
@@ -703,77 +704,100 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log(`${consecutiveSteps} consecutive steps`)
                 consecutiveSteps = 0;
             }, 1000);
-        }else if (startTime.getHours() >= 7 && startTime.getHours() < 20) { //Prevent during sleeping
-            if(animStatus == 'stand') { // Make Pikachu look 
+        }else if(animStatus == 'stand') { // Make Pikachu look 
                 actionTimeOut = setTimeout(() => {
-                    console.log("EING?")
-                    // basicAnim('stop', true);
-                    clearInterval(intervalAnim);
-                    auxiliarTimeout = setTimeout(() => {
-                        loadAnim(DisplayScreen, Anims.standBasic.look);
-                    }, 500);
-            
-                    auxiliarTimeout2 = setTimeout(() => {
-                        basicAnim(true);
-                    }, 3000);
-                    consecutiveSteps = 0;
+                console.log("EING?")
+                // basicAnim('stop', true);
+                clearInterval(intervalAnim);
+                auxiliarTimeout = setTimeout(() => {
+                    loadAnim(DisplayScreen, Anims.standBasic.look);
+                }, 500);
+        
+                auxiliarTimeout2 = setTimeout(() => {
+                    basicAnim(true);
+                }, 3000);
+                consecutiveSteps = 0;
+            }, 1000);
+        }else if(animStatus == 'standMad') { // Make Pikachu look 
+            actionTimeOut = setTimeout(() => {
+                console.log("EING?")
+                // basicAnim('stop', true);
+                clearInterval(intervalAnim);
+                auxiliarTimeout = setTimeout(() => {
+                    loadAnim(DisplayScreen, Anims.standMad.look);
                 }, 1000);
-            }else if(animStatus == 'standMad') { // Make Pikachu look 
-                actionTimeOut = setTimeout(() => {
-                    console.log("EING?")
-                    // basicAnim('stop', true);
+        
+                auxiliarTimeout2 = setTimeout(() => {
+                    basicAnim();
+                }, 4000);
+                consecutiveSteps = 0;
+            }, 1000);
+        }else if(animStatus == 'sandcastle'){
+            actionTimeOut = setTimeout(() => {
+                clearInterval(intervalAnim);
+                sandcastle(true); //Fast digging
+                auxiliarTimeout = setTimeout(() => {
                     clearInterval(intervalAnim);
-                    auxiliarTimeout = setTimeout(() => {
-                        loadAnim(DisplayScreen, Anims.standMad.look);
-                    }, 1000);
-            
-                    auxiliarTimeout2 = setTimeout(() => {
-                        basicAnim();
-                    }, 4000);
-                    consecutiveSteps = 0;
-                }, 1000);
-            }else if(animStatus == 'sandcastle'){
-                actionTimeOut = setTimeout(() => {
+                    sandcastle();
+                }, 6000);
+                consecutiveSteps = 0;
+            }, 1000);
+        }else if(animStatus == 'brushTeeth'){
+            actionTimeOut = setTimeout(() => {
+                clearInterval(intervalAnim);
+                brushTeeth(true); //Fast digging
+                auxiliarTimeout = setTimeout(() => {
                     clearInterval(intervalAnim);
-                    sandcastle(true); //Fast digging
+                    brushTeeth();
+                }, 4000);
+                consecutiveSteps = 0;
+            }, 1000);
+        }else if(animStatus == 'buildingBlocks'){
+            actionTimeOut = setTimeout(() => {
+                throwBlocks = true;
+            }, 1000);
+        }else if(animStatus == 'standLike'){
+            actionTimeOut = setTimeout(() => {
+                console.log("EING?")
+                clearInterval(intervalAnim);
+                standLike(true);
+                consecutiveSteps = 0;
+            }, 1000);
+        }else if(animStatus == 'standLove'){
+            actionTimeOut = setTimeout(() => {
+                console.log("EING?")
+                clearInterval(intervalAnim);
+                standLove(true);
+                consecutiveSteps = 0;
+            }, 1000);
+        }else if(animStatus == 'sleeping'){
+            actionTimeOut = setTimeout(() => {
+                if(consecutiveSteps >= 15){
+                    console.log("awake?")
+                    let cStepsforNow = consecutiveSteps;
+                    clearInterval(intervalAnim);
+                    loadAnim(DisplayScreen, Anims.sleep.enteringBed);
+
                     auxiliarTimeout = setTimeout(() => {
                         clearInterval(intervalAnim);
-                        sandcastle();
-                    }, 6000);
-                    consecutiveSteps = 0;
-                }, 1000);
-            }else if(animStatus == 'brushTeeth'){
-                actionTimeOut = setTimeout(() => {
-                    clearInterval(intervalAnim);
-                    brushTeeth(true); //Fast digging
-                    auxiliarTimeout = setTimeout(() => {
-                        clearInterval(intervalAnim);
-                        brushTeeth();
+
+                        // If it's not shaked after awake more than 5 times, sleep again. if not wakes up
+                        if(consecutiveSteps - cStepsforNow < 5){
+                            basicAnim(true);
+                        }else{
+                            clearInterval(intervalAnim);
+                            clearAllTimeouts();
+                            loadAnim(DisplayScreen, Anims.sleep.goingToSleep);
+                            auxiliarTimeout2 = setTimeout(() => {
+                                // Friendship level drops 200 if you wake up pikachu
+                                updateFriendshipLevel(-200, false, false);
+                                basicAnim(true, true, true, true);
+                            }, 2000);
+                        }
+                        consecutiveSteps = 0;
                     }, 4000);
-                    consecutiveSteps = 0;
-                }, 1000);
-            }else if(animStatus == 'buildingBlocks'){
-                actionTimeOut = setTimeout(() => {
-                    throwBlocks = true;
-                }, 1000);
-            }else if(animStatus == 'standLike'){
-                actionTimeOut = setTimeout(() => {
-                    console.log("EING?")
-                    clearInterval(intervalAnim);
-                    standLike(true);
-                    consecutiveSteps = 0;
-                }, 1000);
-            }else if(animStatus == 'standLove'){
-                actionTimeOut = setTimeout(() => {
-                    console.log("EING?")
-                    clearInterval(intervalAnim);
-                    standLove(true);
-                    consecutiveSteps = 0;
-                }, 1000);
-            }
-        }else{
-            console.log("Pikachu is sleeping")
-            consecutiveSteps = 0;
+                }
+            }, 1000);
         }
 
     })
