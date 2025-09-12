@@ -8,6 +8,14 @@ body {
     background-color: #ffcc00;
     box-sizing: border-box;
     margin: 0;
+
+}
+
+/* To make a little zoom in mobiles */
+@media only screen and (max-width: 768px) {
+    body {
+        zoom: 90%;
+    }
 }
 
 .container {
