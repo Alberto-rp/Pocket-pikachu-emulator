@@ -21,6 +21,7 @@ var isWalking = false;
 var actionTimeOut = undefined; 
 var auxiliarTimeout = undefined;
 var auxiliarTimeout2 = undefined;
+var screenOff;
 
 // Steps
 let pokeStatus = {};
@@ -183,7 +184,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //INIT TAMAGOTCHI / ENTER
     // var clockInterval;
-    var screenOff;
     document.querySelector("#enter-button").addEventListener('click', () => {
         if(animStatus == 'pokeball') {
             clearInterval(intervalAnim);
@@ -369,6 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
             function switchOff() {
                 resetGivenWatts();
                 clearInterval(intervalAnim);
+                clearAllTimeouts();
                 animStatus = ''
                 cleanStates();
                 document.querySelector('.walkCounter').innerHTML = '';
@@ -397,6 +398,7 @@ document.addEventListener('DOMContentLoaded', () => {
             function switchOff() {
                 resetGivenWatts();
                 clearInterval(intervalAnim);
+                clearAllTimeouts();
                 animStatus = ''
                 cleanStates();
                 document.querySelector('.walkCounter').innerHTML = '';
@@ -702,7 +704,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 clearInterval(intervalAnim);
                 isWalking = false;
                 consecutiveSteps = 0;
+                screenOff = setInterval(switchOff, 60000)
                 walking(true);
+                function switchOff() {
+                    resetGivenWatts();
+                    clearInterval(intervalAnim);
+                    clearAllTimeouts();
+                    animStatus = ''
+                    cleanStates();
+                    document.querySelector('.walkCounter').innerHTML = '';
+                    loadAnim(DisplayScreen, null, true);
+                    clearInterval(screenOff);
+                }
             }, 1000);
         }
 
@@ -711,6 +724,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(consecutiveSteps >= 20 && !isWalking && walkingAllowedAnims.some(anim => anim == animStatus)) {
             clearInterval(intervalAnim);
             isWalking = true;
+            clearInterval(screenOff);
             walking();
         }else{
             if(animStatus == 'left'){
