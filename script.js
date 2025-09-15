@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.backflip.jump2;
+    Anims.edit = Anims.lollypop.lick1;
 });
 
 // Anim vars
@@ -15,6 +15,7 @@ var intervalAnim;
 var animStatus = ''
 var randomAnim;
 var throwBlocks = false;
+var throwCandy = false;
 // Intervals and Timeouts
 var actionTimeOut = undefined; 
 var auxiliarTimeout = undefined;
@@ -418,7 +419,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     // STATE BUTTON / FRIENDSHIP BUTTON
-    let allowedAnims = ['stand', 'standMad', 'sleeping', 'yawnHappy', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'buildingBlocks', 'breakfast'];
+    let allowedAnims = ['stand', 'standMad', 'sleeping', 'yawnHappy', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'buildingBlocks', 'lollypop', 'breakfast'];
     let menus = ['clockMenu', 'giftMenu', 'gameMenu'];
 
     document.querySelector("#state-button").addEventListener('click', () => {
@@ -516,7 +517,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Test Animation
     document.querySelector("#startAnim").addEventListener('click', () => {
         // buildingBlocks();
-        backFlip();
+        lollypop()
     })
 
     // Basic stand animation
@@ -621,15 +622,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     }else{ //Friendship level OK
                         console.log(randomAnim);
                         if(!avoidActivity && playHours.some(elem => elem == startTime.getHours()) && randomAnim > 5){
-                            if(randomAnim >= 5 && randomAnim <= 7){
+                            // Random activities
+                            if(randomAnim == 6 || randomAnim == 7){
                                 sandcastle();
-                            }else{
+                            }else if(randomAnim == 8 || randomAnim == 9){
                                 buildingBlocks();
+                            }else{
+                                lollypop();
                             }
                         }else{
-                            // To avoid play after throw blocks
-                            randomAnim = 5;
-
                             if(friendshipLevel > -500 && friendshipLevel <= 1500){ // OK status
                                 animate(true);
                                 intervalAnim = setInterval(animate, 1000);
@@ -755,6 +756,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }else if(animStatus == 'buildingBlocks'){
             actionTimeOut = setTimeout(() => {
                 throwBlocks = true;
+            }, 1000);
+        }else if(animStatus == 'lollypop'){
+            actionTimeOut = setTimeout(() => {
+                throwCandy = true;
             }, 1000);
         }else if(animStatus == 'standLike'){
             actionTimeOut = setTimeout(() => {
@@ -1190,6 +1195,34 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Lollypop anim
+    function lollypop() {
+        animStatus = 'lollypop'
+        console.log(animStatus)
+        let animHits = 1;
+        loadAnim(DisplayScreen, Anims.lollypop.lick1)
+        intervalAnim = setInterval(animate, 1000);
+        
+        function animate() {
+            if(throwCandy){
+                clearInterval(intervalAnim);
+                loadAnim(DisplayScreen, Anims.lollypop.fall)
+                auxiliarTimeout = setTimeout(() => {
+                    updateFriendshipLevel(-30, false, false);
+                    randomAnim = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
+                    throwCandy
+                    basicAnim(true, false, true, true);
+                }, 3000);
+            }else if(animHits % 2 == 0){
+                loadAnim(DisplayScreen, Anims.lollypop.lick1)
+            }else{
+                loadAnim(DisplayScreen, Anims.lollypop.lick2)
+            }
+
+            animHits++
+        }
+    }
+
     // BuildingBlocks anim
     function buildingBlocks() {
         animStatus = 'buildingBlocks'
@@ -1232,6 +1265,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     loadAnim(DisplayScreen, Anims.buildingBlocks.fall)
                     shakeCounter = 0;
                     throwBlocks = false;
+                    randomAnim = 5;
                 }, 1000);
                 auxiliarTimeout2 = setTimeout(() => {
                     updateFriendshipLevel(-30, false, false);
