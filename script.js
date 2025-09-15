@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.lollypop.lick1;
+    Anims.edit = Anims.walk.walking1;
 });
 
 // Anim vars
@@ -16,6 +16,7 @@ var animStatus = ''
 var randomAnim;
 var throwBlocks = false;
 var throwCandy = false;
+var isWalking = false;
 // Intervals and Timeouts
 var actionTimeOut = undefined; 
 var auxiliarTimeout = undefined;
@@ -419,7 +420,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     // STATE BUTTON / FRIENDSHIP BUTTON
-    let allowedAnims = ['stand', 'standMad', 'sleeping', 'yawnHappy', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'buildingBlocks', 'lollypop', 'breakfast'];
+    let allowedAnims = ['stand', 'standMad', 'sleeping', 'yawnHappy', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'buildingBlocks', 'lollypop', 'walking', 'breakfast'];
     let menus = ['clockMenu', 'giftMenu', 'gameMenu'];
 
     document.querySelector("#state-button").addEventListener('click', () => {
@@ -517,7 +518,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Test Animation
     document.querySelector("#startAnim").addEventListener('click', () => {
         // buildingBlocks();
-        lollypop()
+        walking();
     })
 
     // Basic stand animation
@@ -694,117 +695,134 @@ document.addEventListener('DOMContentLoaded', () => {
                 displayTotalWatts(DisplayScreen);
             }
         }, 250);
-        
-        if(animStatus == 'left'){
-            actionTimeOut = setTimeout(() => {
-                if(consecutiveSteps >= 20){
-                    console.log("vuelve")
-                    clearInterval(intervalAnim);
-                    backFromLeft();
-                }
-                console.log(`${consecutiveSteps} consecutive steps`)
-                consecutiveSteps = 0;
-            }, 1000);
-        }else if(animStatus == 'stand') { // Make Pikachu look 
-            actionTimeOut = setTimeout(() => {
-                console.log("EING?")
-                // basicAnim('stop', true);
-                clearInterval(intervalAnim);
-                auxiliarTimeout = setTimeout(() => {
-                    loadAnim(DisplayScreen, Anims.standBasic.look);
-                }, 500);
-        
-                auxiliarTimeout2 = setTimeout(() => {
-                    basicAnim(true);
-                }, 3000);
-                consecutiveSteps = 0;
-            }, 1000);
-        }else if(animStatus == 'standMad') { // Make Pikachu look 
-            actionTimeOut = setTimeout(() => {
-                console.log("EING?")
-                // basicAnim('stop', true);
-                clearInterval(intervalAnim);
-                auxiliarTimeout = setTimeout(() => {
-                    loadAnim(DisplayScreen, Anims.standMad.look);
-                }, 1000);
-        
-                auxiliarTimeout2 = setTimeout(() => {
-                    basicAnim();
-                }, 4000);
-                consecutiveSteps = 0;
-            }, 1000);
-        }else if(animStatus == 'sandcastle'){
-            actionTimeOut = setTimeout(() => {
-                clearInterval(intervalAnim);
-                sandcastle(true); //Fast digging
-                auxiliarTimeout = setTimeout(() => {
-                    clearInterval(intervalAnim);
-                    sandcastle();
-                }, 6000);
-                consecutiveSteps = 0;
-            }, 1000);
-        }else if(animStatus == 'brushTeeth'){
-            actionTimeOut = setTimeout(() => {
-                clearInterval(intervalAnim);
-                brushTeeth(true); //Fast digging
-                auxiliarTimeout = setTimeout(() => {
-                    clearInterval(intervalAnim);
-                    brushTeeth();
-                }, 4000);
-                consecutiveSteps = 0;
-            }, 1000);
-        }else if(animStatus == 'buildingBlocks'){
-            actionTimeOut = setTimeout(() => {
-                throwBlocks = true;
-            }, 1000);
-        }else if(animStatus == 'lollypop'){
-            actionTimeOut = setTimeout(() => {
-                throwCandy = true;
-            }, 1000);
-        }else if(animStatus == 'standLike'){
-            actionTimeOut = setTimeout(() => {
-                console.log("EING?")
-                clearInterval(intervalAnim);
-                standLike(true);
-                consecutiveSteps = 0;
-            }, 1000);
-        }else if(animStatus == 'standLove'){
-            actionTimeOut = setTimeout(() => {
-                console.log("EING?")
-                clearInterval(intervalAnim);
-                standLove(true);
-                consecutiveSteps = 0;
-            }, 1000);
-        }else if(animStatus == 'sleeping'){
-            actionTimeOut = setTimeout(() => {
-                if(consecutiveSteps >= 15){
-                    console.log("awake?")
-                    let cStepsforNow = consecutiveSteps;
-                    clearInterval(intervalAnim);
-                    loadAnim(DisplayScreen, Anims.sleep.enteringBed);
 
-                    auxiliarTimeout = setTimeout(() => {
-                        clearInterval(intervalAnim);
-
-                        // If it's not shaked after awake more than 5 times, sleep again. if not wakes up
-                        if(consecutiveSteps - cStepsforNow < 5){
-                            basicAnim(true);
-                        }else{
-                            clearInterval(intervalAnim);
-                            clearAllTimeouts();
-                            loadAnim(DisplayScreen, Anims.sleep.goingToSleep);
-                            auxiliarTimeout2 = setTimeout(() => {
-                                // Friendship level drops 200 if you wake up pikachu
-                                updateFriendshipLevel(-200, false, false);
-                                basicAnim(true, true, true, true);
-                            }, 2000);
-                        }
-                        consecutiveSteps = 0;
-                    }, 4000);
-                }
+        // To stop walking anim
+        if(isWalking){
+            actionTimeOut = setTimeout(() => {
+                clearInterval(intervalAnim);
+                isWalking = false;
+                consecutiveSteps = 0;
+                walking(true);
             }, 1000);
         }
 
+        // To start walking or make its action
+        let walkingAllowedAnims = ['stand', 'standMad', 'sandcastle', 'standLove', 'standLike']
+        if(consecutiveSteps >= 20 && !isWalking && walkingAllowedAnims.some(anim => anim == animStatus)) {
+            clearInterval(intervalAnim);
+            isWalking = true;
+            walking();
+        }else{
+            if(animStatus == 'left'){
+                actionTimeOut = setTimeout(() => {
+                    if(consecutiveSteps >= 20){
+                        console.log("vuelve")
+                        clearInterval(intervalAnim);
+                        backFromLeft();
+                    }
+                    console.log(`${consecutiveSteps} consecutive steps`)
+                    consecutiveSteps = 0;
+                }, 1000);
+            }else if(animStatus == 'stand') { // Make Pikachu look 
+                actionTimeOut = setTimeout(() => {
+                    console.log("EING?")
+                    // basicAnim('stop', true);
+                    clearInterval(intervalAnim);
+                    auxiliarTimeout = setTimeout(() => {
+                        loadAnim(DisplayScreen, Anims.standBasic.look);
+                    }, 500);
+            
+                    auxiliarTimeout2 = setTimeout(() => {
+                        basicAnim(true);
+                    }, 3000);
+                    consecutiveSteps = 0;
+                }, 1000);
+            }else if(animStatus == 'standMad') { // Make Pikachu look 
+                actionTimeOut = setTimeout(() => {
+                    console.log("EING?")
+                    // basicAnim('stop', true);
+                    clearInterval(intervalAnim);
+                    auxiliarTimeout = setTimeout(() => {
+                        loadAnim(DisplayScreen, Anims.standMad.look);
+                    }, 1000);
+            
+                    auxiliarTimeout2 = setTimeout(() => {
+                        basicAnim();
+                    }, 4000);
+                    consecutiveSteps = 0;
+                }, 1000);
+            }else if(animStatus == 'sandcastle'){
+                actionTimeOut = setTimeout(() => {
+                    clearInterval(intervalAnim);
+                    sandcastle(true); //Fast digging
+                    auxiliarTimeout = setTimeout(() => {
+                        clearInterval(intervalAnim);
+                        sandcastle();
+                    }, 6000);
+                    consecutiveSteps = 0;
+                }, 1000);
+            }else if(animStatus == 'brushTeeth'){
+                actionTimeOut = setTimeout(() => {
+                    clearInterval(intervalAnim);
+                    brushTeeth(true); //Fast digging
+                    auxiliarTimeout = setTimeout(() => {
+                        clearInterval(intervalAnim);
+                        brushTeeth();
+                    }, 4000);
+                    consecutiveSteps = 0;
+                }, 1000);
+            }else if(animStatus == 'buildingBlocks'){
+                actionTimeOut = setTimeout(() => {
+                    throwBlocks = true;
+                }, 1000);
+            }else if(animStatus == 'lollypop'){
+                actionTimeOut = setTimeout(() => {
+                    throwCandy = true;
+                }, 1000);
+            }else if(animStatus == 'standLike'){
+                actionTimeOut = setTimeout(() => {
+                    console.log("EING?")
+                    clearInterval(intervalAnim);
+                    standLike(true);
+                    consecutiveSteps = 0;
+                }, 1000);
+            }else if(animStatus == 'standLove'){
+                actionTimeOut = setTimeout(() => {
+                    console.log("EING?")
+                    clearInterval(intervalAnim);
+                    standLove(true);
+                    consecutiveSteps = 0;
+                }, 1000);
+            }else if(animStatus == 'sleeping'){
+                actionTimeOut = setTimeout(() => {
+                    if(consecutiveSteps >= 15){
+                        console.log("awake?")
+                        let cStepsforNow = consecutiveSteps;
+                        clearInterval(intervalAnim);
+                        loadAnim(DisplayScreen, Anims.sleep.enteringBed);
+    
+                        auxiliarTimeout = setTimeout(() => {
+                            clearInterval(intervalAnim);
+    
+                            // If it's not shaked after awake more than 5 times, sleep again. if not wakes up
+                            if(consecutiveSteps - cStepsforNow < 5){
+                                basicAnim(true);
+                            }else{
+                                clearInterval(intervalAnim);
+                                clearAllTimeouts();
+                                loadAnim(DisplayScreen, Anims.sleep.goingToSleep);
+                                auxiliarTimeout2 = setTimeout(() => {
+                                    // Friendship level drops 200 if you wake up pikachu
+                                    updateFriendshipLevel(-200, false, false);
+                                    basicAnim(true, true, true, true);
+                                }, 2000);
+                            }
+                            consecutiveSteps = 0;
+                        }, 4000);
+                    }
+                }, 1000);
+            }
+        }
     })
 
     /* ////////////////
@@ -1135,7 +1153,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ////////////////
-        PLAY AND EAT ANIMS
+        PLAY AND ACTIONS ANIMS
     //////////////////*/
 
     // Breakfast Anim
@@ -1175,6 +1193,34 @@ document.addEventListener('DOMContentLoaded', () => {
         
     }
 
+    // Walking anim
+    function walking(stop) {
+        animStatus = 'walking'
+        console.log(animStatus)
+        let walkCounter = 1;
+        loadAnim(DisplayScreen, Anims.walk.stand)
+
+        if(!stop){
+            intervalAnim = setInterval(animate, 750);
+        }else{
+            auxiliarTimeout = setTimeout(() => {
+                basicAnim(true, false, true, true);
+            }, 2000);
+        }
+
+        function animate() {
+            if(walkCounter == 1){
+                loadAnim(DisplayScreen, Anims.walk.walking1)
+            }else if(walkCounter == 2 || walkCounter == 4){
+                loadAnim(DisplayScreen, Anims.walk.stand)
+                walkCounter = (walkCounter == 4)? 0 : walkCounter;
+            }else if(walkCounter == 3){
+                loadAnim(DisplayScreen, Anims.walk.walking2)
+            }
+            walkCounter++
+        }
+    }
+
     // Sandcastle anim
     function sandcastle(shake) {
         animStatus = 'sandcastle'
@@ -1210,7 +1256,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 auxiliarTimeout = setTimeout(() => {
                     updateFriendshipLevel(-30, false, false);
                     randomAnim = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
-                    throwCandy
+                    throwCandy = false;
                     basicAnim(true, false, true, true);
                 }, 3000);
             }else if(animHits % 2 == 0){
