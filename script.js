@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.settingsRel.on;
+    Anims.edit = Anims.backflip.jump2;
 });
 
 // Anim vars
@@ -516,7 +516,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Test Animation
     document.querySelector("#startAnim").addEventListener('click', () => {
         // buildingBlocks();
-        heartSmiles();
+        backFlip();
     })
 
     // Basic stand animation
@@ -705,7 +705,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 consecutiveSteps = 0;
             }, 1000);
         }else if(animStatus == 'stand') { // Make Pikachu look 
-                actionTimeOut = setTimeout(() => {
+            actionTimeOut = setTimeout(() => {
                 console.log("EING?")
                 // basicAnim('stop', true);
                 clearInterval(intervalAnim);
@@ -1088,12 +1088,42 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadAnim(DisplayScreen, Anims.heartSmiles.loveLeft)
             }else{
                 clearInterval(intervalAnim);
-                // if(friendshipLevel == 'love'){
-                    //     backflip
-                    // } then basic
                 auxiliarTimeout2 = setTimeout(() => {
                     basicAnim(true, false, true, true);
                 }, 1000);
+            }
+            animHits++
+        }
+    }
+
+    function backFlip(secondAnim=false) {
+        clearInterval(intervalAnim);
+        animStatus = 'backFlip'
+        console.log(animStatus)
+        let animHits = 0
+        intervalAnim = setInterval(animate, 500);
+        auxiliarTimeout = setTimeout(() => {
+            document.querySelector("#clockMenu").classList.add('selected')
+        }, 500);
+        
+        function animate() {
+            
+            if(animHits <= 2 || animHits == 8){
+                loadAnim(DisplayScreen, Anims.backflip.stand)
+            }else if(animHits == 3 || animHits == 7){
+                loadAnim(DisplayScreen, Anims.backflip.charge)
+            }else if(animHits == 4){
+                loadAnim(DisplayScreen, Anims.backflip.jump1)
+            }else if(animHits == 5){
+                loadAnim(DisplayScreen, Anims.backflip.jump2)
+            }else if(animHits == 6){
+                loadAnim(DisplayScreen, Anims.backflip.jump3)
+            }else if(animHits == 12){
+                if(!secondAnim){
+                    basicAnim(true, false, true, true);
+                }else{
+                    heartSmiles();
+                }
             }
             animHits++
         }
@@ -1299,6 +1329,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // FRIENDSHIP LEVEL UPDATE SYSTEM
     function updateFriendshipLevel(amount, isGift, isAnim){
         friendshipLevel = (localStorage.getItem("friendshipLevel") != null)? Number(localStorage.getItem("friendshipLevel")) : friendshipLevel;
+        let originalFrienship = friendshipLevel;
 
         // If ammount is 0, friendship level drops by 100
         if(Number(amount) == 0){
@@ -1319,6 +1350,19 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(intervalAnim);
             clearAllTimeouts();
             resetGivenWatts();
+            let friendShipStatus = '';
+
+            if(originalFrienship <= -1500){
+                friendShipStatus = 'left'
+            }else if(originalFrienship > -1500 && originalFrienship <= -500){
+                friendShipStatus = 'mad'
+            }else if(originalFrienship > -500 && originalFrienship <= 1500){
+                friendShipStatus = 'ok'
+            }else if(originalFrienship > 1500 && originalFrienship <= 3000){
+                friendShipStatus = 'likes'
+            }else if(originalFrienship > 3000){
+                friendShipStatus = 'loves'
+            }
 
             if(amount == 0){
                 tongueAnim();
@@ -1327,14 +1371,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }else if(amount >= 100 && amount <= 299){
                 happySteps();
             }else if(amount >= 300 && amount <= 399){
-                // if(friendshipLevel == 'mad'){
-                //     backflip
-                // }else if(friendshipLevel == 'love'){
-                //     backflip + heartSmiles();
-                // }else{
-                //     heartSmiles();
-                // }
-                heartSmiles();
+                if(friendShipStatus == 'mad' || friendShipStatus == 'loves') {
+                    backFlip((friendShipStatus == 'loves'));
+                }else {
+                    heartSmiles();
+                }
             }else{
                 heartSmiles();
             }
@@ -1513,7 +1554,6 @@ function displayState(screen) {
         currentState = 'likes'
     }else if(friendshipLevel > 3000){
         currentState = 'loves'
-
     }
 
 
