@@ -44,7 +44,7 @@ var coockieHasGoneSleep = document.cookie.split("; ").find((row) => row.startsWi
 
 //Settings
 let settings = {};
-settings.relSelected = (localStorage.getItem("relDrop") != null)? localStorage.getItem("relDrop") : 'off';
+settings.relSelected = (localStorage.getItem("relDrop") != null)? localStorage.getItem("relDrop") : 'on';
 
 //Roulette
 let roulete = {};

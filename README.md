@@ -23,4 +23,4 @@
 - Slot machine (with a special hack if you walk 100 steps or if you loose 5 times)
 - Gift Menu
 - State Menu
-- Relation/FriendShip dropdown could be enabled from the settings menu; off by default
+- Relation/FriendShip dropdown could be disabled from the settings menu; on by default
