@@ -3,6 +3,10 @@
     font-family: 'digital';
     src: url('fonts/digitalMono7.ttf') format('truetype'); /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
 }
+@font-face {
+    font-family: 'supertrend';
+    src: url('fonts/SuperTrend.ttf') format('truetype'); /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
+}
 
 body {
     background-color: #ffcc00;
@@ -291,6 +295,21 @@ button {
     background-color: #1d2632;
     border-radius: 15px;
     padding: 5px 50px;
-    font-family: digital;
+    font-family: supertrend;
+    letter-spacing: 2px;
     font-size: 30px;
+    margin-right: -15px;
+}
+
+footer {
+    font-family: supertrend;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+footer p {
+    font-size: 12px;
+    width: fit-content;
+    margin: 0 auto;
 }
