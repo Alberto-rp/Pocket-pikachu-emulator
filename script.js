@@ -9,37 +9,40 @@ fetch('./anims.json')
 });
 
 // Anim vars
-var saved = null;
-var clickedPixels = [];
+let saved = null;
+let clickedPixels = [];
+let actionTimeOut = undefined; 
+let auxiliarTimeout = undefined;
+let auxiliarTimeout2 = undefined;
+let screenOff;
+
+// Steps
+let pokeStatus = {};
+pokeStatus.steps = (localStorage.getItem("steps") != null)? Number(localStorage.getItem("steps")) : 0;
+pokeStatus.totalSteps = (localStorage.getItem("totalSteps") != null)? Number(localStorage.getItem("totalSteps")) : 0;
+pokeStatus.watts = (localStorage.getItem("watts") != null)? Number(localStorage.getItem("watts")) : 50;
+pokeStatus.friendshipLevel = (localStorage.getItem("friendshipLevel") != null)? Number(localStorage.getItem("friendshipLevel")) : 0;
+pokeStatus.eatingtHours = [10, 12, 13, 18]
+pokeStatus.playHours = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
+pokeStatus.consecutiveSteps = 0;
+pokeStatus.lastConected = (localStorage.getItem("lastConected") != null)? localStorage.getItem("lastConected") : new Date().toDateString();
+
+// Watts
+let wattsAux = {};
+wattsAux.GivenCents = 0;
+wattsAux.GivenDecs = 0;
+wattsAux.GivenUnits = 0;
+wattsAux.selectedUnitWatt = 'cent'
+wattsAux.givenAmountWatts = 0
+
+//Status
+let animationStatus = {};
 var intervalAnim;
 var animStatus = ''
 var randomAnim;
 var throwBlocks = false;
 var throwCandy = false;
 var isWalking = false;
-// Intervals and Timeouts
-var actionTimeOut = undefined; 
-var auxiliarTimeout = undefined;
-var auxiliarTimeout2 = undefined;
-var screenOff;
-
-// Steps
-let pokeStatus = {};
-var steps = (localStorage.getItem("steps") != null)? Number(localStorage.getItem("steps")) : 0;
-var totalSteps = (localStorage.getItem("totalSteps") != null)? Number(localStorage.getItem("totalSteps")) : 0;
-var watts = (localStorage.getItem("watts") != null)? Number(localStorage.getItem("watts")) : 500;
-var friendshipLevel = (localStorage.getItem("friendshipLevel") != null)? Number(localStorage.getItem("friendshipLevel")) : 0;
-var eatingtHours = [10, 12, 13, 18]
-var playHours = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
-var consecutiveSteps = 0;
-pokeStatus.lastConected = (localStorage.getItem("lastConected") != null)? localStorage.getItem("lastConected") : new Date().toDateString();
-
-// Watts
-var GivenCents = 0;
-var GivenDecs = 0;
-var GivenUnits = 0;
-var selectedUnitWatt = 'cent'
-var givenAmountWatts = 0
 var coockieHadBreakfast = document.cookie.split("; ").find((row) => row.startsWith("had_breakfast="))?.split("=")[1];
 var coockieHasBrushed = document.cookie.split("; ").find((row) => row.startsWith("has_brushed="))?.split("=")[1];
 var coockieHasGoneSleep = document.cookie.split("; ").find((row) => row.startsWith("has_gone_sleep="))?.split("=")[1];
@@ -73,7 +76,6 @@ roulete.forcedSlot3 = '';
 roulete.totalLosses = 0;
 roulete.hackSteps = 0;
 
-
 document.addEventListener('DOMContentLoaded', () => {
     const createScreen = document.querySelector('.createScreen');
     const DisplayScreen = document.querySelector('.screen');
@@ -94,13 +96,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 let relDropped = daysPassed * -100;
                 
                 // The max is -1500, it can't drops more
-                if(friendshipLevel > -1500){
-                    if((friendshipLevel + relDropped) > -1500){
+                if(pokeStatus.friendshipLevel > -1500){
+                    if((pokeStatus.friendshipLevel + relDropped) > -1500){
                         updateFriendshipLevel(relDropped, false, false);
                     }else {
                         // To avoid drop more than -1500
-                        friendshipLevel = -1500;
-                        localStorage.setItem("friendshipLevel", friendshipLevel)
+                        pokeStatus.friendshipLevel = -1500;
+                        localStorage.setItem("friendshipLevel", pokeStatus.friendshipLevel)
                     }
                 }
             }
@@ -189,18 +191,18 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(intervalAnim);
             restartTamagotchi(DisplayScreen, true)
         }else if(animStatus == 'gift'){
-            if(selectedUnitWatt != 'give'){
+            if(wattsAux.selectedUnitWatt != 'give'){
                 let posibleUnits = ['cent', 'dec', 'unit', 'give'];
                 // Seleccionar la siguiente unidad
-                selectedUnitWatt = (posibleUnits.indexOf(selectedUnitWatt) < (posibleUnits.length - 1))? posibleUnits[posibleUnits.indexOf(selectedUnitWatt) + 1] : selectedUnitWatt
-            }else if(selectedUnitWatt == 'give' && givenAmountWatts <= watts){
-                console.log(`${givenAmountWatts} was given`);
+                wattsAux.selectedUnitWatt = (posibleUnits.indexOf(wattsAux.selectedUnitWatt) < (posibleUnits.length - 1))? posibleUnits[posibleUnits.indexOf(wattsAux.selectedUnitWatt) + 1] : wattsAux.selectedUnitWatt
+            }else if(wattsAux.selectedUnitWatt == 'give' && wattsAux.givenAmountWatts <= pokeStatus.watts){
+                console.log(`${wattsAux.givenAmountWatts} was given`);
                 clearInterval(intervalAnim);
                 clearAllTimeouts();
                 resetGivenWatts();
 
                 // Give present to Pikachu / Update friendship level
-                updateFriendshipLevel(givenAmountWatts, true, true);
+                updateFriendshipLevel(wattsAux.givenAmountWatts, true, true);
             }
         }else if(animStatus == 'game'){
             let {posibleStep, selectedStep, selectedSlot1, selectedSlot2, selectedSlot3} = roulete; //Desestructuracion de objeto
@@ -245,9 +247,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }else if(animStatus == 'settings'){
             switch (selectedSettingMenu) {
                 case 'reset':
-                    steps = 0;
-                    document.querySelector('.walkCounter').innerHTML = steps;
-                    localStorage.setItem("steps", steps);
+                    pokeStatus.steps = 0;
+                    document.querySelector('.walkCounter').innerHTML = pokeStatus.steps;
+                    localStorage.setItem("steps", pokeStatus.steps);
                     break;
             
                 case 'relDrop':
@@ -263,7 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }else{
             // Init screen (Timeouts to emulate analogic)
             setTimeout(() => {
-                document.querySelector('.walkCounter').innerHTML = steps;
+                document.querySelector('.walkCounter').innerHTML = pokeStatus.steps;
             }, 200);
             setTimeout(() => {
                 if(animStatus == ''){
@@ -318,7 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 // Avoid to turn off the screen during game
                                 clearInterval(screenOff);
 
-                                if(friendshipLevel <= -1500){
+                                if(pokeStatus.friendshipLevel <= -1500){
                                     loadAnim(DisplayScreen, Anims.gift.whereIsPikachu)
                                 }else{
                                     // Sleep
@@ -330,7 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                         intervalAnim = setInterval(SelectWatts, 500);
                                         function SelectWatts(){
                                             displayTotalWatts(DisplayScreen); //If not here doesn't clean the screen
-                                            SelectWattsAmount(DisplayScreen, GivenCents, GivenDecs, GivenUnits, selectedUnitWatt)
+                                            SelectWattsAmount(DisplayScreen, wattsAux.GivenCents, wattsAux.GivenDecs, wattsAux.GivenUnits, wattsAux.selectedUnitWatt)
                                         }
                                     }
                                 }
@@ -383,7 +385,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // BACK BUTTON
     let backMenusAllowed = ['clock', 'state', 'settings', 'game']
     document.querySelector("#back-button").addEventListener('click', () => {
-        if(backMenusAllowed.some(anim => anim == animStatus) && !(animStatus == 'game' && roulete.gameStarted) || animStatus == 'gift' && selectedUnitWatt == 'cent'){
+        if(backMenusAllowed.some(anim => anim == animStatus) && !(animStatus == 'game' && roulete.gameStarted) || animStatus == 'gift' && wattsAux.selectedUnitWatt == 'cent'){
             selectedSettingMenu = settingsMenus[1];
             roulete.selectedStep = roulete.posibleStep[0];
             clearInterval(intervalAnim);
@@ -407,13 +409,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             basicAnim(false, false, true);
-        }else if(animStatus == 'gift' && selectedUnitWatt != 'cent'){
+        }else if(animStatus == 'gift' && wattsAux.selectedUnitWatt != 'cent'){
             let posibleUnits = ['cent', 'dec', 'unit', 'give'];
             // Seleccionar la anterior unidad
-            if(selectedUnitWatt != 'give'){
-                selectedUnitWatt = (posibleUnits.indexOf(selectedUnitWatt) > 0)? posibleUnits[posibleUnits.indexOf(selectedUnitWatt) - 1] : selectedUnitWatt
+            if(wattsAux.selectedUnitWatt != 'give'){
+                wattsAux.selectedUnitWatt = (posibleUnits.indexOf(wattsAux.selectedUnitWatt) > 0)? posibleUnits[posibleUnits.indexOf(wattsAux.selectedUnitWatt) - 1] : wattsAux.selectedUnitWatt
             }else{
-                selectedUnitWatt = 'cent'
+                wattsAux.selectedUnitWatt = 'cent'
             }
         }else if(animStatus == 'settingsRel'){
             animStatus = 'settings'
@@ -473,15 +475,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // TOP BUTTON
     document.querySelector('#top-button').addEventListener('click', () => {
         if(animStatus == 'gift'){
-            switch (selectedUnitWatt) {
+            switch (wattsAux.selectedUnitWatt) {
                 case "cent":
-                    GivenCents = (GivenCents < 9)? (GivenCents + 1) : GivenCents
+                    wattsAux.GivenCents = (wattsAux.GivenCents < 9)? (wattsAux.GivenCents + 1) : wattsAux.GivenCents
                     break;
                 case "dec":
-                    GivenDecs = (GivenDecs < 9)? (GivenDecs + 1) : GivenDecs
+                    wattsAux.GivenDecs = (wattsAux.GivenDecs < 9)? (wattsAux.GivenDecs + 1) : wattsAux.GivenDecs
                     break;
                 case "unit":
-                    GivenUnits = (GivenUnits < 9)? (GivenUnits + 1) : GivenUnits
+                    wattsAux.GivenUnits = (wattsAux.GivenUnits < 9)? (wattsAux.GivenUnits + 1) : wattsAux.GivenUnits
                     break;
             }
         }else if(animStatus == 'settings') {
@@ -494,15 +496,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // BOTTOM BUTTON
     document.querySelector('#bottom-button').addEventListener('click', () => {
         if(animStatus == 'gift'){
-            switch (selectedUnitWatt) {
+            switch (wattsAux.selectedUnitWatt) {
                 case "cent":
-                    GivenCents = (GivenCents > 0)? (GivenCents - 1) : GivenCents
+                    wattsAux.GivenCents = (wattsAux.GivenCents > 0)? (wattsAux.GivenCents - 1) : wattsAux.GivenCents
                     break;
                 case "dec":
-                    GivenDecs = (GivenDecs > 0)? (GivenDecs - 1) : GivenDecs
+                    wattsAux.GivenDecs = (wattsAux.GivenDecs > 0)? (wattsAux.GivenDecs - 1) : wattsAux.GivenDecs
                     break;
                 case "unit":
-                    GivenUnits = (GivenUnits > 0)? (GivenUnits - 1) : GivenUnits
+                    wattsAux.GivenUnits = (wattsAux.GivenUnits > 0)? (wattsAux.GivenUnits - 1) : wattsAux.GivenUnits
                     break;
             }
         }else if(animStatus == 'settings') {
@@ -531,7 +533,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(randomAnim);
         console.log("start")
         
-        if(friendshipLevel <= -1500){ // If pikachu left he doesn't sleep or play
+        if(pokeStatus.friendshipLevel <= -1500){ // If pikachu left he doesn't sleep or play
             animStatus = 'left'
             let showShock = 1
             animate();
@@ -595,14 +597,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 // if avoid Sleep, limpiar cookie de acostarse
                 // Breakfast
                 //eatingtHours = [10, 12, 18]
-                if( !avoidEat && eatingtHours.some(elem => elem == startTime.getHours()) && coockieHasBrushed != 'true') {
+                if( !avoidEat && pokeStatus.eatingtHours.some(elem => elem == startTime.getHours()) && coockieHasBrushed != 'true') {
                     if(coockieHadBreakfast != 'true' && startTime.getMinutes() <= 30){
                         breakFast();
                     }else if(coockieHasBrushed != 'true'){ //cockie tooth
                         brushTeeth();
                     }
                 }else{ //Hacer aqui comprobacion cookie brushTeeth
-                    if(friendshipLevel <= -500){ // If pikachu is mad he doesn't play
+                    if(pokeStatus.friendshipLevel <= -500){ // If pikachu is mad he doesn't play
                         animStatus = 'standMad'
                         animate(true);
                         intervalAnim = setInterval(animate, 1000);
@@ -624,7 +626,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
                     }else{ //Friendship level OK
                         console.log(randomAnim);
-                        if(!avoidActivity && playHours.some(elem => elem == startTime.getHours()) && randomAnim > 5){
+                        if(!avoidActivity && pokeStatus.playHours.some(elem => elem == startTime.getHours()) && randomAnim > 5){
                             // Random activities
                             if(randomAnim == 6 || randomAnim == 7){
                                 sandcastle();
@@ -634,7 +636,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 lollypop();
                             }
                         }else{
-                            if(friendshipLevel > -500 && friendshipLevel <= 1500){ // OK status
+                            if(pokeStatus.friendshipLevel > -500 && pokeStatus.friendshipLevel <= 1500){ // OK status
                                 animate(true);
                                 intervalAnim = setInterval(animate, 1000);
                                 
@@ -654,13 +656,13 @@ document.addEventListener('DOMContentLoaded', () => {
                                     }
                                     
                                 }
-                            }else if(friendshipLevel > 1500 && friendshipLevel < 3000){ // Like status
+                            }else if(pokeStatus.friendshipLevel > 1500 && pokeStatus.friendshipLevel < 3000){ // Like status
                                 if(!avoidGreeting){
                                     yawnAnim()
                                 }else{
                                     standLike();                                
                                 }
-                            }else if(friendshipLevel > 3000){
+                            }else if(pokeStatus.friendshipLevel > 3000){
                                 standLove();
                             }
 
@@ -678,7 +680,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let startTime = new Date();
         let screenShaked = document.querySelector('.screenContainer, .buttonsContainer');
         let buttonShake = document.querySelector('#shake');
-        consecutiveSteps++
+        pokeStatus.consecutiveSteps++
 
         // To avoid to the action until shake is over
         clearTimeout(actionTimeOut);
@@ -703,7 +705,7 @@ document.addEventListener('DOMContentLoaded', () => {
             actionTimeOut = setTimeout(() => {
                 clearInterval(intervalAnim);
                 isWalking = false;
-                consecutiveSteps = 0;
+                pokeStatus.consecutiveSteps = 0;
                 screenOff = setInterval(switchOff, 60000)
                 walking(true);
                 function switchOff() {
@@ -721,7 +723,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // To start walking or make its action
         let walkingAllowedAnims = ['stand', 'standMad', 'sandcastle', 'standLove', 'standLike']
-        if(consecutiveSteps >= 20 && !isWalking && walkingAllowedAnims.some(anim => anim == animStatus)) {
+        if(pokeStatus.consecutiveSteps >= 20 && !isWalking && walkingAllowedAnims.some(anim => anim == animStatus)) {
             clearInterval(intervalAnim);
             isWalking = true;
             clearInterval(screenOff);
@@ -729,13 +731,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }else{
             if(animStatus == 'left'){
                 actionTimeOut = setTimeout(() => {
-                    if(consecutiveSteps >= 20){
+                    if(pokeStatus.consecutiveSteps >= 20){
                         console.log("vuelve")
                         clearInterval(intervalAnim);
                         backFromLeft();
                     }
-                    console.log(`${consecutiveSteps} consecutive steps`)
-                    consecutiveSteps = 0;
+                    console.log(`${pokeStatus.consecutiveSteps} consecutive steps`)
+                    pokeStatus.consecutiveSteps = 0;
                 }, 1000);
             }else if(animStatus == 'stand') { // Make Pikachu look 
                 actionTimeOut = setTimeout(() => {
@@ -749,7 +751,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     auxiliarTimeout2 = setTimeout(() => {
                         basicAnim(true);
                     }, 3000);
-                    consecutiveSteps = 0;
+                    pokeStatus.consecutiveSteps = 0;
                 }, 1000);
             }else if(animStatus == 'standMad') { // Make Pikachu look 
                 actionTimeOut = setTimeout(() => {
@@ -763,7 +765,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     auxiliarTimeout2 = setTimeout(() => {
                         basicAnim();
                     }, 4000);
-                    consecutiveSteps = 0;
+                    pokeStatus.consecutiveSteps = 0;
                 }, 1000);
             }else if(animStatus == 'sandcastle'){
                 actionTimeOut = setTimeout(() => {
@@ -773,7 +775,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         clearInterval(intervalAnim);
                         sandcastle();
                     }, 6000);
-                    consecutiveSteps = 0;
+                    pokeStatus.consecutiveSteps = 0;
                 }, 1000);
             }else if(animStatus == 'brushTeeth'){
                 actionTimeOut = setTimeout(() => {
@@ -783,7 +785,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         clearInterval(intervalAnim);
                         brushTeeth();
                     }, 4000);
-                    consecutiveSteps = 0;
+                    pokeStatus.consecutiveSteps = 0;
                 }, 1000);
             }else if(animStatus == 'buildingBlocks'){
                 actionTimeOut = setTimeout(() => {
@@ -798,20 +800,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.log("EING?")
                     clearInterval(intervalAnim);
                     standLike(true);
-                    consecutiveSteps = 0;
+                    pokeStatus.consecutiveSteps = 0;
                 }, 1000);
             }else if(animStatus == 'standLove'){
                 actionTimeOut = setTimeout(() => {
                     console.log("EING?")
                     clearInterval(intervalAnim);
                     standLove(true);
-                    consecutiveSteps = 0;
+                    pokeStatus.consecutiveSteps = 0;
                 }, 1000);
             }else if(animStatus == 'sleeping'){
                 actionTimeOut = setTimeout(() => {
-                    if(consecutiveSteps >= 15){
+                    if(pokeStatus.consecutiveSteps >= 15){
                         console.log("awake?")
-                        let cStepsforNow = consecutiveSteps;
+                        let cStepsforNow = pokeStatus.consecutiveSteps;
                         clearInterval(intervalAnim);
                         loadAnim(DisplayScreen, Anims.sleep.enteringBed);
     
@@ -819,7 +821,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             clearInterval(intervalAnim);
     
                             // If it's not shaked after awake more than 5 times, sleep again. if not wakes up
-                            if(consecutiveSteps - cStepsforNow < 5){
+                            if(pokeStatus.consecutiveSteps - cStepsforNow < 5){
                                 basicAnim(true);
                             }else{
                                 clearInterval(intervalAnim);
@@ -831,7 +833,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     basicAnim(true, true, true, true);
                                 }, 2000);
                             }
-                            consecutiveSteps = 0;
+                            pokeStatus.consecutiveSteps = 0;
                         }, 4000);
                     }
                 }, 1000);
@@ -964,8 +966,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             if(animHits == 9){
                 loadAnim(DisplayScreen, Anims.standMad.stand);
-                friendshipLevel = -1400;
-                localStorage.setItem("friendshipLevel", friendshipLevel);
+                pokeStatus.friendshipLevel = -1400;
+                localStorage.setItem("friendshipLevel", pokeStatus.friendshipLevel);
                 auxiliarTimeout = setTimeout(() => {
                     clearInterval(intervalAnim);
                     basicAnim(true, true, true, true);
@@ -1198,7 +1200,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
     
                 //eatingtHours = [10, 12, 18]
-                if(!eatingtHours.some(elem => elem == endTime.getHours())) {
+                if(!pokeStatus.eatingtHours.some(elem => elem == endTime.getHours())) {
                     clearInterval(intervalAnim);
                     basicAnim(true);
                 }
@@ -1384,13 +1386,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Clear the stored data
             localStorage.clear();
-            steps = 0;
-            totalSteps = 0;
-            watts = 50;
-            friendshipLevel = 0;
-            settings.relSelected = 'off';
-            localStorage.setItem("watts", watts);
-            localStorage.setItem("friendshipLevel", friendshipLevel);
+            pokeStatus.steps = 0;
+            pokeStatus.totalSteps = 0;
+            pokeStatus.watts = 50;
+            pokeStatus.friendshipLevel = 0;
+            settings.relSelected = 'on';
+            localStorage.setItem("watts", pokeStatus.watts);
+            localStorage.setItem("friendshipLevel", pokeStatus.friendshipLevel);
             localStorage.setItem("relDrop", settings.relSelected);
     
             setTimeout(() => {
@@ -1413,7 +1415,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 1500);
             setTimeout(() => {
                 localStorage.setItem("InitTamagotchi", true)
-                document.querySelector('.walkCounter').innerHTML = steps;
+                document.querySelector('.walkCounter').innerHTML = pokeStatus.steps;
                 document.querySelector("#clockMenu").classList.add('selected')
                 basicAnim(true, true, false, true);
             }, 3000);
@@ -1422,22 +1424,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // FRIENDSHIP LEVEL UPDATE SYSTEM
     function updateFriendshipLevel(amount, isGift, isAnim){
-        friendshipLevel = (localStorage.getItem("friendshipLevel") != null)? Number(localStorage.getItem("friendshipLevel")) : friendshipLevel;
-        let originalFrienship = friendshipLevel;
+        pokeStatus.friendshipLevel = (localStorage.getItem("friendshipLevel") != null)? Number(localStorage.getItem("friendshipLevel")) : pokeStatus.friendshipLevel;
+        let originalFrienship = pokeStatus.friendshipLevel;
 
         // If ammount is 0, friendship level drops by 100
         if(Number(amount) == 0){
-            friendshipLevel -= 100;
+            pokeStatus.friendshipLevel -= 100;
         }else{
-            friendshipLevel += Number(amount);
+            pokeStatus.friendshipLevel += Number(amount);
         }
 
-        localStorage.setItem("friendshipLevel", friendshipLevel)
-        console.log(`Friendship level updated: ${friendshipLevel}`);
+        localStorage.setItem("friendshipLevel", pokeStatus.friendshipLevel)
+        console.log(`Friendship level updated: ${pokeStatus.friendshipLevel}`);
         
         if(isGift) {
-            watts -= Number(amount);
-            localStorage.setItem("watts", watts)
+            pokeStatus.watts -= Number(amount);
+            localStorage.setItem("watts", pokeStatus.watts)
         }
 
         if(isAnim){
@@ -1488,10 +1490,10 @@ function clearAllTimeouts() {
 }
 
 function resetGivenWatts() {
-    GivenCents = 0;
-    GivenDecs = 0;
-    GivenUnits = 0;
-    selectedUnitWatt = 'cent'
+    wattsAux.GivenCents = 0;
+    wattsAux.GivenDecs = 0;
+    wattsAux.GivenUnits = 0;
+    wattsAux.selectedUnitWatt = 'cent'
 }
 
 function resetRoulette() {
@@ -1552,33 +1554,33 @@ LOGIC AND BET FUNCS
 
 function walk() {
     // Update steps
-    steps = (steps < 99999)? (steps + 1) : 0;
+    pokeStatus.steps = (pokeStatus.steps < 99999)? (pokeStatus.steps + 1) : 0;
     let stepsToConvert = (localStorage.getItem("stepsToConvert") != null)? Number(localStorage.getItem("stepsToConvert")) : 0
     stepsToConvert++
     roulete.hackSteps += 1;
 
     // Update totalSteps
-    if(totalSteps < 999999){
-        totalSteps += 1
+    if(pokeStatus.totalSteps < 999999){
+        pokeStatus.totalSteps += 1
     }else{
         // Celebrate the million
-        totalSteps = 0;
+        pokeStatus.totalSteps = 0;
     }
 
     // Update Watts
     if(stepsToConvert == 20){
         localStorage.setItem("stepsToConvert", 0);
-        watts++
-        localStorage.setItem("watts", watts)
+        pokeStatus.watts++
+        localStorage.setItem("watts", pokeStatus.watts)
     }else{
         localStorage.setItem("stepsToConvert", stepsToConvert);
     }
 
-    localStorage.setItem("steps", steps);
-    localStorage.setItem("totalSteps", totalSteps);
+    localStorage.setItem("steps", pokeStatus.steps);
+    localStorage.setItem("totalSteps", pokeStatus.totalSteps);
 
     if(animStatus != ''){
-        document.querySelector('.walkCounter').innerHTML = steps;
+        document.querySelector('.walkCounter').innerHTML = pokeStatus.steps;
     }
 }
 
@@ -1633,20 +1635,20 @@ function printHour(screen, hours, minutes, pmState){
 }
 
 function displayState(screen) {
-    let totalStepArray = totalSteps.toString().split('').reverse();
+    let totalStepArray = pokeStatus.totalSteps.toString().split('').reverse();
     let currentState = '';
     screen.innerHTML = '';
 
     /* Calcular el state */
-    if(friendshipLevel <= -1500){
+    if(pokeStatus.friendshipLevel <= -1500){
         currentState = 'left'
-    }else if(friendshipLevel > -1500 && friendshipLevel <= -500){
+    }else if(pokeStatus.friendshipLevel > -1500 && pokeStatus.friendshipLevel <= -500){
         currentState = 'mad'
-    }else if(friendshipLevel > -500 && friendshipLevel <= 1500){
+    }else if(pokeStatus.friendshipLevel > -500 && pokeStatus.friendshipLevel <= 1500){
         currentState = 'ok'
-    }else if(friendshipLevel > 1500 && friendshipLevel <= 3000){
+    }else if(pokeStatus.friendshipLevel > 1500 && pokeStatus.friendshipLevel <= 3000){
         currentState = 'likes'
-    }else if(friendshipLevel > 3000){
+    }else if(pokeStatus.friendshipLevel > 3000){
         currentState = 'loves'
     }
 
@@ -1695,7 +1697,7 @@ function displayState(screen) {
 
 // PRESENT WATTS
 function displayTotalWatts(screen, menu='gift', initialize=false, win='') {
-    let totalWattsArray = watts.toString().split('').reverse();
+    let totalWattsArray = pokeStatus.watts.toString().split('').reverse();
     let {slot1, slot2, slot3, selectedSlot1, selectedSlot2, selectedSlot3} = roulete;
     screen.innerHTML = '';
 
@@ -1766,7 +1768,7 @@ function displayTotalWatts(screen, menu='gift', initialize=false, win='') {
 // let {printBet} = roulete.printBet;
 let printGive = true;
 function SelectWattsAmount(screen, cents, decs, units, currentSelected) {
-    givenAmountWatts = Number(`${GivenCents}${GivenDecs }${GivenUnits}`)
+    wattsAux.givenAmountWatts = Number(`${wattsAux.GivenCents}${wattsAux.GivenDecs }${wattsAux.GivenUnits}`)
     for(i = 0; i < 1080; i++){
         if(printGive && currentSelected == 'unit' || currentSelected != 'unit'){
             if(Anims.givenWatts.unit[units].some(elem => elem == `num-${i}`)){
@@ -1787,7 +1789,7 @@ function SelectWattsAmount(screen, cents, decs, units, currentSelected) {
         }
 
         if(printGive && currentSelected == 'give'){
-            if(givenAmountWatts <= watts){
+            if(wattsAux.givenAmountWatts <= pokeStatus.watts){
                 if(Anims.gift.give.some(elem => elem == `num-${i}`)){
                     screen.querySelector(`.num-${i}`).classList.add('clicked');
                 }    
@@ -1796,7 +1798,7 @@ function SelectWattsAmount(screen, cents, decs, units, currentSelected) {
                     screen.querySelector(`.num-${i}`).classList.add('clicked');
                 }
                 auxiliarTimeout = setTimeout(() => {
-                    selectedUnitWatt = 'cent'
+                    wattsAux.selectedUnitWatt = 'cent'
                 }, 500);    
             }
         }
@@ -1815,7 +1817,7 @@ function rouletteGame(screen) {
     for(i = 0; i < 1080 && !breakLoop; i++){
 
         // Bet text
-        if(printBet && roulete.selectedStep == 'bet' || roulete.selectedStep != 'bet' && watts >= 5){
+        if(printBet && roulete.selectedStep == 'bet' || roulete.selectedStep != 'bet' && pokeStatus.watts >= 5){
             if(Anims.game.bet.some(elem => elem == `num-${i}`)){
                 screen.querySelector(`.num-${i}`).classList.add('clicked');
             }
@@ -1824,7 +1826,7 @@ function rouletteGame(screen) {
         //The initial slots are printing in the displayTotalWatts function
         
         if(roulete.selectedStep == 'try'){ //&& miliseconds <= 500
-            if(watts < 5){
+            if(pokeStatus.watts < 5){
                 if(Anims.game.notEnouff.some(elem => elem == `num-${i}`)){
                     screen.querySelector(`.num-${i}`).classList.add('clicked');
                 }
@@ -1833,8 +1835,8 @@ function rouletteGame(screen) {
                 }, 500);    
             }else{
                 // Pay the bet
-                watts -= 5;
-                localStorage.setItem("watts", watts)
+                pokeStatus.watts -= 5;
+                localStorage.setItem("watts", pokeStatus.watts)
                 
                 // Start the Game
                 roulete.selectedStep = roulete.posibleStep[2]; //Select slot 1
@@ -2042,12 +2044,12 @@ function showResults(screen) {
 
         function increase() {
             amount -= 10;
-            watts += 10;
+            pokeStatus.watts += 10;
             displayTotalWatts(screen, 'game', false, anim);
 
             if(amount == 0){
                 clearInterval(intervalAnim);
-                localStorage.setItem("watts", watts);
+                localStorage.setItem("watts", pokeStatus.watts);
                 resetRoulette();
                 restartGame(screen);
             }
