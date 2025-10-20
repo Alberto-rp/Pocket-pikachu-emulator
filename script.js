@@ -11,10 +11,19 @@ fetch('./anims.json')
 // Anim vars
 let saved = null;
 let clickedPixels = [];
+let intervalAnim;
+let animStatus = ''
+let randomAnim;
+let screenOff;
+let throwBlocks = false;
+let throwCandy = false;
+let isWalking = false;
 let actionTimeOut = undefined; 
 let auxiliarTimeout = undefined;
 let auxiliarTimeout2 = undefined;
-let screenOff;
+let coockieHadBreakfast = document.cookie.split("; ").find((row) => row.startsWith("had_breakfast="))?.split("=")[1];
+let coockieHasBrushed = document.cookie.split("; ").find((row) => row.startsWith("has_brushed="))?.split("=")[1];
+let coockieHasGoneSleep = document.cookie.split("; ").find((row) => row.startsWith("has_gone_sleep="))?.split("=")[1];
 
 // Steps
 let pokeStatus = {};
@@ -34,18 +43,6 @@ wattsAux.GivenDecs = 0;
 wattsAux.GivenUnits = 0;
 wattsAux.selectedUnitWatt = 'cent'
 wattsAux.givenAmountWatts = 0
-
-//Status
-let animationStatus = {};
-var intervalAnim;
-var animStatus = ''
-var randomAnim;
-var throwBlocks = false;
-var throwCandy = false;
-var isWalking = false;
-var coockieHadBreakfast = document.cookie.split("; ").find((row) => row.startsWith("had_breakfast="))?.split("=")[1];
-var coockieHasBrushed = document.cookie.split("; ").find((row) => row.startsWith("has_brushed="))?.split("=")[1];
-var coockieHasGoneSleep = document.cookie.split("; ").find((row) => row.startsWith("has_gone_sleep="))?.split("=")[1];
 
 //Settings
 let settings = {};
