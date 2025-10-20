@@ -309,7 +309,15 @@ footer {
 }
 
 footer p {
+    color: #000000;
+    opacity: 0.2;
     font-size: 12px;
     width: fit-content;
     margin: 0 auto;
+}
+
+@media only screen and (max-width: 768px) {
+    footer p {
+        font-size: 7px;
+    }
 }
