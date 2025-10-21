@@ -186,6 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector("#enter-button").addEventListener('click', () => {
         if(animStatus == 'pokeball') {
             clearInterval(intervalAnim);
+            clearAllTimeouts();
             restartTamagotchi(DisplayScreen, true)
         }else if(animStatus == 'gift'){
             if(wattsAux.selectedUnitWatt != 'give'){
@@ -259,7 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
             settings.relSelected = settings.relSelected == 'off' ? 'on' : 'off';
             loadAnim(DisplayScreen, Anims.settingsRel[settings.relSelected])
             localStorage.setItem("relDrop", settings.relSelected);
-        }else{
+        }else if(animStatus != 'restart'){
             // Init screen (Timeouts to emulate analogic)
             setTimeout(() => {
                 document.querySelector('.walkCounter').innerHTML = pokeStatus.steps;
@@ -513,7 +514,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //RESET BUTTON
     document.querySelector('#reset-button').addEventListener('click', () => {
-        restartTamagotchi(DisplayScreen);
+        console.log(animStatus)
+        if(animStatus != 'restart' && animStatus != 'pokeball'){
+            restartTamagotchi(DisplayScreen);
+        }
     })
 
     // Test Animation
@@ -1369,12 +1373,10 @@ document.addEventListener('DOMContentLoaded', () => {
     //////////////////*/
 
     function restartTamagotchi (DisplayScreen, enterclicked) {
+        animStatus = 'restart';
+        clearInterval(intervalAnim);
+        clearAllTimeouts();
         if(!enterclicked){
-            if(animStatus != ''){
-                clearInterval(intervalAnim);
-                clearAllTimeouts();
-                animStatus = '';
-            }
             document.querySelector("#clockMenu").classList.add('selected')
             document.querySelector("#giftMenu").classList.add('selected')
             document.querySelector("#gameMenu").classList.add('selected')
