@@ -34,6 +34,7 @@ pokeStatus.watts = (localStorage.getItem("watts") != null)? Number(localStorage.
 pokeStatus.friendshipLevel = (localStorage.getItem("friendshipLevel") != null)? Number(localStorage.getItem("friendshipLevel")) : 0;
 pokeStatus.eatingtHours = [10, 12, 13, 18]
 pokeStatus.playHours = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
+pokeStatus.tvHours = [13, 14, 15, 16, 17, 18, 19, 20, 21];
 pokeStatus.consecutiveSteps = 0;
 pokeStatus.lastConected = (localStorage.getItem("lastConected") != null)? localStorage.getItem("lastConected") : new Date().toDateString();
 
@@ -527,7 +528,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Test Animation
     document.querySelector("#startAnim").addEventListener('click', () => {
         // buildingBlocks();
-        walking();
+        watchTV();
     })
 
     // Basic stand animation
@@ -641,6 +642,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             }else{
                                 lollypop();
                             }
+                        }else if(!avoidActivity && pokeStatus.tvHours.some(elem => elem == startTime.getHours()) && randomAnim < 3){
+                            watchTV();
                         }else{
                             if(pokeStatus.friendshipLevel > -500 && pokeStatus.friendshipLevel <= 1500){ // OK status
                                 animate(true);
@@ -781,6 +784,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         clearInterval(intervalAnim);
                         sandcastle();
                     }, 6000);
+                    pokeStatus.consecutiveSteps = 0;
+                }, 1000);
+            }else if(animStatus == 'watchTV'){
+                actionTimeOut = setTimeout(() => {
+                    clearInterval(intervalAnim);
+                    watchTV(true); //Fast digging
+                    auxiliarTimeout = setTimeout(() => {
+                        clearInterval(intervalAnim);
+                        watchTV();
+                    }, 3000);
                     pokeStatus.consecutiveSteps = 0;
                 }, 1000);
             }else if(animStatus == 'brushTeeth'){
@@ -1263,6 +1276,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 sandCounter = 0;
             }
             sandCounter++
+        }
+    }
+
+    // Watching TV
+    function watchTV(shake) {
+        animStatus = 'watchTV'
+        console.log(animStatus)
+        let watchCounter = 1;
+        loadAnim(DisplayScreen, Anims.watchTV.stand1)
+        intervalAnim = (!shake)? setInterval(animate, 1000) : setInterval(animate, 800);
+
+        function animate() {
+            
+            if(watchCounter == 1){
+                loadAnim(DisplayScreen, (!shake)? Anims.watchTV.stand2 : Anims.watchTV.jump)
+            }else {
+                loadAnim(DisplayScreen, Anims.watchTV.stand1)
+                watchCounter = 0;
+            }
+            watchCounter++
         }
     }
 

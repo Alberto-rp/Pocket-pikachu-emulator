@@ -282,7 +282,7 @@ button {
 
 .developerScreen {
     /* Remove this in case of develop */
-    display: none;
+    /* display: none; */
     margin: 8px;
 }
 .developerScreen.hide {
