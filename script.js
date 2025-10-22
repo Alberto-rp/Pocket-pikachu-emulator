@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let {posibleStep, selectedStep, selectedSlot1, selectedSlot2, selectedSlot3} = roulete; //Desestructuracion de objeto
 
             if(selectedStep == 1){
-                selSlot1 = roulete.slot1[roulete.selectedSlot1];
+                selSlot1 = roulete.slot1[selectedSlot1];
                 roulete.stopSlot1 = true;
                 roulete.forcedSlot1 = '';
                 if(roulete.totalLosses == 5){
@@ -216,7 +216,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
             if(selectedStep == 2 && roulete.stopSlot1){
-                selSlot2 = roulete.slot2[roulete.selectedSlot2];
+                selSlot2 = roulete.slot2[selectedSlot2];
+                roulete.stopSlot1 = true;
                 roulete.stopSlot2 = true;
                 roulete.forcedSlot2 = '';
                 if(roulete.totalLosses == 5){
@@ -226,7 +227,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
             if(selectedStep == 3 && roulete.stopSlot2){
-                selSlot3 = roulete.slot3[roulete.selectedSlot3];
+                selSlot3 = roulete.slot3[selectedSlot3];
+                roulete.stopSlot1 = true;
+                roulete.stopSlot2 = true;
                 roulete.stopSlot3 = true;
                 roulete.forcedSlot3 = '';
                 if(roulete.totalLosses == 5){
@@ -1496,6 +1499,10 @@ function resetGivenWatts() {
 }
 
 function resetRoulette() {
+    clearAllTimeouts();
+    clearTimeout(roulete.intervalRoulette1)
+    clearTimeout(roulete.intervalRoulette2)
+    clearTimeout(roulete.intervalRoulette3)
     roulete.selectedStep = roulete.posibleStep[0];
     roulete.stopSlot1 = false;
     roulete.stopSlot2 = false;
