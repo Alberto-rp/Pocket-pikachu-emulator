@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.walk.walking1;
+    Anims.edit = Anims.shower.stand1;
 });
 
 // Anim vars
@@ -22,9 +22,10 @@ let actionTimeOut = undefined;
 let auxiliarTimeout = undefined;
 let auxiliarTimeout2 = undefined;
 let coockieHadBreakfast = document.cookie.split("; ").find((row) => row.startsWith("had_breakfast="))?.split("=")[1];
+let coockieHasTakeBath = document.cookie.split("; ").find((row) => row.startsWith("had_take_bath="))?.split("=")[1];
 let coockieHasBrushed = document.cookie.split("; ").find((row) => row.startsWith("has_brushed="))?.split("=")[1];
-let isBrushing = false;
 let coockieHasGoneSleep = document.cookie.split("; ").find((row) => row.startsWith("has_gone_sleep="))?.split("=")[1];
+let isBrushing = false;
 
 // Steps
 let pokeStatus = {};
@@ -286,6 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     coockieHadBreakfast = document.cookie.split("; ").find((row) => row.startsWith("had_breakfast="))?.split("=")[1];
                     coockieHasBrushed = document.cookie.split("; ").find((row) => row.startsWith("has_brushed="))?.split("=")[1];
                     coockieHasGoneSleep = document.cookie.split("; ").find((row) => row.startsWith("has_gone_sleep="))?.split("=")[1];
+                    coockieHasTakeBath = document.cookie.split("; ").find((row) => row.startsWith("had_take_bath="))?.split("=")[1];
                     basicAnim();
                 }else{
                     if(animStatus != 'clock' && animStatus != 'gift' && animStatus != 'game'){ // | gift | game
@@ -427,7 +429,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     // STATE BUTTON / FRIENDSHIP BUTTON
-    let allowedAnims = ['stand', 'standMad', 'sleeping', 'yawnHappy', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'buildingBlocks', 'lollypop', 'walking', 'breakfast'];
+    let allowedAnims = ['stand', 'standMad', 'sleeping', 'yawnHappy', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'watchTV', 'bathTime', 'buildingBlocks', 'lollypop', 'walking', 'breakfast'];
     let menus = ['clockMenu', 'giftMenu', 'gameMenu'];
 
     document.querySelector("#state-button").addEventListener('click', () => {
@@ -527,8 +529,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Test Animation
     document.querySelector("#startAnim").addEventListener('click', () => {
-        // buildingBlocks();
-        watchTV();
+        bathTime();
     })
 
     // Basic stand animation
@@ -610,7 +611,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         brushTeeth();
                         isBrushing = true;
                     }
-                }else{ //Hacer aqui comprobacion cookie brushTeeth
+                }else{
                     if(pokeStatus.friendshipLevel <= -500){ // If pikachu is mad he doesn't play
                         animStatus = 'standMad'
                         animate(true);
@@ -633,7 +634,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
                     }else{ //Friendship level OK
                         console.log(randomAnim);
-                        if(!avoidActivity && pokeStatus.playHours.some(elem => elem == startTime.getHours()) && randomAnim > 5){
+                        if(startTime.getHours() == 19 && coockieHasTakeBath != 'true'){
+                            // Bath Time
+                            bathTime();
+                        }else if(!avoidActivity && pokeStatus.playHours.some(elem => elem == startTime.getHours()) && randomAnim > 5){
                             // Random activities
                             if(randomAnim == 6 || randomAnim == 7){
                                 sandcastle();
@@ -643,6 +647,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 lollypop();
                             }
                         }else if(!avoidActivity && pokeStatus.tvHours.some(elem => elem == startTime.getHours()) && randomAnim < 3){
+                            //Watching TV
                             watchTV();
                         }else{
                             if(pokeStatus.friendshipLevel > -500 && pokeStatus.friendshipLevel <= 1500){ // OK status
@@ -1257,6 +1262,32 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             walkCounter++
         }
+    }
+
+    // Take a Bath
+    function bathTime() {
+        animStatus = 'bathTime'
+        console.log(animStatus)
+        let bathCounter = 1;
+        loadAnim(DisplayScreen, Anims.shower.stand1)
+        intervalAnim = setInterval(animate, 1000);
+
+        function animate() {
+            
+            if(bathCounter <= 1){
+                loadAnim(DisplayScreen, Anims.shower.stand2)
+            }else {
+                loadAnim(DisplayScreen, Anims.shower.stand1)
+                bathCounter = 0;
+            }
+            bathCounter++
+        }
+
+        // Declare cookie
+        var time = new Date();
+        time.setTime(time.getTime() + 21600 * 1000); // Agregamos 6 horas en milisegundos
+        document.cookie = "had_take_bath=true; expires=" + time + "; path=/";
+        console.log("Cookie Bath declared")
     }
 
     // Sandcastle anim
