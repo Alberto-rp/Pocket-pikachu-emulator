@@ -843,6 +843,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         }, 4000);
                     }
                 }, 1000);
+            }else{
+                // To avoid increise during Game or Gift menu
+                pokeStatus.consecutiveSteps = 0;
             }
         }
     })
