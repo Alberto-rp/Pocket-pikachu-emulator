@@ -429,7 +429,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     // STATE BUTTON / FRIENDSHIP BUTTON
-    let allowedAnims = ['stand', 'standMad', 'sleeping', 'yawnHappy', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'watchTV', 'bathTime', 'buildingBlocks', 'lollypop', 'walking', 'breakfast'];
+    let allowedAnims = ['stand', 'standMad', 'sleeping', 'yawnHappy', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'reading', 'watchTV', 'bathTime', 'buildingBlocks', 'lollypop', 'walking', 'breakfast'];
     let menus = ['clockMenu', 'giftMenu', 'gameMenu'];
 
     document.querySelector("#state-button").addEventListener('click', () => {
@@ -529,7 +529,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Test Animation
     document.querySelector("#startAnim").addEventListener('click', () => {
-        bathTime();
+        reading();
     })
 
     // Basic stand animation
@@ -563,7 +563,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Update the cookieValue after goinToSleep, to avoid error of multiple times going to sleep
                 coockieHasGoneSleep = document.cookie.split("; ").find((row) => row.startsWith("has_gone_sleep="))?.split("=")[1];
 
-                if(startTime.getHours() == 20 || randomAnim >= 5) {
+                if(coockieHasGoneSleep != 'true' || randomAnim >= 5) {
                     slepAnim = Anims.sleep.frontSleep;
                     slepAnim2 = Anims.sleep.frontSleep2;
                 }else {
@@ -634,20 +634,23 @@ document.addEventListener('DOMContentLoaded', () => {
     
                     }else{ //Friendship level OK
                         console.log(randomAnim);
-                        if(startTime.getHours() == 19 && coockieHasTakeBath != 'true'){
-                            // Bath Time
+                        if(startTime.getHours() == 19 && coockieHasTakeBath != 'true'){// Bath Time
                             bathTime();
-                        }else if(!avoidActivity && pokeStatus.playHours.some(elem => elem == startTime.getHours()) && randomAnim > 5){
+                        }else if(!avoidActivity && pokeStatus.playHours.some(elem => elem == startTime.getHours()) && randomAnim > 5){//PlayingTime
                             // Random activities
-                            if(randomAnim == 6 || randomAnim == 7){
+                            let randomActivity = Math.floor(Math.random() * (20 - 1 + 1) + 1); //1-20
+                            console.log("PlayingTime" + randomActivity)
+                            
+                            if(randomActivity >= 1 && randomActivity <= 7){
                                 sandcastle();
-                            }else if(randomAnim == 8 || randomAnim == 9){
+                            }else if(randomActivity >= 8 && randomActivity <= 14){
                                 buildingBlocks();
+                            }else if(randomActivity >= 15 && randomActivity <= 18){
+                                reading();
                             }else{
                                 lollypop();
                             }
-                        }else if(!avoidActivity && pokeStatus.tvHours.some(elem => elem == startTime.getHours()) && randomAnim < 3){
-                            //Watching TV
+                        }else if(!avoidActivity && pokeStatus.tvHours.some(elem => elem == startTime.getHours()) && randomAnim <= 2){//Watching TV
                             watchTV();
                         }else{
                             if(pokeStatus.friendshipLevel > -500 && pokeStatus.friendshipLevel <= 1500){ // OK status
@@ -791,10 +794,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     }, 6000);
                     pokeStatus.consecutiveSteps = 0;
                 }, 1000);
+            }else if(animStatus == 'reading'){
+                actionTimeOut = setTimeout(() => {
+                    clearInterval(intervalAnim);
+                    reading(true);//NextPage
+                    auxiliarTimeout = setTimeout(() => {
+                        clearInterval(intervalAnim);
+                        reading();
+                    }, 1100);
+                    pokeStatus.consecutiveSteps = 0;
+                }, 1000);
             }else if(animStatus == 'watchTV'){
                 actionTimeOut = setTimeout(() => {
                     clearInterval(intervalAnim);
-                    watchTV(true); //Fast digging
+                    watchTV(true); //Jump
                     auxiliarTimeout = setTimeout(() => {
                         clearInterval(intervalAnim);
                         watchTV();
@@ -1270,7 +1283,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(animStatus)
         let bathCounter = 1;
         loadAnim(DisplayScreen, Anims.shower.stand1)
-        intervalAnim = setInterval(animate, 1000);
+        intervalAnim = setInterval(animate, 700);
 
         function animate() {
             
@@ -1307,6 +1320,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 sandCounter = 0;
             }
             sandCounter++
+        }
+    }
+
+    // Reading
+    function reading(shake) {
+        animStatus = 'reading'
+        console.log(animStatus)
+        let readCounter = 1;
+        
+        if(!shake){
+            loadAnim(DisplayScreen, Anims.reading.sand1)
+            intervalAnim = setInterval(animate, 800);
+        }else{
+            loadAnim(DisplayScreen, Anims.reading.nextPage)
+        }
+
+        function animate() {
+            
+            if(readCounter <= 1){
+                loadAnim(DisplayScreen, Anims.reading.sand2)
+            }else {
+                loadAnim(DisplayScreen, Anims.reading.sand1)
+                readCounter = 0;
+            }
+            readCounter++
         }
     }
 
