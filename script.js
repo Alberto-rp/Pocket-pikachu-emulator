@@ -23,6 +23,7 @@ let auxiliarTimeout = undefined;
 let auxiliarTimeout2 = undefined;
 let coockieHadBreakfast = document.cookie.split("; ").find((row) => row.startsWith("had_breakfast="))?.split("=")[1];
 let coockieHasBrushed = document.cookie.split("; ").find((row) => row.startsWith("has_brushed="))?.split("=")[1];
+let isBrushing = false;
 let coockieHasGoneSleep = document.cookie.split("; ").find((row) => row.startsWith("has_gone_sleep="))?.split("=")[1];
 
 // Steps
@@ -604,8 +605,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 if( !avoidEat && pokeStatus.eatingtHours.some(elem => elem == startTime.getHours()) && coockieHasBrushed != 'true') {
                     if(coockieHadBreakfast != 'true' && startTime.getMinutes() <= 30){
                         breakFast();
-                    }else if(coockieHasBrushed != 'true'){ //cockie tooth
+                    }else if(coockieHasBrushed != 'true' && !isBrushing){ //cockie tooth
                         brushTeeth();
+                        isBrushing = true;
                     }
                 }else{ //Hacer aqui comprobacion cookie brushTeeth
                     if(pokeStatus.friendshipLevel <= -500){ // If pikachu is mad he doesn't play
