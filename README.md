@@ -8,19 +8,21 @@
 
 ## links of interest
 
-- [Pocket Pikachu Emulator](http://www.pokpik.life/)
+- [Try Pocket Pikachu Emulator](http://www.pokpik.life/)
 - [Pocket Pikachu on wikipedia](https://en.wikipedia.org/wiki/Pok%C3%A9mon_Pikachu)
 - [Pocket Pikachu on Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Pok%C3%A9mon_Pikachu)
 
 ## Actual functionalities
-- Sleep Animation from 20 to 7 Hours
-- Eat Animations at 10, 12, 13 and 18 hours
-- Play Animations Randomly between 9-18 hours
+- Sleep Animation from 20 to 7 Hours (3 different possitions)
+- Eat Animations at 10, 12, 13 and 18 hours (2 different animations)
+- Play Animations randomly between 9-18 hours (SandCastle, BuildingBlocks, Lollypop, Reading)
+- TV Animation randomly between 13-21 hours
+- Bath anim at 19 hours
 - Clock Menu (without alarm)
 - Step Counter (Based on the shake button)
-- Settings Menu (Only reset option enabled)
-- Friendship-system (All the stated available without decay)
+- Settings Menu (Reset steps and Relation Dropdown enabled, sound doesn't)
+- Friendship-system (left, mad, ok, like and love states available)
+- NEW Relation/FriendShip dropdown could be disabled from the settings menu; ON by default
 - Slot machine (with a special hack if you walk 100 steps or if you loose 5 times)
-- Gift Menu
-- State Menu
-- Relation/FriendShip dropdown could be disabled from the settings menu; on by default
+- Gift Menu (With 5 differents animations depending the amount and friendship level)
+- State of the Relation/FriendShip status
