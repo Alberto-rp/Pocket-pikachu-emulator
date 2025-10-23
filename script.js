@@ -637,8 +637,12 @@ document.addEventListener('DOMContentLoaded', () => {
     
                     }else{ //Friendship level OK
                         console.log(randomAnim);
-                        if(startTime.getHours() == 19 && coockieHasTakeBath != 'true'){// Bath Time
-                            bathTime();
+                        if(startTime.getHours() == 19 && coockieHasTakeBath != 'true' || coockieHasBrushed != 'true'){// Bath Time
+                            if(coockieHasTakeBath != 'true'){
+                                bathTime();
+                            }else{
+                                brushTeeth();
+                            }
                         }else if(!avoidActivity && pokeStatus.playHours.some(elem => elem == startTime.getHours()) && randomAnim > 5){//PlayingTime
                             // Random activities
                             let randomActivity = Math.floor(Math.random() * (20 - 1 + 1) + 1); //1-20
