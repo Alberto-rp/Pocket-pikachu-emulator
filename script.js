@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.shower.stand1;
+    Anims.edit = Anims.sleep.backSleep2;
 });
 
 // Anim vars
@@ -563,13 +563,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Update the cookieValue after goinToSleep, to avoid error of multiple times going to sleep
                 coockieHasGoneSleep = document.cookie.split("; ").find((row) => row.startsWith("has_gone_sleep="))?.split("=")[1];
 
-                if(coockieHasGoneSleep != 'true' || randomAnim >= 5) {
+                if(coockieHasGoneSleep != 'true' || randomAnim <= 3) {
                     slepAnim = Anims.sleep.frontSleep;
                     slepAnim2 = Anims.sleep.frontSleep2;
-                }else {
+                }else if(randomAnim >= 4 && randomAnim <= 6){
                     slepAnim = Anims.sleep.sideSleep;
                     slepAnim2 = Anims.sleep.sideSleep2;
-                } 
+                }else {
+                    slepAnim = Anims.sleep.backSleep;
+                    slepAnim2 = Anims.sleep.backSleep2;
+                }
 
                 if(startTime.getHours() == 20 && coockieHasGoneSleep != 'true'){
                     loadAnim(DisplayScreen, Anims.sleep.goingToSleep)
