@@ -563,7 +563,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Update the cookieValue after goinToSleep, to avoid error of multiple times going to sleep
                 coockieHasGoneSleep = document.cookie.split("; ").find((row) => row.startsWith("has_gone_sleep="))?.split("=")[1];
 
-                if(coockieHasGoneSleep != 'true' || randomAnim <= 3) {
+                if(coockieHasGoneSleep != 'true' && startTime.getHours() == 20 || randomAnim <= 3) {
                     slepAnim = Anims.sleep.frontSleep;
                     slepAnim2 = Anims.sleep.frontSleep2;
                 }else if(randomAnim >= 4 && randomAnim <= 6){
