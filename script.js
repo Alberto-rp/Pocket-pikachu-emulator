@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.sleep.backSleep2;
+    Anims.edit = Anims.eating.nomnom2;
 });
 
 // Anim vars
@@ -21,7 +21,7 @@ let isWalking = false;
 let actionTimeOut = undefined; 
 let auxiliarTimeout = undefined;
 let auxiliarTimeout2 = undefined;
-let coockieHadBreakfast = document.cookie.split("; ").find((row) => row.startsWith("had_breakfast="))?.split("=")[1];
+let coockieHadEating = document.cookie.split("; ").find((row) => row.startsWith("had_eating="))?.split("=")[1];
 let coockieHasTakeBath = document.cookie.split("; ").find((row) => row.startsWith("had_take_bath="))?.split("=")[1];
 let coockieHasBrushed = document.cookie.split("; ").find((row) => row.startsWith("has_brushed="))?.split("=")[1];
 let coockieHasGoneSleep = document.cookie.split("; ").find((row) => row.startsWith("has_gone_sleep="))?.split("=")[1];
@@ -33,7 +33,7 @@ pokeStatus.steps = (localStorage.getItem("steps") != null)? Number(localStorage.
 pokeStatus.totalSteps = (localStorage.getItem("totalSteps") != null)? Number(localStorage.getItem("totalSteps")) : 0;
 pokeStatus.watts = (localStorage.getItem("watts") != null)? Number(localStorage.getItem("watts")) : 50;
 pokeStatus.friendshipLevel = (localStorage.getItem("friendshipLevel") != null)? Number(localStorage.getItem("friendshipLevel")) : 0;
-pokeStatus.eatingtHours = [10, 12, 13, 18]
+pokeStatus.eatingtHours = [10, 12, 16, 18]
 pokeStatus.playHours = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
 pokeStatus.tvHours = [13, 14, 15, 16, 17, 18, 19, 20, 21];
 pokeStatus.consecutiveSteps = 0;
@@ -284,7 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 if(animStatus == ''){
                     randomAnim = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
-                    coockieHadBreakfast = document.cookie.split("; ").find((row) => row.startsWith("had_breakfast="))?.split("=")[1];
+                    coockieHadEating = document.cookie.split("; ").find((row) => row.startsWith("had_eating="))?.split("=")[1];
                     coockieHasBrushed = document.cookie.split("; ").find((row) => row.startsWith("has_brushed="))?.split("=")[1];
                     coockieHasGoneSleep = document.cookie.split("; ").find((row) => row.startsWith("has_gone_sleep="))?.split("=")[1];
                     coockieHasTakeBath = document.cookie.split("; ").find((row) => row.startsWith("had_take_bath="))?.split("=")[1];
@@ -429,7 +429,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     // STATE BUTTON / FRIENDSHIP BUTTON
-    let allowedAnims = ['stand', 'standMad', 'sleeping', 'yawnHappy', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'reading', 'watchTV', 'bathTime', 'buildingBlocks', 'lollypop', 'walking', 'breakfast'];
+    let allowedAnims = ['stand', 'standMad', 'sleeping', 'yawnHappy', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'reading', 'watchTV', 'bathTime', 'buildingBlocks', 'lollypop', 'walking', 'eating'];
     let menus = ['clockMenu', 'giftMenu', 'gameMenu'];
 
     document.querySelector("#state-button").addEventListener('click', () => {
@@ -529,7 +529,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Test Animation
     document.querySelector("#startAnim").addEventListener('click', () => {
-        reading();
+        eating();
     })
 
     // Basic stand animation
@@ -605,11 +605,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }else {
                 // if avoid Sleep, limpiar cookie de acostarse
-                // Breakfast
-                //eatingtHours = [10, 12, 18]
+                // Eating
+                //eatingtHours = [10, 12, 16, 18]
                 if( !avoidEat && pokeStatus.eatingtHours.some(elem => elem == startTime.getHours()) && coockieHasBrushed != 'true') {
-                    if(coockieHadBreakfast != 'true' && startTime.getMinutes() <= 30){
-                        breakFast();
+                    if(coockieHadEating != 'true' && startTime.getMinutes() <= 30){
+                        eating();
                     }else if(coockieHasBrushed != 'true' && !isBrushing){ //cockie tooth
                         brushTeeth();
                         isBrushing = true;
@@ -1215,39 +1215,53 @@ document.addEventListener('DOMContentLoaded', () => {
         PLAY AND ACTIONS ANIMS
     //////////////////*/
 
-    // Breakfast Anim
-    function breakFast() {
-        animStatus = 'breakfast'
+    // Eating Anims
+    function eating() {
+        animStatus = 'eating'
         console.log(animStatus)
+        const OnigiriHours = [12, 18];
         let eatCounter = 1;
+        let startAnim;
+        let nomnom;
+        let nomnom2;
         intervalAnim = setInterval(animate, 500);
-
+        
         // Declare cookie
         var now = new Date();
         now.setTime(now.getTime() + 3600 * 1000); // Agregamos 1 hora en milisegundos
-        document.cookie = "had_breakfast=true; expires=" + now + "; path=/";
-        console.log("Cookie Breakfast declared")
+        document.cookie = "had_eating=true; expires=" + now + "; path=/";
+        console.log("Cookie Eating declared")
 
-            function animate() {
-                endTime = new Date();
-    
-                if(eatCounter <= 1){
-                    loadAnim(DisplayScreen, Anims.breakfast.breakfast1)
-                    eatCounter++
-                }else if(eatCounter == 2 || eatCounter == 4){
-                    loadAnim(DisplayScreen, Anims.breakfast.nomnom)
-                    eatCounter = (eatCounter >= 4)? 1 : (eatCounter + 1)
-                }else if(eatCounter == 3){
-                    loadAnim(DisplayScreen, Anims.breakfast.nomnom2)
-                    eatCounter++
-                }
-    
-                //eatingtHours = [10, 12, 18]
-                if(!pokeStatus.eatingtHours.some(elem => elem == endTime.getHours())) {
-                    clearInterval(intervalAnim);
-                    basicAnim(true);
-                }
+        if(OnigiriHours.some(elem => elem == now.getHours())){
+            startAnim =  Anims.eating.eatingOnigiri;
+            nomnom = Anims.eating.nonomOnigiri
+            nomnom2 =  Anims.eating.nonomOnigiri2
+        }else{
+            startAnim =  Anims.eating.breakfast1;
+            nomnom = Anims.eating.nomnom
+            nomnom2 =  Anims.eating.nomnom2
+        }
+        
+        function animate() {
+            endTime = new Date();
+
+            if(eatCounter <= 1){
+                loadAnim(DisplayScreen, startAnim)
+                eatCounter++
+            }else if(eatCounter == 2 || eatCounter == 4){
+                loadAnim(DisplayScreen, nomnom)
+                eatCounter = (eatCounter >= 4)? 1 : (eatCounter + 1)
+            }else if(eatCounter == 3){
+                loadAnim(DisplayScreen, nomnom2)
+                eatCounter++
             }
+
+            //eatingtHours = [10, 12, 16, 18]
+            if(!pokeStatus.eatingtHours.some(elem => elem == endTime.getHours())) {
+                clearInterval(intervalAnim);
+                basicAnim(true);
+            }
+        }
 
         
     }
