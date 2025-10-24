@@ -33,7 +33,7 @@ pokeStatus.steps = (localStorage.getItem("steps") != null)? Number(localStorage.
 pokeStatus.totalSteps = (localStorage.getItem("totalSteps") != null)? Number(localStorage.getItem("totalSteps")) : 0;
 pokeStatus.watts = (localStorage.getItem("watts") != null)? Number(localStorage.getItem("watts")) : 50;
 pokeStatus.friendshipLevel = (localStorage.getItem("friendshipLevel") != null)? Number(localStorage.getItem("friendshipLevel")) : 0;
-pokeStatus.eatingtHours = [10, 12, 16, 18]
+pokeStatus.eatingtHours = [10, 12, 16, 18];
 pokeStatus.playHours = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
 pokeStatus.tvHours = [13, 14, 15, 16, 17, 18, 19, 20, 21];
 pokeStatus.consecutiveSteps = 0;
@@ -608,7 +608,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Eating
                 //eatingtHours = [10, 12, 16, 18]
                 if( !avoidEat && pokeStatus.eatingtHours.some(elem => elem == startTime.getHours()) && coockieHasBrushed != 'true') {
-                    if(coockieHadEating != 'true' && startTime.getMinutes() <= 30){
+                    if(coockieHadEating != 'true'){ // && startTime.getMinutes() <= 30
                         eating();
                     }else if(coockieHasBrushed != 'true' && !isBrushing){ //cockie tooth
                         brushTeeth();
@@ -1231,12 +1231,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let nomnom2;
         intervalAnim = setInterval(animate, 500);
         
-        // Declare cookie
         var now = new Date();
-        now.setTime(now.getTime() + 3600 * 1000); // Agregamos 1 hora en milisegundos
-        document.cookie = "had_eating=true; expires=" + now + "; path=/";
-        console.log("Cookie Eating declared")
-
+        
         if(OnigiriHours.some(elem => elem == now.getHours())){
             startAnim =  Anims.eating.eatingOnigiri;
             nomnom = Anims.eating.nonomOnigiri
@@ -1246,6 +1242,11 @@ document.addEventListener('DOMContentLoaded', () => {
             nomnom = Anims.eating.nomnom
             nomnom2 =  Anims.eating.nomnom2
         }
+        
+        // Declare cookie
+        now.setTime(now.getTime() + 3600 * 1000); // Agregamos 1 hora en milisegundos
+        document.cookie = "had_eating=true; expires=" + now + "; path=/";
+        console.log("Cookie Eating declared")
         
         function animate() {
             endTime = new Date();
