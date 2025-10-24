@@ -13,8 +13,8 @@
 - [Pocket Pikachu on Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Pok%C3%A9mon_Pikachu)
 
 ## Actual functionalities
-- Sleep Animation from 20 to 7 Hours (3 different possitions)
-- Eat Animations at 10, 12, 13 and 18 hours (2 different animations)
+- Sleep Animation from 20PM to 8AM Hours (3 different possitions)
+- Eat Animations at 10, 12, 16 and 18 hours (2 different animations, Bread and Onigiri)
 - Play Animations randomly between 9-18 hours (SandCastle, BuildingBlocks, Lollypop, Reading)
 - TV Animation randomly between 13-21 hours
 - Bath anim at 19 hours
