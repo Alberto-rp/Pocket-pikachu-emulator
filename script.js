@@ -19,6 +19,7 @@ let screenOff;
 let throwBlocks = false;
 let throwCandy = false;
 let isWalking = false;
+let isLateAwake = false;
 let actionTimeOut = undefined; 
 let auxiliarTimeout = undefined;
 let auxiliarTimeout2 = undefined;
@@ -339,7 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     loadAnim(DisplayScreen, Anims.gift.whereIsPikachu)
                                 }else{
                                     // Sleep
-                                    if (timeStart.getHours() >= 20 && timeStart.getHours() <= 23 || timeStart.getHours() >= 0 && timeStart.getHours() < 8){
+                                    if (!isLateAwake && timeStart.getHours() >= 20 && timeStart.getHours() <= 23 || timeStart.getHours() >= 0 && timeStart.getHours() < 8){
                                         loadAnim(DisplayScreen, Anims.gift.sleeping)
                                     }else{
                                         // Prepare Gift
@@ -388,6 +389,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 clearInterval(intervalAnim);
                 clearAllTimeouts();
                 animStatus = ''
+                isLateAwake = false;
                 cleanStates();
                 document.querySelector('.walkCounter').innerHTML = '';
                 loadAnim(DisplayScreen, null, true);
@@ -417,6 +419,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 clearInterval(intervalAnim);
                 clearAllTimeouts();
                 animStatus = ''
+                isLateAwake = false;
                 cleanStates();
                 document.querySelector('.walkCounter').innerHTML = '';
                 loadAnim(DisplayScreen, null, true);
@@ -566,7 +569,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }else{
             // Sleep
-            if (!avoidSleep && startTime.getHours() >= 20 && startTime.getHours() <= 23 ||
+            if (!avoidSleep && !isLateAwake && startTime.getHours() >= 20 && startTime.getHours() <= 23 ||
                 startTime.getHours() >= 0 && startTime.getHours() < 8){
                 animStatus = 'sleeping';
                 
@@ -747,6 +750,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     clearInterval(intervalAnim);
                     clearAllTimeouts();
                     animStatus = ''
+                    isLateAwake = false;
                     cleanStates();
                     document.querySelector('.walkCounter').innerHTML = '';
                     loadAnim(DisplayScreen, null, true);
@@ -874,12 +878,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         auxiliarTimeout = setTimeout(() => {
                             clearInterval(intervalAnim);
     
-                            // If it's not shaked after awake more than 5 times, sleep again. if not wakes up
-                            if(pokeStatus.consecutiveSteps - cStepsforNow < 5){
+                            // If it's not shaked after awake more than 10 times, sleep again. if not wakes up
+                            if(pokeStatus.consecutiveSteps - cStepsforNow < 10){
                                 //To change the sleep position
                                 randomAnim = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
                                 basicAnim(true);
                             }else{
+                                isLateAwake = true;
                                 clearInterval(intervalAnim);
                                 clearAllTimeouts();
                                 loadAnim(DisplayScreen, Anims.sleep.goingToSleep);
