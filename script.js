@@ -876,6 +876,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
                             // If it's not shaked after awake more than 5 times, sleep again. if not wakes up
                             if(pokeStatus.consecutiveSteps - cStepsforNow < 5){
+                                //To change the sleep position
+                                randomAnim = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
                                 basicAnim(true);
                             }else{
                                 clearInterval(intervalAnim);
