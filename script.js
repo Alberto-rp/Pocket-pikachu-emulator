@@ -14,6 +14,7 @@ let clickedPixels = [];
 let intervalAnim;
 let animStatus = ''
 let randomAnim;
+let randomActivity;
 let screenOff;
 let throwBlocks = false;
 let throwCandy = false;
@@ -284,6 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 if(animStatus == ''){
                     randomAnim = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
+                    randomActivity = Math.floor(Math.random() * (20 - 1 + 1) + 1); //1-20
                     coockieHadEating = document.cookie.split("; ").find((row) => row.startsWith("had_eating="))?.split("=")[1];
                     coockieHasBrushed = document.cookie.split("; ").find((row) => row.startsWith("has_brushed="))?.split("=")[1];
                     coockieHasGoneSleep = document.cookie.split("; ").find((row) => row.startsWith("has_gone_sleep="))?.split("=")[1];
@@ -646,7 +648,6 @@ document.addEventListener('DOMContentLoaded', () => {
                             }
                         }else if(!avoidActivity && pokeStatus.playHours.some(elem => elem == startTime.getHours()) && randomAnim > 5){//PlayingTime
                             // Random activities
-                            let randomActivity = Math.floor(Math.random() * (20 - 1 + 1) + 1); //1-20
                             console.log("PlayingTime" + randomActivity)
                             
                             if(randomActivity >= 1 && randomActivity <= 7){
