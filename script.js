@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.eating.angryOnigiri1;
+    Anims.edit = Anims.eating.angry3;
 });
 
 // Anim vars
@@ -1285,6 +1285,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function walking(stop) {
         animStatus = 'walking'
         console.log(animStatus)
+        // To avoid play after walking
+        randomAnim = 3;
         let walkCounter = 1;
         loadAnim(DisplayScreen, Anims.walk.stand)
 
