@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.eating.nomnom2;
+    Anims.edit = Anims.eating.angryOnigiri1;
 });
 
 // Anim vars
@@ -127,9 +127,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     //Drawing functionality
+    createScreen.addEventListener('click', draw)
+
     function draw(event) {
         if(event.target.classList[0] == 'createScreen') return
-        event.target.classList.contains('clicked')
+
         if(event.target.classList.contains('clicked')){
             event.target.classList.remove('clicked')
         }else{
@@ -137,10 +139,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    createScreen.addEventListener('click', draw)
-
     //Saving Animation
     document.querySelector("#saveAnimation").addEventListener('click', () => {
+        console.log('SAVED');
+        saved = document.querySelectorAll('.createScreen .pixel');
         clickedPixels = [];
         let exitString = '[';
         saved.forEach((element, index) => {
@@ -154,27 +156,11 @@ document.addEventListener('DOMContentLoaded', () => {
         exitString += ']';
 
         // Output
-        // console.log(clickedPixels)
         navigator.clipboard.writeText(exitString)
         console.log(exitString)
     })
 
-    //Saving
-    document.querySelector("#saveDraw").addEventListener('click', () => {
-        console.log('SAVED')
-        saved = document.querySelectorAll('.createScreen .pixel')
-    })
-
-    //Print
-    document.querySelector("#printDraw").addEventListener('click', () => {
-        DisplayScreen.innerHTML = '';
-        saved.forEach(element => {
-            let newDiv = element.cloneNode(true)
-            DisplayScreen.appendChild(newDiv);
-        });
-    })
-
-    //PrintHello
+    //Print Editing Animation
     document.querySelector("#printInit").addEventListener('click', () => {
         loadAnim(DisplayScreen, Anims.edit)
     })
@@ -184,6 +170,28 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector("#editPrint").addEventListener('click', () => {
         loadAnim(createScreen, Anims.edit)
     })
+
+    //ERASER
+    let eraserEvent = false;
+    document.querySelector("#eraser").addEventListener('click', () => {
+        eraserEvent = !eraserEvent;
+
+        if(eraserEvent){
+            createScreen.addEventListener('mouseover', erase)
+            document.querySelector("#eraser").style.backgroundColor = 'red'
+        }else{
+            createScreen.removeEventListener('mouseover', erase)
+            document.querySelector("#eraser").style.backgroundColor = ''
+        }
+    });
+
+    function erase(event) {
+        if(event.target.classList[0] == 'createScreen') return
+        
+        if(event.target.classList.contains('clicked')){
+            event.target.classList.remove('clicked')
+        }
+    }
 
     //INIT TAMAGOTCHI / ENTER
     // var clockInterval;
