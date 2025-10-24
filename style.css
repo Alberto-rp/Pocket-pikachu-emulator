@@ -323,3 +323,48 @@ footer p {
         font-size: 7px;
     }
 }
+
+.preloader {
+    width: 100%;
+    position: absolute;
+    background-color: #000;
+    opacity: 80%;
+    height: calc(100% + 100px);
+    z-index: 100;
+}
+
+.loader {
+    position: absolute;
+    z-index: 1000;
+    left: calc(50% - 25px);
+    top: 20%;
+    width: 64px;
+    height: 64px;
+    background-image:
+        linear-gradient(#FFF 16px, transparent 0) ,
+        linear-gradient(#333366 16px, transparent 0) ,
+        linear-gradient(#333366 16px, transparent 0) ,
+        linear-gradient(#FFF 16px, transparent 0);
+    background-repeat: no-repeat;
+    background-size: 16px 16px;
+    background-position: left top , left bottom , right top , right bottom;
+    animation: rotate 1s linear infinite;
+    }
+    @keyframes rotate {
+    0% {
+        width: 64px;
+        height: 64px;
+        transform: rotate(0deg)
+    }
+    50% {
+        width: 30px;
+        height: 30px;
+        transform: rotate(180deg)
+    }
+    100% {
+        width: 64px;
+        height: 64px;
+        transform: rotate(360deg)
+    }
+    }
+    
