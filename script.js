@@ -329,7 +329,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     loadAnim(DisplayScreen, Anims.gift.whereIsPikachu)
                                 }else{
                                     // Sleep
-                                    if (timeStart.getHours() >= 20 && timeStart.getHours() <= 23 || timeStart.getHours() >= 0 && timeStart.getHours() < 7){
+                                    if (timeStart.getHours() >= 20 && timeStart.getHours() <= 23 || timeStart.getHours() >= 0 && timeStart.getHours() < 8){
                                         loadAnim(DisplayScreen, Anims.gift.sleeping)
                                     }else{
                                         // Prepare Gift
@@ -557,13 +557,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }else{
             // Sleep
             if (!avoidSleep && startTime.getHours() >= 20 && startTime.getHours() <= 23 ||
-                startTime.getHours() >= 0 && startTime.getHours() < 7){
+                startTime.getHours() >= 0 && startTime.getHours() < 8){
                 animStatus = 'sleeping';
                 
                 // Update the cookieValue after goinToSleep, to avoid error of multiple times going to sleep
                 coockieHasGoneSleep = document.cookie.split("; ").find((row) => row.startsWith("has_gone_sleep="))?.split("=")[1];
 
-                if(coockieHasGoneSleep != 'true' && startTime.getHours() == 20 || randomAnim <= 3) {
+                if((coockieHasGoneSleep != 'true' && startTime.getHours() == 20) || randomAnim <= 3) {
                     slepAnim = Anims.sleep.frontSleep;
                     slepAnim2 = Anims.sleep.frontSleep2;
                 }else if(randomAnim >= 4 && randomAnim <= 6){
@@ -637,7 +637,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
                     }else{ //Friendship level OK
                         console.log(randomAnim);
-                        if(startTime.getHours() == 19 && coockieHasTakeBath != 'true' || coockieHasBrushed != 'true'){// Bath Time
+                        console.log(startTime.getHours() == 19);
+                        if(startTime.getHours() == 19 && (coockieHasTakeBath != 'true' || coockieHasBrushed != 'true')){// Bath Time
                             if(coockieHasTakeBath != 'true'){
                                 bathTime();
                             }else{
@@ -1319,7 +1320,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Declare cookie
         var time = new Date();
-        time.setTime(time.getTime() + 21600 * 1000); // Agregamos 6 horas en milisegundos
+        time.setTime(time.getTime() + 3600 * 1000); // Agregamos 1 horas en milisegundos
         document.cookie = "had_take_bath=true; expires=" + time + "; path=/";
         console.log("Cookie Bath declared")
     }
