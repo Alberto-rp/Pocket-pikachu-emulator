@@ -546,7 +546,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Basic stand animation
     function basicAnim(avoidActivity=false, avoidSleep=false, avoidGreeting=false, avoidEat=false) {
-        avoidSleep = true; //For development
+        //avoidSleep = true; //For development
         animStatus = 'stand'
         let startTime = new Date();
         let sleepCounter = 1
@@ -1260,7 +1260,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function eating() {
         animStatus = 'eating'
         console.log(animStatus)
-        const OnigiriHours = [12, 18];
+        const BreadHours = [10];
         let eatCounter = 1;
         let startAnim;
         let nomnom;
@@ -1269,14 +1269,14 @@ document.addEventListener('DOMContentLoaded', () => {
         
         var now = new Date();
         
-        if(OnigiriHours.some(elem => elem == now.getHours())){
-            startAnim =  Anims.eating.eatingOnigiri;
-            nomnom = Anims.eating.nonomOnigiri
-            nomnom2 =  Anims.eating.nonomOnigiri2
-        }else{
+        if(BreadHours.some(elem => elem == now.getHours()) || randomAnim >= 5){
             startAnim =  Anims.eating.breakfast1;
             nomnom = Anims.eating.nomnom
             nomnom2 =  Anims.eating.nomnom2
+        }else{
+            startAnim =  Anims.eating.eatingOnigiri;
+            nomnom = Anims.eating.nonomOnigiri
+            nomnom2 =  Anims.eating.nonomOnigiri2
         }
         
         // Declare cookie
