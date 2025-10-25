@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.eating.angry3;
+    Anims.edit = Anims.shower.stand2;
 });
 
 // Anim vars
@@ -307,7 +307,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         console.log(menuSelected)
                         switch (menuSelected) {
                             case "clockMenu": //CLOCK
-                                // basicAnim('stop', true);
                                 clearInterval(intervalAnim);
                                 clearAllTimeouts();
                                 animStatus = 'clock'
@@ -326,7 +325,6 @@ document.addEventListener('DOMContentLoaded', () => {
                                 break;
                             case "giftMenu":
                                 // Clean states
-                                // basicAnim('stop', true);
                                 let timeStart = new Date();
                                 clearInterval(intervalAnim);
                                 clearAllTimeouts();
@@ -548,6 +546,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Basic stand animation
     function basicAnim(avoidActivity=false, avoidSleep=false, avoidGreeting=false, avoidEat=false) {
+        avoidSleep = true; //For development
         animStatus = 'stand'
         let startTime = new Date();
         let sleepCounter = 1
@@ -650,7 +649,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
                     }else{ //Friendship level OK
                         console.log(randomAnim);
-                        console.log(startTime.getHours() == 19);
                         if(startTime.getHours() == 19 && (coockieHasTakeBath != 'true' || coockieHasBrushed != 'true')){// Bath Time
                             if(coockieHasTakeBath != 'true'){
                                 bathTime();
@@ -760,11 +758,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // To start walking or make its action
-        let walkingAllowedAnims = ['stand', 'standMad', 'sandcastle', 'standLove', 'standLike', 'eating']
+        let walkingAllowedAnims = ['stand', 'standMad', 'sandcastle', 'standLove', 'standLike', 'eating', 'bathTime']
         if(pokeStatus.consecutiveSteps >= 20 && !isWalking && walkingAllowedAnims.some(anim => anim == animStatus)) {
             clearInterval(intervalAnim);
             isWalking = true;
             clearInterval(screenOff);
+            switch (animStatus) {
+                case 'eating':
+                    avoidEatAfterWalk = true;
+                break;
+                case 'bathTime':
+                    coockieHasTakeBath = 'true';
+                    coockieHasBrushed = 'true';
+                break;
+            }
             walking();
         }else{
             if(animStatus == 'left'){
@@ -780,7 +787,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }else if(animStatus == 'stand') { // Make Pikachu look 
                 actionTimeOut = setTimeout(() => {
                     console.log("EING?")
-                    // basicAnim('stop', true);
                     clearInterval(intervalAnim);
                     auxiliarTimeout = setTimeout(() => {
                         loadAnim(DisplayScreen, Anims.standBasic.look);
@@ -794,7 +800,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }else if(animStatus == 'standMad') { // Make Pikachu look 
                 actionTimeOut = setTimeout(() => {
                     console.log("EING?")
-                    // basicAnim('stop', true);
                     clearInterval(intervalAnim);
                     auxiliarTimeout = setTimeout(() => {
                         loadAnim(DisplayScreen, Anims.standMad.look);
@@ -867,6 +872,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     standLove(true);
                     pokeStatus.consecutiveSteps = 0;
                 }, 1000);
+            }else if(animStatus == 'bathTime'){
+                actionTimeOut = setTimeout(() => {
+                    console.log("EING?")
+                    clearInterval(intervalAnim);
+                    loadAnim(DisplayScreen, Anims.shower.look);
+                    pokeStatus.consecutiveSteps = 0;
+                    auxiliarTimeout = setTimeout(() => {
+                        basicAnim();
+                    }, 3000);
+                }, 1000);
+            }else if(animStatus == 'eating'){
+                actionTimeOut = setTimeout(() => {
+                    console.log("Throw Table")
+                    pokeStatus.consecutiveSteps = 0;
+                }, 1000);
             }else if(animStatus == 'sleeping'){
                 actionTimeOut = setTimeout(() => {
                     if(pokeStatus.consecutiveSteps >= 15){
@@ -900,11 +920,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, 1000);
             }else{
                 // To avoid increise during Game or Gift menu, but allow walk in some anims
-                if(animStatus != 'eating'){
-                    pokeStatus.consecutiveSteps = 0;
-                }else{
-                    avoidEatAfterWalk = true
-                }
+                pokeStatus.consecutiveSteps = 0;
             }
         }
     })
