@@ -19,6 +19,7 @@ let screenOff;
 let throwBlocks = false;
 let throwCandy = false;
 let isWalking = false;
+let avoidEatAfterWalk = false;
 let isLateAwake = false;
 let actionTimeOut = undefined; 
 let auxiliarTimeout = undefined;
@@ -36,8 +37,8 @@ pokeStatus.totalSteps = (localStorage.getItem("totalSteps") != null)? Number(loc
 pokeStatus.watts = (localStorage.getItem("watts") != null)? Number(localStorage.getItem("watts")) : 50;
 pokeStatus.friendshipLevel = (localStorage.getItem("friendshipLevel") != null)? Number(localStorage.getItem("friendshipLevel")) : 0;
 pokeStatus.eatingtHours = [10, 12, 16, 18];
-pokeStatus.playHours = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
-pokeStatus.tvHours = [13, 14, 15, 16, 17, 18, 19, 20, 21];
+pokeStatus.playHours = [9, 10, 11, 12, 13, 14, 15, 16, 17];
+pokeStatus.tvHours = [13, 14, 15, 16, 17, 18, 19];
 pokeStatus.consecutiveSteps = 0;
 pokeStatus.lastConected = (localStorage.getItem("lastConected") != null)? localStorage.getItem("lastConected") : new Date().toDateString();
 
@@ -426,7 +427,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 clearInterval(screenOff);
             }
 
-            basicAnim(false, false, true);
+            basicAnim(false, false, true, avoidEatAfterWalk); 
         }else if(animStatus == 'gift' && wattsAux.selectedUnitWatt != 'cent'){
             let posibleUnits = ['cent', 'dec', 'unit', 'give'];
             // Seleccionar la anterior unidad
@@ -623,9 +624,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if( !avoidEat && pokeStatus.eatingtHours.some(elem => elem == startTime.getHours()) && coockieHasBrushed != 'true') {
                     if(coockieHadEating != 'true'){ // && startTime.getMinutes() <= 30
                         eating();
-                    }else if(coockieHasBrushed != 'true' && !isBrushing){ //cockie tooth
+                    }else if(coockieHasBrushed != 'true'){ //cockie tooth
                         brushTeeth();
-                        isBrushing = true;
                     }
                 }else{
                     if(pokeStatus.friendshipLevel <= -500){ // If pikachu is mad he doesn't play
@@ -760,7 +760,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // To start walking or make its action
-        let walkingAllowedAnims = ['stand', 'standMad', 'sandcastle', 'standLove', 'standLike']
+        let walkingAllowedAnims = ['stand', 'standMad', 'sandcastle', 'standLove', 'standLike', 'eating']
         if(pokeStatus.consecutiveSteps >= 20 && !isWalking && walkingAllowedAnims.some(anim => anim == animStatus)) {
             clearInterval(intervalAnim);
             isWalking = true;
@@ -899,8 +899,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }, 1000);
             }else{
-                // To avoid increise during Game or Gift menu
-                pokeStatus.consecutiveSteps = 0;
+                // To avoid increise during Game or Gift menu, but allow walk in some anims
+                if(animStatus != 'eating'){
+                    pokeStatus.consecutiveSteps = 0;
+                }else{
+                    avoidEatAfterWalk = true
+                }
             }
         }
     })
