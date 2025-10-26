@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.shower.stand2;
+    Anims.edit = Anims.piano.right;
 });
 
 // Anim vars
@@ -571,11 +571,6 @@ document.addEventListener('DOMContentLoaded', () => {
             // Sleep
             if (!avoidSleep && !isLateAwake && (startTime.getHours() >= 20 && startTime.getHours() <= 23 ||
                 startTime.getHours() >= 0 && startTime.getHours() < 8)){
-                console.log("entra")
-                console.log(avoidSleep)
-                console.log(isLateAwake)
-                console.log(startTime.getHours() >= 20 && startTime.getHours() <= 23 ||
-                startTime.getHours() >= 0 && startTime.getHours() < 8)
                 animStatus = 'sleeping';
                 
                 // Update the cookieValue after goinToSleep, to avoid error of multiple times going to sleep
@@ -1224,7 +1219,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function backFlip(secondAnim=false) {
+    function backFlip() {
         clearInterval(intervalAnim);
         animStatus = 'backFlip'
         console.log(animStatus)
@@ -1247,11 +1242,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }else if(animHits == 6){
                 loadAnim(DisplayScreen, Anims.backflip.jump3)
             }else if(animHits == 12){
-                if(!secondAnim){
-                    basicAnim(true, false, true, true);
-                }else{
-                    heartSmiles();
-                }
+                basicAnim(true, false, true, true);
             }
             animHits++
         }
@@ -1622,6 +1613,7 @@ document.addEventListener('DOMContentLoaded', () => {
             clearAllTimeouts();
             resetGivenWatts();
             let friendShipStatus = '';
+            randomAnim = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
 
             if(originalFrienship <= -1500){
                 friendShipStatus = 'left'
@@ -1639,13 +1631,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 tongueAnim();
             }else if(amount > 0 && amount < 100){
                 yawnAnim();
-            }else if(amount >= 100 && amount <= 299){
+            }else if(amount >= 100 && amount < 300){
                 happySteps();
-            }else if(amount >= 300 && amount <= 399){
-                if(friendShipStatus == 'mad' || friendShipStatus == 'loves') {
-                    backFlip((friendShipStatus == 'loves'));
-                }else {
+            }else if(amount >= 300 && amount < 400){
+                if(randomAnim > 3 || friendShipStatus == 'mad') {
                     heartSmiles();
+                }else {
+                    backFlip();
+                }
+            }else if(amount >= 400 && amount < 500){
+                if(randomAnim <= 4 || friendShipStatus == 'mad'){
+                    heartSmiles();
+                }else if(randomAnim > 4 && randomAnim <= 8){
+                    backFlip();
+                }else{
+                    backFlip();
+                    //writing a letter
                 }
             }else{
                 heartSmiles();
