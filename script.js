@@ -551,9 +551,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     })
 
-    // Test Animation
+    // Test Animation / test anim
     document.querySelector("#startAnim").addEventListener('click', () => {
-        eating();
+        playPiano();
     })
 
     // Basic stand animation
@@ -1264,6 +1264,32 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function playPiano() {
+        clearInterval(intervalAnim);
+        animStatus = 'piano'
+        console.log(animStatus)
+        let animHits = 1
+        intervalAnim = setInterval(animate, 600);
+        auxiliarTimeout = setTimeout(() => {
+            document.querySelector("#clockMenu").classList.add('selected')
+        }, 500);
+        auxiliarTimeout2 = setTimeout(() => {
+            clearInterval(intervalAnim);
+            basicAnim(true, false, true, true);
+        }, 18000);
+        
+        function animate() {
+            
+            if(animHits <= 1){
+                loadAnim(DisplayScreen, Anims.piano.right)
+            }else{
+                loadAnim(DisplayScreen, Anims.piano.left)
+                animHits = 0;
+            }
+            animHits++
+        }
+    }
+
     /* ////////////////
         PLAY AND ACTIONS ANIMS
     //////////////////*/
@@ -1665,8 +1691,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     backFlip();
                     //writing a letter
                 }
+            }else if(amount >= 500 && amount < 700){
+                if(randomAnim <= 3){
+                    heartSmiles();
+                }else if(randomAnim > 3 && randomAnim <= 6){
+                    backFlip();
+                }else{
+                    backFlip();
+                    //writing a letter
+                }
             }else{
-                heartSmiles();
+                playPiano();
             }
         }
     }    
