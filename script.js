@@ -339,7 +339,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     loadAnim(DisplayScreen, Anims.gift.whereIsPikachu)
                                 }else{
                                     // Sleep
-                                    if (!isLateAwake && timeStart.getHours() >= 20 && timeStart.getHours() <= 23 || timeStart.getHours() >= 0 && timeStart.getHours() < 8){
+                                    if (!isLateAwake && (timeStart.getHours() >= 20 && timeStart.getHours() <= 23 || timeStart.getHours() >= 0 && timeStart.getHours() < 8)){
                                         loadAnim(DisplayScreen, Anims.gift.sleeping)
                                     }else{
                                         // Prepare Gift
@@ -569,8 +569,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }else{
             // Sleep
-            if (!avoidSleep && !isLateAwake && startTime.getHours() >= 20 && startTime.getHours() <= 23 ||
-                startTime.getHours() >= 0 && startTime.getHours() < 8){
+            if (!avoidSleep && !isLateAwake && (startTime.getHours() >= 20 && startTime.getHours() <= 23 ||
+                startTime.getHours() >= 0 && startTime.getHours() < 8)){
+                console.log("entra")
+                console.log(avoidSleep)
+                console.log(isLateAwake)
+                console.log(startTime.getHours() >= 20 && startTime.getHours() <= 23 ||
+                startTime.getHours() >= 0 && startTime.getHours() < 8)
                 animStatus = 'sleeping';
                 
                 // Update the cookieValue after goinToSleep, to avoid error of multiple times going to sleep
