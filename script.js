@@ -82,6 +82,8 @@ roulete.hackSteps = 0;
 document.addEventListener('DOMContentLoaded', () => {
     const createScreen = document.querySelector('.createScreen');
     const DisplayScreen = document.querySelector('.screen');
+    // const audioShake = document.querySelector('#shakeAudio');
+    // const audioShaking = document.querySelector('#shakingAudio');
 
 
     if(localStorage.getItem("InitTamagotchi") == null){
@@ -198,7 +200,9 @@ document.addEventListener('DOMContentLoaded', () => {
     //INIT TAMAGOTCHI / ENTER
     // var clockInterval;
     document.querySelector("#enter-button").addEventListener('click', () => {
+        window.navigator.vibrate(20);
         if(animStatus == 'pokeball') {
+            window.navigator.vibrate([200, 700, 200]);
             clearInterval(intervalAnim);
             clearAllTimeouts();
             restartTamagotchi(DisplayScreen, true)
@@ -401,6 +405,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // BACK BUTTON
     let backMenusAllowed = ['clock', 'state', 'settings', 'game']
     document.querySelector("#back-button").addEventListener('click', () => {
+        window.navigator.vibrate(20);
         if(backMenusAllowed.some(anim => anim == animStatus) && !(animStatus == 'game' && roulete.gameStarted) || animStatus == 'gift' && wattsAux.selectedUnitWatt == 'cent'){
             selectedSettingMenu = settingsMenus[1];
             roulete.selectedStep = roulete.posibleStep[0];
@@ -445,6 +450,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let menus = ['clockMenu', 'giftMenu', 'gameMenu'];
 
     document.querySelector("#state-button").addEventListener('click', () => {
+        window.navigator.vibrate(20);
         if(allowedAnims.some(anim => anim == animStatus)){
             cleanStates();
             animStatus = 'state'
@@ -458,6 +464,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let settingsMenus = ['reset', 'sound', 'relDrop'];
     let selectedSettingMenu = settingsMenus[1]
     document.querySelector("#menu-button").addEventListener('click', () => {
+        window.navigator.vibrate(20);
         if(allowedAnims.some(anim => anim == animStatus)){
             cleanStates();
             animStatus = 'settings'
@@ -469,6 +476,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // RIGHT BUTTON
     document.querySelector('#right-button').addEventListener('click', () => {
+        window.navigator.vibrate(10);
         if(animStatus != '' && allowedAnims.some(anim => anim == animStatus)){
             let selected = menus.find(item => document.querySelector(`#${item}`).classList.contains('selected'))
             let nextMenu = (menus.indexOf(selected) < (menus.length - 1))? (menus.indexOf(selected) + 1) : menus.indexOf(selected)
@@ -480,6 +488,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // LEFT BUTTON
     document.querySelector('#left-button').addEventListener('click', () => {
+        window.navigator.vibrate(10);
         if(animStatus != '' && allowedAnims.some(anim => anim == animStatus)){
             let selected = menus.find(item => document.querySelector(`#${item}`).classList.contains('selected'))
             let nextMenu = (menus.indexOf(selected) > 0)? (menus.indexOf(selected) - 1) : menus.indexOf(selected)
@@ -491,6 +500,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // TOP BUTTON
     document.querySelector('#top-button').addEventListener('click', () => {
+        window.navigator.vibrate(10);
         if(animStatus == 'gift'){
             switch (wattsAux.selectedUnitWatt) {
                 case "cent":
@@ -512,6 +522,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // BOTTOM BUTTON
     document.querySelector('#bottom-button').addEventListener('click', () => {
+        window.navigator.vibrate(10);
         if(animStatus == 'gift'){
             switch (wattsAux.selectedUnitWatt) {
                 case "cent":
@@ -533,6 +544,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //RESET BUTTON
     document.querySelector('#reset-button').addEventListener('click', () => {
+        window.navigator.vibrate(2000);
         console.log(animStatus)
         if(animStatus != 'restart' && animStatus != 'pokeball'){
             restartTamagotchi(DisplayScreen);
@@ -712,7 +724,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //SHAKE WALK
     document.querySelector('#shake').addEventListener('click', () => {
-        let startTime = new Date();
+        window.navigator.vibrate(10);
+        // if(!isWalking){
+        //     audioShake.play();
+        // }
         let screenShaked = document.querySelector('.screenContainer, .buttonsContainer');
         let buttonShake = document.querySelector('#shake');
         pokeStatus.consecutiveSteps++
@@ -761,6 +776,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let walkingAllowedAnims = ['stand', 'standMad', 'sandcastle', 'standLove', 'standLike', 'eating', 'bathTime']
         if(pokeStatus.consecutiveSteps >= 20 && !isWalking && walkingAllowedAnims.some(anim => anim == animStatus)) {
             clearInterval(intervalAnim);
+            clearAllTimeouts();
             isWalking = true;
             clearInterval(screenOff);
             switch (animStatus) {
@@ -1312,7 +1328,7 @@ document.addEventListener('DOMContentLoaded', () => {
         randomAnim = 3;
         let walkCounter = 1;
         loadAnim(DisplayScreen, Anims.walk.stand)
-
+        
         if(!stop){
             intervalAnim = setInterval(animate, 750);
         }else{
@@ -1320,8 +1336,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 basicAnim(true, false, true, true);
             }, 2000);
         }
-
+        
         function animate() {
+            // audioShaking.play();
             if(walkCounter == 1){
                 loadAnim(DisplayScreen, Anims.walk.walking1)
             }else if(walkCounter == 2 || walkCounter == 4){
