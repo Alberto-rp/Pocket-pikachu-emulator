@@ -207,18 +207,20 @@ document.addEventListener('DOMContentLoaded', () => {
             clearAllTimeouts();
             restartTamagotchi(DisplayScreen, true)
         }else if(animStatus == 'gift'){
-            if(wattsAux.selectedUnitWatt != 'give'){
-                let posibleUnits = ['cent', 'dec', 'unit', 'give'];
-                // Seleccionar la siguiente unidad
-                wattsAux.selectedUnitWatt = (posibleUnits.indexOf(wattsAux.selectedUnitWatt) < (posibleUnits.length - 1))? posibleUnits[posibleUnits.indexOf(wattsAux.selectedUnitWatt) + 1] : wattsAux.selectedUnitWatt
-            }else if(wattsAux.selectedUnitWatt == 'give' && wattsAux.givenAmountWatts <= pokeStatus.watts){
-                console.log(`${wattsAux.givenAmountWatts} was given`);
-                clearInterval(intervalAnim);
-                clearAllTimeouts();
-                resetGivenWatts();
-
-                // Give present to Pikachu / Update friendship level
-                updateFriendshipLevel(wattsAux.givenAmountWatts, true, true);
+            if(isLateAwake || !(timeStart.getHours() >= 20 && timeStart.getHours() <= 23 || timeStart.getHours() >= 0 && timeStart.getHours() < 8)){
+                if(wattsAux.selectedUnitWatt != 'give'){
+                    let posibleUnits = ['cent', 'dec', 'unit', 'give'];
+                    // Seleccionar la siguiente unidad
+                    wattsAux.selectedUnitWatt = (posibleUnits.indexOf(wattsAux.selectedUnitWatt) < (posibleUnits.length - 1))? posibleUnits[posibleUnits.indexOf(wattsAux.selectedUnitWatt) + 1] : wattsAux.selectedUnitWatt
+                }else if(wattsAux.selectedUnitWatt == 'give' && wattsAux.givenAmountWatts <= pokeStatus.watts){
+                    console.log(`${wattsAux.givenAmountWatts} was given`);
+                    clearInterval(intervalAnim);
+                    clearAllTimeouts();
+                    resetGivenWatts();
+    
+                    // Give present to Pikachu / Update friendship level
+                    updateFriendshipLevel(wattsAux.givenAmountWatts, true, true);
+                }
             }
         }else if(animStatus == 'game'){
             let {posibleStep, selectedStep, selectedSlot1, selectedSlot2, selectedSlot3} = roulete; //Desestructuracion de objeto
@@ -745,7 +747,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if(animStatus == 'state') {
                 displayState(DisplayScreen);
             }
-            if(animStatus == 'gift') {
+            if(animStatus == 'gift' && isLateAwake || !(timeStart.getHours() >= 20 && timeStart.getHours() <= 23 || timeStart.getHours() >= 0 && timeStart.getHours() < 8)) {
                 displayTotalWatts(DisplayScreen);
             }
         }, 250);
