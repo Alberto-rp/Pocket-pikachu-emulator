@@ -632,7 +632,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // if avoid Sleep, limpiar cookie de acostarse
                 // Eating
                 //eatingtHours = [10, 12, 16, 18]
-                if( !avoidEat && pokeStatus.eatingtHours.some(elem => elem == startTime.getHours()) && coockieHasBrushed != 'true') {
+                if( !avoidEat && pokeStatus.eatingtHours.some(elem => elem == startTime.getHours()) && coockieHasBrushed != 'true' && startTime.getMinutes() <= 30) {
                     if(coockieHadEating != 'true'){ // && startTime.getMinutes() <= 30
                         eating();
                     }else if(coockieHasBrushed != 'true'){ //cockie tooth
@@ -1599,6 +1599,7 @@ document.addEventListener('DOMContentLoaded', () => {
             pokeStatus.totalSteps = 0;
             pokeStatus.watts = 50;
             pokeStatus.friendshipLevel = 0;
+            isLateAwake = true;
             settings.relSelected = 'on';
             localStorage.setItem("watts", pokeStatus.watts);
             localStorage.setItem("friendshipLevel", pokeStatus.friendshipLevel);
