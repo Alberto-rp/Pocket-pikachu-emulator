@@ -200,6 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
     //INIT TAMAGOTCHI / ENTER
     // var clockInterval;
     document.querySelector("#enter-button").addEventListener('click', () => {
+        let timeStart = new Date();
         window.navigator.vibrate(20);
         if(animStatus == 'pokeball') {
             window.navigator.vibrate([200, 700, 200]);
