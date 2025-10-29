@@ -9,7 +9,7 @@
 }
 
 body {
-    background-color: #ffcc00;
+    background-color: #ffbb00;
     box-sizing: border-box;
     margin: 0;
 
@@ -323,6 +323,15 @@ footer p {
     font-weight: 600;
     font-size: 14px;
     opacity: 0.5;
+}
+
+.emailme a{
+    color: #000;
+    text-decoration: none;
+}
+
+.emailme a:visited{
+    color: #000;
 }
 
 @media only screen and (max-width: 768px) {

@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // var clockInterval;
     document.querySelector("#enter-button").addEventListener('click', () => {
         let timeStart = new Date();
-        window.navigator.vibrate(20);
+        window.navigator.vibrate(10);
         if(animStatus == 'pokeball') {
             window.navigator.vibrate([200, 700, 200]);
             clearInterval(intervalAnim);
@@ -408,7 +408,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // BACK BUTTON
     let backMenusAllowed = ['clock', 'state', 'settings', 'game']
     document.querySelector("#back-button").addEventListener('click', () => {
-        window.navigator.vibrate(20);
+        window.navigator.vibrate(10);
         if(backMenusAllowed.some(anim => anim == animStatus) && !(animStatus == 'game' && roulete.gameStarted) || animStatus == 'gift' && wattsAux.selectedUnitWatt == 'cent'){
             selectedSettingMenu = settingsMenus[1];
             roulete.selectedStep = roulete.posibleStep[0];
@@ -453,7 +453,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let menus = ['clockMenu', 'giftMenu', 'gameMenu'];
 
     document.querySelector("#state-button").addEventListener('click', () => {
-        window.navigator.vibrate(20);
+        window.navigator.vibrate(10);
         if(allowedAnims.some(anim => anim == animStatus)){
             cleanStates();
             animStatus = 'state'
@@ -467,7 +467,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let settingsMenus = ['reset', 'sound', 'relDrop'];
     let selectedSettingMenu = settingsMenus[1]
     document.querySelector("#menu-button").addEventListener('click', () => {
-        window.navigator.vibrate(20);
+        window.navigator.vibrate(10);
         if(allowedAnims.some(anim => anim == animStatus)){
             cleanStates();
             animStatus = 'settings'
