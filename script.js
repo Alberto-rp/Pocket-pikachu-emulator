@@ -2254,7 +2254,7 @@ function showResults(screen) {
         //Win
         let amount = 0;
         let anim = amount
-        let intervalSpeed = 350;
+        let intervalSpeed = 200;
         roulete.totalLosses = 0;
         
         switch (slot1[selectedSlot1]) {
