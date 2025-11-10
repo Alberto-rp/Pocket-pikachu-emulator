@@ -207,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'iPod'
         ].includes(navigator.platform)
         // iPad on iOS 13 detection
-        || ( navigator.userAgent.match(/(iPad|iPhone|iPod)/i) && "ontouchend" in document)
+        || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
     }
 
     //INIT TAMAGOTCHI / ENTER
