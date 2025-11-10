@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Developer screen
     loadAnim(createScreen, null, true);
     if(window.location.href.indexOf('github.io') != -1 || window.location.href.indexOf('pokpik.life') != -1){
-        // document.querySelector('.developerScreen').classList.add('hide');
+        document.querySelector('.developerScreen').classList.add('hide');
     }
 
     //Drawing functionality
