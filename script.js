@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // var clockInterval;
     document.querySelector("#enter-button").addEventListener('click', () => {
         let timeStart = new Date();
-        window.navigator.vibrate(10);
+        // window.navigator.vibrate(10);
         if(animStatus == 'pokeball') {
             window.navigator.vibrate([200, 700, 200]);
             clearInterval(intervalAnim);
