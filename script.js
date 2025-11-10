@@ -213,7 +213,6 @@ document.addEventListener('DOMContentLoaded', () => {
     //INIT TAMAGOTCHI / ENTER
     // var clockInterval;
     document.querySelector("#enter-button").addEventListener('click', enterButton); 
-    document.querySelector("#enter-button").addEventListener('touchstart', enterButton); 
     function enterButton () {
         let timeStart = new Date();
         if(!isiOS){
