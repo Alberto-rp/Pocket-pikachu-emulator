@@ -198,19 +198,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function isiOS() {
-        console.log("NAVIGATOR")
-        console.log([
-            'iPad Simulator',
-            'iPhone Simulator',
-            'iPod Simulator',
-            'iPad',
-            'iPhone',
-            'iPod'
-        ].includes(navigator.platform))
-
-        console.log( navigator.userAgent.includes("Mac"))
-        console.log( (navigator.userAgent.includes("Mac") && "ontouchend" in document))
-        console.log( "ontouchend" in document)
         return [
             'iPad Simulator',
             'iPhone Simulator',
@@ -229,11 +216,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector("#enter-button").addEventListener('click', enterButton); 
     function enterButton () {
         let timeStart = new Date();
-        if(!isiOS){
+        if(!isiOS()){
             window.navigator.vibrate(10);
         }
         if(animStatus == 'pokeball') {
-            if(!isiOS){
+            if(!isiOS()){
                 window.navigator.vibrate([200, 700, 200]);
             }
             clearInterval(intervalAnim);
@@ -440,7 +427,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // BACK BUTTON
     let backMenusAllowed = ['clock', 'state', 'settings', 'game']
     document.querySelector("#back-button").addEventListener('click', () => {
-        if(!isiOS){
+        if(!isiOS()){
             window.navigator.vibrate(10);
         }
         if(backMenusAllowed.some(anim => anim == animStatus) && !(animStatus == 'game' && roulete.gameStarted) || animStatus == 'gift' && wattsAux.selectedUnitWatt == 'cent'){
@@ -487,7 +474,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let menus = ['clockMenu', 'giftMenu', 'gameMenu'];
 
     document.querySelector("#state-button").addEventListener('click', () => {
-        if(!isiOS){
+        if(!isiOS()){
             window.navigator.vibrate(10);
         }
         if(allowedAnims.some(anim => anim == animStatus)){
@@ -503,7 +490,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let settingsMenus = ['reset', 'sound', 'relDrop'];
     let selectedSettingMenu = settingsMenus[1]
     document.querySelector("#menu-button").addEventListener('click', () => {
-        if(!isiOS){
+        if(!isiOS()){
             window.navigator.vibrate(10);
         }
         if(allowedAnims.some(anim => anim == animStatus)){
@@ -517,7 +504,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // RIGHT BUTTON
     document.querySelector('#right-button').addEventListener('click', () => {
-        if(!isiOS){
+        if(!isiOS()){
             window.navigator.vibrate(10);
         }
         if(animStatus != '' && allowedAnims.some(anim => anim == animStatus)){
@@ -531,7 +518,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // LEFT BUTTON
     document.querySelector('#left-button').addEventListener('click', () => {
-        if(!isiOS){
+        if(!isiOS()){
             window.navigator.vibrate(10);
         }
         if(animStatus != '' && allowedAnims.some(anim => anim == animStatus)){
@@ -545,7 +532,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // TOP BUTTON
     document.querySelector('#top-button').addEventListener('click', () => {
-        if(!isiOS){
+        if(!isiOS()){
             window.navigator.vibrate(10);
         }
         if(animStatus == 'gift'){
@@ -569,7 +556,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // BOTTOM BUTTON
     document.querySelector('#bottom-button').addEventListener('click', () => {
-        if(!isiOS){
+        if(!isiOS()){
             window.navigator.vibrate(10);
         }
         if(animStatus == 'gift'){
@@ -593,7 +580,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //RESET BUTTON
     document.querySelector('#reset-button').addEventListener('click', () => {
-        if(!isiOS){
+        if(!isiOS()){
             window.navigator.vibrate(2000);
         }
         console.log(animStatus)
@@ -775,7 +762,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //SHAKE WALK
     document.querySelector('#shake').addEventListener('click', () => {
-        if(!isiOS){
+        if(!isiOS()){
             window.navigator.vibrate(10);
         }
         // if(!isWalking){
