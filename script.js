@@ -198,6 +198,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function isiOS() {
+        console.log("NAVIGATOR")
+        console.log([
+            'iPad Simulator',
+            'iPhone Simulator',
+            'iPod Simulator',
+            'iPad',
+            'iPhone',
+            'iPod'
+        ].includes(navigator.platform))
+
+        console.log( navigator.userAgent.includes("Mac"))
+        console.log( (navigator.userAgent.includes("Mac") && "ontouchend" in document))
+        console.log( "ontouchend" in document)
         return [
             'iPad Simulator',
             'iPhone Simulator',
@@ -208,6 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ].includes(navigator.platform)
         // iPad on iOS 13 detection
         || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+
     }
 
     //INIT TAMAGOTCHI / ENTER
