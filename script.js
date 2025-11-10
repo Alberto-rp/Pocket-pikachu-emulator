@@ -197,13 +197,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // testOut
+    document.querySelector('*').addEventListener('click', (e) => {
+        console.log(e.target)
+        document.querySelector('#testOut').innerHTML = e.target + e.target.id
+    })
+
     //INIT TAMAGOTCHI / ENTER
     // var clockInterval;
     document.querySelector("#enter-button").addEventListener('click', () => {
         let timeStart = new Date();
-        // window.navigator.vibrate(10);
+        window.navigator.vibrate(10);
         if(animStatus == 'pokeball') {
-            // window.navigator.vibrate([200, 700, 200]);
+            window.navigator.vibrate([200, 700, 200]);
             clearInterval(intervalAnim);
             clearAllTimeouts();
             restartTamagotchi(DisplayScreen, true)
