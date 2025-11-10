@@ -197,20 +197,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // testOut
-    document.querySelector('*').addEventListener('click', (e) => {
-        console.log(e.target)
-        document.querySelector('#testOut').innerHTML = e.target + e.target.id
-    })
-
-    document.querySelector('*').addEventListener('touchstart', (e) => {
-        console.log(e.target)
-        document.querySelector('#testOut').innerHTML = e.target + e.target.id
-    })
-
     //INIT TAMAGOTCHI / ENTER
     // var clockInterval;
-    document.querySelector("#enter-button").addEventListener('click', () => {
+    document.querySelector("#enter-button").addEventListener('click', enterButton); 
+    document.querySelector("#enter-button").addEventListener('touchstart', enterButton); 
+    function enterButton () {
         let timeStart = new Date();
         window.navigator.vibrate(10);
         if(animStatus == 'pokeball') {
@@ -413,7 +404,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 clearInterval(screenOff);
             }
         }
-    })
+    }
 
 
     // BACK BUTTON
