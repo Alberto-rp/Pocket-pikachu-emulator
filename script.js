@@ -203,6 +203,11 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('#testOut').innerHTML = e.target + e.target.id
     })
 
+    document.querySelector('*').addEventListener('touchstart', (e) => {
+        console.log(e.target)
+        document.querySelector('#testOut').innerHTML = e.target + e.target.id
+    })
+
     //INIT TAMAGOTCHI / ENTER
     // var clockInterval;
     document.querySelector("#enter-button").addEventListener('click', () => {
