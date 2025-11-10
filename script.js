@@ -203,7 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let timeStart = new Date();
         // window.navigator.vibrate(10);
         if(animStatus == 'pokeball') {
-            window.navigator.vibrate([200, 700, 200]);
+            // window.navigator.vibrate([200, 700, 200]);
             clearInterval(intervalAnim);
             clearAllTimeouts();
             restartTamagotchi(DisplayScreen, true)
