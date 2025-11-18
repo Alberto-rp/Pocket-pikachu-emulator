@@ -63,6 +63,8 @@ roulete.selectedStep = roulete.posibleStep[0];
 roulete.slot1 = ['seven', 'flower', 'pika', 'seven', 'fish', 'flower', 'seven', 'fish'];
 roulete.slot2 = ['seven', 'fish', 'flower', 'pika', 'seven', 'fish', 'flower', 'pika'];
 roulete.slot3 = ['seven', 'fish', 'flower', 'pika', 'fish', 'flower', 'pika', 'fish'];
+roulete.randomWin = ['fish', 'fish', 'flower', 'pika', 'flower'];
+roulete.randomWinSel = '';
 roulete.selectedSlot1 = (localStorage.getItem("selectedSlot1") != null)? Number(localStorage.getItem("selectedSlot1")) : 0;
 roulete.selectedSlot2 = (localStorage.getItem("selectedSlot2") != null)? Number(localStorage.getItem("selectedSlot2")) : 0;
 roulete.selectedSlot3 = (localStorage.getItem("selectedSlot3") != null)? Number(localStorage.getItem("selectedSlot3")) : 0;
@@ -243,15 +245,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         }else if(animStatus == 'game'){
-            let {posibleStep, selectedStep, selectedSlot1, selectedSlot2, selectedSlot3} = roulete; //Desestructuracion de objeto
+            let {posibleStep, selectedStep, selectedSlot1, selectedSlot2, selectedSlot3, randomWinSel} = roulete; //Desestructuracion de objeto
+            console.log("random " + randomWinSel)
 
             if(selectedStep == 1){
                 selSlot1 = roulete.slot1[selectedSlot1];
                 roulete.stopSlot1 = true;
                 roulete.forcedSlot1 = '';
                 if(roulete.totalLosses == 5){
-                    roulete.forcedSlot1 = 'fish'; //If it's necesary to force a victory
-                }else if(roulete.hackSteps == 100){
+                    roulete.forcedSlot1 = randomWinSel; //If it's necesary to force a victory
+                }else if(roulete.hackSteps > 150){
                     roulete.forcedSlot1 = 'seven';
                 }
             }
@@ -261,8 +264,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 roulete.stopSlot2 = true;
                 roulete.forcedSlot2 = '';
                 if(roulete.totalLosses == 5){
-                    roulete.forcedSlot2 = 'fish'; //If it's necesary to force a victory
-                }else if(roulete.hackSteps == 100){
+                    roulete.forcedSlot2 = randomWinSel; //If it's necesary to force a victory
+                }else if(roulete.hackSteps > 150){
                     roulete.forcedSlot2 = 'seven';
                 }
             }
@@ -273,8 +276,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 roulete.stopSlot3 = true;
                 roulete.forcedSlot3 = '';
                 if(roulete.totalLosses == 5){
-                    roulete.forcedSlot3 = 'fish'; //If it's necesary to force a victory
-                }else if(roulete.hackSteps == 100 && roulete.hasWin777 != 'true'){
+                    roulete.forcedSlot3 = randomWinSel; //If it's necesary to force a victory
+                }else if(roulete.hackSteps > 150 && roulete.hasWin777 != 'true'){
                     roulete.forcedSlot3 = 'seven';
                     roulete.hackSteps += 1; //To avoid the hack to soon
                 }
@@ -741,14 +744,16 @@ document.addEventListener('DOMContentLoaded', () => {
                                     }
                                     
                                 }
-                            }else if(pokeStatus.friendshipLevel > 1500 && pokeStatus.friendshipLevel < 3000){ // Like status
-                                if(!avoidGreeting){
+                            }else if(pokeStatus.friendshipLevel > 1500){ // Like and love status
+                                if(!avoidGreeting && startTime.getHours() == 8){
                                     yawnAnim()
                                 }else{
-                                    standLike();                                
+                                    if(pokeStatus.friendshipLevel <= 3000){
+                                        standLike();                                
+                                    }else{
+                                        standLove();
+                                    }
                                 }
-                            }else if(pokeStatus.friendshipLevel > 3000){
-                                standLove();
                             }
 
                         }
@@ -2124,6 +2129,7 @@ function rouletteGame(screen) {
     // Inicio del juego
     if(roulete.gameStarted){
         console.log("Start Game")
+        roulete.randomWinSel = roulete.randomWin[Math.floor(Math.random() * (5 - 1 + 1))];
         let auxArray = ['Come', '', 'Gone'];
         let counter = 2; //Start in 2 cause the first item is exiting
         let counter2 = 2; //Start in 2 cause the first item is exiting
