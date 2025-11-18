@@ -246,7 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }else if(animStatus == 'game'){
             let {posibleStep, selectedStep, selectedSlot1, selectedSlot2, selectedSlot3, randomWinSel} = roulete; //Desestructuracion de objeto
-            console.log("random " + randomWinSel)
+
 
             if(selectedStep == 1){
                 selSlot1 = roulete.slot1[selectedSlot1];
