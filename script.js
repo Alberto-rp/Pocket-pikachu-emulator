@@ -24,6 +24,7 @@ let isLateAwake = false;
 let actionTimeOut = undefined; 
 let auxiliarTimeout = undefined;
 let auxiliarTimeout2 = undefined;
+let auxiliarTimeout3 = undefined;
 let coockieHadEating = document.cookie.split("; ").find((row) => row.startsWith("had_eating="))?.split("=")[1];
 let coockieHasTakeBath = document.cookie.split("; ").find((row) => row.startsWith("had_take_bath="))?.split("=")[1];
 let coockieHasBrushed = document.cookie.split("; ").find((row) => row.startsWith("has_brushed="))?.split("=")[1];
@@ -594,7 +595,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Test Animation / test anim
     document.querySelector("#startAnim").addEventListener('click', () => {
-        playPiano();
+        writtingLetter();
     })
 
     // Basic stand animation
@@ -1280,6 +1281,39 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function writtingLetter() {
+        clearInterval(intervalAnim);
+        animStatus = 'writeLetter'
+        console.log(animStatus)
+        let animHits = 1
+
+        loadAnim(DisplayScreen, Anims.letter.write1)
+        intervalAnim = setInterval(animate, 600);
+
+        auxiliarTimeout = setTimeout(() => {
+            document.querySelector("#clockMenu").classList.add('selected')
+        }, 500);
+        
+        auxiliarTimeout2 = setTimeout(() => {
+            clearInterval(intervalAnim);
+            loadAnim(DisplayScreen, Anims.letter.letter)
+        }, 16000);
+
+        auxiliarTimeout3 = setTimeout(() => {
+            clearInterval(intervalAnim);
+            basicAnim(true, false, true, true);
+        }, 20000);
+        
+        function animate() {
+            if(animHits % 2 == 0){
+                loadAnim(DisplayScreen, Anims.letter.write1)
+            }else{
+                loadAnim(DisplayScreen, Anims.letter.write2)
+            }
+            animHits++
+        }
+    }
+
     function backFlip() {
         clearInterval(intervalAnim);
         animStatus = 'backFlip'
@@ -1303,6 +1337,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }else if(animHits == 6){
                 loadAnim(DisplayScreen, Anims.backflip.jump3)
             }else if(animHits == 12){
+                clearInterval(intervalAnim);
                 basicAnim(true, false, true, true);
             }
             animHits++
@@ -1734,8 +1769,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }else if(randomAnim > 4 && randomAnim <= 8){
                     backFlip();
                 }else{
-                    backFlip();
-                    //writing a letter
+                    writtingLetter();
                 }
             }else if(amount >= 500 && amount < 700){
                 if(randomAnim <= 3){
@@ -1743,8 +1777,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }else if(randomAnim > 3 && randomAnim <= 6){
                     backFlip();
                 }else{
-                    backFlip();
-                    //writing a letter
+                    writtingLetter();
                 }
             }else{
                 playPiano();
