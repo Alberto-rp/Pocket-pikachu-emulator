@@ -30,6 +30,7 @@ let coockieHasTakeBath = document.cookie.split("; ").find((row) => row.startsWit
 let coockieHasBrushed = document.cookie.split("; ").find((row) => row.startsWith("has_brushed="))?.split("=")[1];
 let coockieHasGoneSleep = document.cookie.split("; ").find((row) => row.startsWith("has_gone_sleep="))?.split("=")[1];
 let isBrushing = false;
+let stopPlaying = false;
 
 // Steps
 let pokeStatus = {};
@@ -131,6 +132,8 @@ document.addEventListener('DOMContentLoaded', () => {
     loadAnim(createScreen, null, true);
     if(window.location.href.indexOf('github.io') != -1 || window.location.href.indexOf('pokpik.life') != -1){
         document.querySelector('.developerScreen').classList.add('hide');
+    }else{
+        document.querySelector('.developerScreen').style.display = 'block';
     }
 
     //Drawing functionality
@@ -324,6 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Basic start
             setTimeout(() => {
                 if(animStatus == ''){
+                    stopPlaying = false;
                     randomAnim = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
                     randomActivity = Math.floor(Math.random() * (20 - 1 + 1) + 1); //1-20
                     coockieHadEating = document.cookie.split("; ").find((row) => row.startsWith("had_eating="))?.split("=")[1];
@@ -601,6 +605,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Basic stand animation
     function basicAnim(avoidActivity=false, avoidSleep=false, avoidGreeting=false, avoidEat=false) {
         //avoidSleep = true; //For development
+        avoidActivity = (avoidActivity)? avoidActivity : stopPlaying;
         animStatus = 'stand'
         let startTime = new Date();
         let sleepCounter = 1
@@ -771,9 +776,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if(!isiOS()){
             window.navigator.vibrate(10);
         }
-        // if(!isWalking){
-        //     audioShake.play();
-        // }
         let screenShaked = document.querySelector('.screenContainer, .buttonsContainer');
         let buttonShake = document.querySelector('#shake');
         pokeStatus.consecutiveSteps++
@@ -790,9 +792,6 @@ document.addEventListener('DOMContentLoaded', () => {
             walk();
             if(animStatus == 'state') {
                 displayState(DisplayScreen);
-            }
-            if(animStatus == 'gift' && isLateAwake || !(timeStart.getHours() >= 20 && timeStart.getHours() <= 23 || timeStart.getHours() >= 0 && timeStart.getHours() < 8)) {
-                displayTotalWatts(DisplayScreen);
             }
         }, 250);
 
@@ -915,10 +914,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }else if(animStatus == 'buildingBlocks'){
                 actionTimeOut = setTimeout(() => {
                     throwBlocks = true;
+                    stopPlaying = true;
                 }, 1000);
             }else if(animStatus == 'lollypop'){
                 actionTimeOut = setTimeout(() => {
                     throwCandy = true;
+                    stopPlaying = true;
                 }, 1000);
             }else if(animStatus == 'standLike'){
                 actionTimeOut = setTimeout(() => {
