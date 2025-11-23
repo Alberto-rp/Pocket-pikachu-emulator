@@ -2,23 +2,18 @@
 
 <table>
     <tr>
-        <td><img src="img/eatingGif.gif" width="300" /></td>
-        <td>- This is a web project made by a huge fan of this 90'S old toy, "pocket pikachu" only with JS
-- I'm trying to replicate it by reverse engineering, watching the behavior of mine and making it here.
-- I added the custom/new functionality to enable/disable the friendshipLevel dropdown.
-- Still in progress, is not finished yet!
-- Of course, this is a non-profit fan project, all rights to this content belong to its rightful creators.</td>
+        <td style="border:none;"><img src="img/eatingGif.gif" width="300" /></td>
+        <td>
+            <ul>
+                <li>This is a web project made by a huge fan of this 90'S old toy, "pocket pikachu" only with JS</li>
+                <li>I'm trying to replicate it by reverse engineering, watching the behavior of mine and making it here.</li>
+                <li>I added the custom/new functionality to enable/disable the friendshipLevel dropdown.</li>
+                <li>Still in progress, is not finished yet!</li>
+                <li>Of course, this is a non-profit fan project, all rights to this content belong to its rightful creators.</li>
+            </ul>
+        </td>
     </tr>
 </table>
-
-<img src="img/eatingGif.gif" width="300" />
-
-- This is a web project made by a huge fan of this 90'S old toy, "pocket pikachu" only with JS
-- I'm trying to replicate it by reverse engineering, watching the behavior of mine and making it here.
-- I added the custom/new functionality to enable/disable the friendshipLevel dropdown.
-- Still in progress, is not finished yet!
-- Of course, this is a non-profit fan project, all rights to this content belong to its rightful creators.
-
 
 ## links of interest
 
