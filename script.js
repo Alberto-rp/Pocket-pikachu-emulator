@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.piano.right;
+    Anims.edit = Anims.flying.flyAway17;
 });
 
 // Anim vars
@@ -605,7 +605,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Test Animation / test anim
     document.querySelector("#startAnim").addEventListener('click', () => {
-        writtingLetter();
+        flying();
     })
 
     // Basic stand animation
@@ -1321,6 +1321,48 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function flying(finishEnter=false) {
+        clearInterval(intervalAnim);
+        animStatus = 'flying'
+        console.log(animStatus)
+        let animHits = 1
+        
+        if(!finishEnter){
+            loadAnim(DisplayScreen, Anims.flying[`enter${animHits++}`])
+            auxiliarTimeout = setTimeout(() => {
+                document.querySelector("#clockMenu").classList.add('selected')
+            }, 500);
+        }else{
+            loadAnim(DisplayScreen, Anims.flying[`flyAway${animHits++}`])
+        }
+        intervalAnim = setInterval(animate, 500);
+        
+        function animate() {
+            if(!finishEnter){
+                if(animHits <= 9){
+                    loadAnim(DisplayScreen, Anims.flying[`enter${animHits}`])
+                }else{
+                    loadAnim(DisplayScreen, null, true);
+                    clearInterval(intervalAnim);
+                    auxiliarTimeout2 = setTimeout(() => {
+                        flying(true);
+                    }, 9000);
+                }
+            }else{
+                if(animHits <= 18){
+                    loadAnim(DisplayScreen, Anims.flying[`flyAway${animHits}`])
+                }else{
+                    loadAnim(DisplayScreen, null, true);
+                    clearInterval(intervalAnim);
+                    auxiliarTimeout2 = setTimeout(() => {
+                        basicAnim(true, false, true, true);
+                    }, 1000);
+                }
+            }
+            animHits++
+        }
+    }
+
     function backFlip() {
         clearInterval(intervalAnim);
         animStatus = 'backFlip'
@@ -1786,8 +1828,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 }else{
                     writtingLetter();
                 }
+            }else if(amount >= 700 && amount < 800){
+                if(randomAnim <= 4){
+                    flying();
+                    //rollingBall
+                }else if(randomAnim > 4 && randomAnim <= 8){
+                    flying();
+                    //swim
+                }else{
+                    flying();
+                }
+            }else if(amount >= 800 && amount < 900){
+                if(randomAnim <= 4){
+                    playPiano();
+                }else if(randomAnim > 4 && randomAnim <= 8){
+                    flying();
+                }else{
+                    flying();
+                    //rollingBall
+                }
             }else{
-                playPiano();
+                flying();
             }
         }
     }    
@@ -1867,7 +1928,7 @@ function loadAnim(screen, anim, clear, full){
             if(previusAnim.childNodes[i].classList.contains('clicked') && !(anim.some(elem => elem == `num-${i}`))){
                 previusAnim.childNodes[i].classList.add('halfClicked')
             }
-            console.log(previusAnim.childNodes[i].classList)
+            //console.log(previusAnim.childNodes[i].classList)
         }
         screen = previusAnim;
         auxiliarTimeout = setTimeout(() => {
