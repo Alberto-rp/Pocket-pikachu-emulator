@@ -1,6 +1,5 @@
 # Pocket Pikachu Emulator
 
-
 - This is a web project made by a huge fan of this 90'S old toy, "pocket pikachu" only with JS
 - I'm trying to replicate it by reverse engineering, watching the behavior of mine and making it here.
 - I added the custom/new functionality to enable/disable the friendshipLevel dropdown.
@@ -8,12 +7,6 @@
 - Of course, this is a non-profit fan project, all rights to this content belong to its rightful creators.
 
 <img src="img/eatingGif.gif" width="400" />
-
-## links of interest
-
-- [Try Pocket Pikachu Emulator](http://www.pokpik.life/)
-- [Pocket Pikachu on wikipedia](https://en.wikipedia.org/wiki/Pok%C3%A9mon_Pikachu)
-- [Pocket Pikachu on Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Pok%C3%A9mon_Pikachu)
 
 ## Actual functionalities
 - Sleep Animation from 20PM to 8AM Hours (3 different possitions)
@@ -29,3 +22,9 @@
 - Slot machine (with a special hack if you walk more than 150 steps or if you loose more than 5 times)
 - Gift Menu (With 8 differents animations depending the amount and friendship level)
 - State of the Relation/FriendShip status
+
+## links of interest
+
+- [Pocket Pikachu Emulator Online](http://www.pokpik.life/)
+- [Pocket Pikachu on wikipedia](https://en.wikipedia.org/wiki/Pok%C3%A9mon_Pikachu)
+- [Pocket Pikachu on Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Pok%C3%A9mon_Pikachu)
