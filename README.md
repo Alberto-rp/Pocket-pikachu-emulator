@@ -8,6 +8,8 @@
 - Still in progress, is not finished yet!
 - Of course, this is a non-profit fan project, all rights to this content belong to its rightful creators.
 
+<img src="img/eatingGif.gif" width="300" />
+
 ## links of interest
 
 - [Try Pocket Pikachu Emulator](http://www.pokpik.life/)
