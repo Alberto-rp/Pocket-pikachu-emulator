@@ -462,7 +462,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 clearInterval(screenOff);
             }
 
-            basicAnim(false, false, true, avoidEatAfterWalk); 
+            // P stops play if you win 777 (To hope a present?)
+            if(animStatus == 'game' && roulete.hasWin777){
+                stopPlaying = true;
+            }
+
+            basicAnim(false, false, true, avoidEatAfterWalk);
+
         }else if(animStatus == 'gift' && wattsAux.selectedUnitWatt != 'cent'){
             let posibleUnits = ['cent', 'dec', 'unit', 'give'];
             // Seleccionar la anterior unidad
@@ -1852,6 +1858,46 @@ function loadAnim(screen, anim, clear, full){
     }
 }
 
+//Carga de animaciones experimental (requiere eliminar todos los metodos antiguos like yawn)
+/*let previusAnim = '';
+function loadAnim(screen, anim, clear, full){
+    if(previusAnim != '' && previusAnim.classList[0] == screen.classList[0] && !clear && !full){
+        previusAnim = screen;
+        for(i = 0; i < 1080; i++){
+            if(previusAnim.childNodes[i].classList.contains('clicked') && !(anim.some(elem => elem == `num-${i}`))){
+                previusAnim.childNodes[i].classList.add('halfClicked')
+            }
+            console.log(previusAnim.childNodes[i].classList)
+        }
+        screen = previusAnim;
+        auxiliarTimeout = setTimeout(() => {
+            printAnim();
+        }, 50);
+    }else{
+        printAnim();
+    }
+
+    function printAnim() {
+        screen.innerHTML = '';
+        for(i = 0; i < 1080; i++){
+            let newDiv = document.createElement("div");
+            newDiv.classList.add('pixel');
+            newDiv.classList.add(`num-${i}`);
+            
+            // Se puede sumar o restar a la i de abajo para mover a izq o der
+            // Si la i se suma con 36 se mueve una fila arriba todo
+            // Crear otra func con mas de una anim de entrada y mas de un some / clock / game
+            if(!clear && anim.some(elem => elem == `num-${i}`) || full){
+                newDiv.classList.add('clicked');
+            }
+    
+            screen.appendChild(newDiv)
+        }
+        previusAnim = screen;
+    }
+}
+*/
+
 function loadLocatedAnim(screen, anim){
     for(i = 0; i < 1080; i++){
         if(anim.some(elem => elem == `num-${i}`)){
@@ -2344,7 +2390,7 @@ function showResults(screen) {
                 break;
             case 'seven':
                 amount = 500;
-                intervalSpeed = 150;
+                intervalSpeed = 100;
                 var now = new Date();
                 now.setTime(now.getTime() + 21600 * 1000); // Agregamos 6 horas en milisegundos
                 document.cookie = "has_win_777=true; expires=" + now + "; path=/";

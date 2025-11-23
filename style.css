@@ -132,7 +132,11 @@ body {
     background-color: #333366;
 }
 
-.pixel:not(.clicked){
+.pixel.halfClicked {
+    opacity: 0.25;
+}
+
+.pixel:not(.clicked):not(.halfClicked){
     opacity: 0.5;
 }
 
