@@ -462,11 +462,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 clearInterval(screenOff);
             }
 
-            // P stops play if you win 777 (To hope a present?)
-            if(animStatus == 'game' && roulete.hasWin777){
-                stopPlaying = true;
-            }
-
             basicAnim(false, false, true, avoidEatAfterWalk);
 
         }else if(animStatus == 'gift' && wattsAux.selectedUnitWatt != 'cent'){
@@ -2270,6 +2265,7 @@ function rouletteGame(screen) {
     // Inicio del juego
     if(roulete.gameStarted){
         console.log("Start Game")
+        stopPlaying = true; // P stops play (To hope a present?)
         roulete.randomWinSel = roulete.randomWin[Math.floor(Math.random() * (5 - 1 + 1))];
         let auxArray = ['Come', '', 'Gone'];
         let counter = 2; //Start in 2 cause the first item is exiting
