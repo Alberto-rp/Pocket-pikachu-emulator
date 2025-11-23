@@ -1,6 +1,6 @@
 # Pocket Pikachu Emulator
 
-![Alt text](img/Eating.gif)
+![Alt text](img/eatingGif.gif)
 
 - This is a web project made by a huge fan of this 90'S old toy, "pocket pikachu" only with JS
 - I'm trying to replicate it by reverse engineering, watching the behavior of mine and making it here.
