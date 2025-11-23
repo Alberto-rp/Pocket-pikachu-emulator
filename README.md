@@ -2,8 +2,8 @@
 
 <table>
     <tr>
-        <td style="border:none;"><img src="img/eatingGif.gif" width="300" /></td>
-        <td>
+        <td><img src="img/eatingGif.gif" width="300" /></td>
+        <td style="display: contents">
             <ul>
                 <li>This is a web project made by a huge fan of this 90'S old toy, "pocket pikachu" only with JS</li>
                 <li>I'm trying to replicate it by reverse engineering, watching the behavior of mine and making it here.</li>
