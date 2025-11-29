@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.flying.flyAway17;
+    Anims.edit = Anims.diving.diving2;
 });
 
 // Anim vars
@@ -479,7 +479,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     // STATE BUTTON / FRIENDSHIP BUTTON
-    let allowedAnims = ['stand', 'standMad', 'sleeping', 'yawnHappy', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'reading', 'watchTV', 'bathTime', 'buildingBlocks', 'lollypop', 'walking', 'eating'];
+    let allowedAnims = ['stand', 'standMad', 'sleeping', 'yawnHappy', 'tongueAnim', 'happySteps', 'heartSmiles', 'writeLetter', 'flying', 'diving', 'backFlip', 'piano', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'reading', 'watchTV', 'bathTime', 'buildingBlocks', 'lollypop', 'walking', 'eating'];
     let menus = ['clockMenu', 'giftMenu', 'gameMenu'];
 
     document.querySelector("#state-button").addEventListener('click', () => {
@@ -600,7 +600,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Test Animation / test anim
     document.querySelector("#startAnim").addEventListener('click', () => {
-        flying();
+        diving();
     })
 
     // Basic stand animation
@@ -1358,6 +1358,53 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function diving(finishEnter=false) {
+        clearInterval(intervalAnim);
+        animStatus = 'diving'
+        console.log(animStatus)
+        let animHits = 1
+        
+        loadAnim(DisplayScreen, Anims.diving[`diving${animHits++}`])
+        auxiliarTimeout = setTimeout(() => {
+            document.querySelector("#clockMenu").classList.add('selected')
+        }, 500);
+
+        intervalAnim = setInterval(animate, 1100);
+
+        if(!finishEnter){
+            auxiliarTimeout2 = setTimeout(() => {
+                clearAllTimeouts();
+                clearInterval(intervalAnim);
+                diving(true);
+            }, 35000);
+        }
+        
+        function animate() {
+            if(animHits >= 17){
+                clearInterval(intervalAnim);
+                clearAllTimeouts();
+                auxiliarTimeout = setTimeout(() => {
+                    basicAnim(true, false, true, true);
+                }, 500);
+            }else{
+                loadAnim(DisplayScreen, Anims.diving[`diving${animHits++}`]);
+                auxiliarTimeout3 = setTimeout(() => {
+                    loadAnim(DisplayScreen, Anims.diving[`diving${animHits++}`]);
+                }, 100);
+                
+                if(finishEnter && animHits > 5 && animHits < 12){
+                    auxiliarTimeout2 = setTimeout(() => {
+                        loadAnim(DisplayScreen, Anims.diving[`diving${animHits++}`]);
+                    }, 200);
+                }
+            }
+
+            if(!finishEnter){
+                animHits = (animHits >= 4)? 1 : animHits;
+            }   
+        }
+    }
+
     function backFlip() {
         clearInterval(intervalAnim);
         animStatus = 'backFlip'
@@ -1828,22 +1875,28 @@ document.addEventListener('DOMContentLoaded', () => {
                     flying();
                     //rollingBall
                 }else if(randomAnim > 4 && randomAnim <= 8){
-                    flying();
-                    //swim
+                    diving();
                 }else{
                     flying();
                 }
-            }else if(amount >= 800 && amount < 900){
+            }else if(amount >= 800 && amount < 998){
                 if(randomAnim <= 4){
                     playPiano();
                 }else if(randomAnim > 4 && randomAnim <= 8){
                     flying();
                 }else{
-                    flying();
-                    //rollingBall
+                    diving();
                 }
             }else{
-                flying();
+                if(friendShipStatus == 'mad') {
+                    flying();
+                }else if(friendShipStatus == 'ok'){
+                    playPiano();
+                }else if(friendShipStatus == 'likes'){
+                    diving();
+                }else if(friendShipStatus == 'loves'){
+                    diving();
+                }
             }
         }
     }    
