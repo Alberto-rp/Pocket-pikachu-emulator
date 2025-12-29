@@ -31,6 +31,7 @@ let coockieHasBrushed = document.cookie.split("; ").find((row) => row.startsWith
 let coockieHasGoneSleep = document.cookie.split("; ").find((row) => row.startsWith("has_gone_sleep="))?.split("=")[1];
 let isBrushing = false;
 let stopPlaying = false;
+let avoidSleepGiftDev = false; //For development
 
 // Steps
 let pokeStatus = {};
@@ -233,7 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
             clearAllTimeouts();
             restartTamagotchi(DisplayScreen, true)
         }else if(animStatus == 'gift'){
-            if(isLateAwake || !(timeStart.getHours() >= 20 && timeStart.getHours() <= 23 || timeStart.getHours() >= 0 && timeStart.getHours() < 8)){
+            if((isLateAwake || !(timeStart.getHours() >= 20 && timeStart.getHours() <= 23 || timeStart.getHours() >= 0 && timeStart.getHours() < 8)) || avoidSleepGiftDev){
                 if(wattsAux.selectedUnitWatt != 'give'){
                     let posibleUnits = ['cent', 'dec', 'unit', 'give'];
                     // Seleccionar la siguiente unidad
@@ -373,7 +374,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     loadAnim(DisplayScreen, Anims.gift.whereIsPikachu)
                                 }else{
                                     // Sleep
-                                    if (!isLateAwake && (timeStart.getHours() >= 20 && timeStart.getHours() <= 23 || timeStart.getHours() >= 0 && timeStart.getHours() < 8)){
+                                    if ((!isLateAwake && (timeStart.getHours() >= 20 && timeStart.getHours() <= 23 || timeStart.getHours() >= 0 && timeStart.getHours() < 8)) && !avoidSleepGiftDev){
                                         loadAnim(DisplayScreen, Anims.gift.sleeping)
                                     }else{
                                         // Prepare Gift
@@ -547,13 +548,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if(animStatus == 'gift'){
             switch (wattsAux.selectedUnitWatt) {
                 case "cent":
-                    wattsAux.GivenCents = (wattsAux.GivenCents < 9)? (wattsAux.GivenCents + 1) : wattsAux.GivenCents
+                    wattsAux.GivenCents = (wattsAux.GivenCents < 9)? (wattsAux.GivenCents + 1) : 0
                     break;
                 case "dec":
-                    wattsAux.GivenDecs = (wattsAux.GivenDecs < 9)? (wattsAux.GivenDecs + 1) : wattsAux.GivenDecs
+                    wattsAux.GivenDecs = (wattsAux.GivenDecs < 9)? (wattsAux.GivenDecs + 1) : 0
                     break;
                 case "unit":
-                    wattsAux.GivenUnits = (wattsAux.GivenUnits < 9)? (wattsAux.GivenUnits + 1) : wattsAux.GivenUnits
+                    wattsAux.GivenUnits = (wattsAux.GivenUnits < 9)? (wattsAux.GivenUnits + 1) : 0
                     break;
             }
         }else if(animStatus == 'settings') {
@@ -571,13 +572,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if(animStatus == 'gift'){
             switch (wattsAux.selectedUnitWatt) {
                 case "cent":
-                    wattsAux.GivenCents = (wattsAux.GivenCents > 0)? (wattsAux.GivenCents - 1) : wattsAux.GivenCents
+                    wattsAux.GivenCents = (wattsAux.GivenCents > 0)? (wattsAux.GivenCents - 1) : 9
                     break;
                 case "dec":
-                    wattsAux.GivenDecs = (wattsAux.GivenDecs > 0)? (wattsAux.GivenDecs - 1) : wattsAux.GivenDecs
+                    wattsAux.GivenDecs = (wattsAux.GivenDecs > 0)? (wattsAux.GivenDecs - 1) : 9
                     break;
                 case "unit":
-                    wattsAux.GivenUnits = (wattsAux.GivenUnits > 0)? (wattsAux.GivenUnits - 1) : wattsAux.GivenUnits
+                    wattsAux.GivenUnits = (wattsAux.GivenUnits > 0)? (wattsAux.GivenUnits - 1) : 9
                     break;
             }
         }else if(animStatus == 'settings') {
@@ -605,7 +606,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Basic stand animation
     function basicAnim(avoidActivity=false, avoidSleep=false, avoidGreeting=false, avoidEat=false) {
-        //avoidSleep = true; //For development
+        avoidSleep = true; //For development
         avoidActivity = (avoidActivity)? avoidActivity : stopPlaying;
         animStatus = 'stand'
         let startTime = new Date();
