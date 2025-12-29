@@ -606,7 +606,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Basic stand animation
     function basicAnim(avoidActivity=false, avoidSleep=false, avoidGreeting=false, avoidEat=false) {
-        avoidSleep = true; //For development
+        avoidSleep = avoidSleepGiftDev; //For development
         avoidActivity = (avoidActivity)? avoidActivity : stopPlaying;
         animStatus = 'stand'
         let startTime = new Date();
