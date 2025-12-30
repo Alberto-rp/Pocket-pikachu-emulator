@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.diving.diving2;
+    Anims.edit = Anims.rollingBall.rollingRightAux4;
 });
 
 // Anim vars
@@ -496,7 +496,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     // STATE BUTTON / FRIENDSHIP BUTTON
-    let allowedAnims = ['stand', 'standMad', 'sleeping', 'yawnHappy', 'tongueAnim', 'happySteps', 'heartSmiles', 'writeLetter', 'flying', 'diving', 'backFlip', 'piano', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'reading', 'watchTV', 'bathTime', 'buildingBlocks', 'lollypop', 'walking', 'eating'];
+    let allowedAnims = ['stand', 'standMad', 'sleeping', 'yawnHappy', 'tongueAnim', 'happySteps', 'heartSmiles', 'writeLetter', 'flying', 'rollingBall', 'diving', 'backFlip', 'piano', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'reading', 'watchTV', 'bathTime', 'buildingBlocks', 'lollypop', 'walking', 'eating'];
     let menus = ['clockMenu', 'giftMenu', 'gameMenu'];
 
     document.querySelector("#state-button").addEventListener('click', () => {
@@ -617,7 +617,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Test Animation / test anim
     document.querySelector("#startAnim").addEventListener('click', () => {
-        diving();
+        rollingBall();
+    })
+
+    // ShowHelp Grid
+    document.querySelector("#showGrid").addEventListener('click', () => {
+        let pixels = document.querySelectorAll('.pixel .number');
+        pixels.forEach((element, index) => {
+            if(element.style.display == 'none' || element.style.display == ''){
+                element.style.display = 'block'
+            }else{
+                element.style.display = 'none'
+            }
+        });
+    })
+    document.querySelector("#showGridVer").addEventListener('click', () => {
+        let pixels = document.querySelectorAll('.pixel .numberVer');
+        pixels.forEach((element, index) => {
+            if(element.style.display == 'none' || element.style.display == ''){
+                element.style.display = 'block'
+            }else{
+                element.style.display = 'none'
+            }
+        });
     })
 
     // Basic stand animation
@@ -1422,6 +1444,51 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function rollingBall(finishEnter=false) {
+        clearInterval(intervalAnim);
+        animStatus = 'rollingBall'
+        console.log(animStatus)
+        let animHits = 1
+
+        
+        if(!finishEnter){
+            loadAnim(DisplayScreen, Anims.rollingBall[`rollingLeft${animHits++}`])
+            auxiliarTimeout = setTimeout(() => {
+                document.querySelector("#clockMenu").classList.add('selected')
+            }, 700);
+        }else{
+            loadAnim(DisplayScreen, Anims.rollingBall[`rollingRight${animHits++}`])
+        }
+        intervalAnim = setInterval(animate, 500);
+        
+        function animate() {
+            if(!finishEnter){
+                if(animHits > 18){
+                    loadAnim(DisplayScreen, null, true);
+                    clearAllTimeouts();
+                    clearInterval(intervalAnim);
+                    auxiliarTimeout2 = setTimeout(() => {
+                        rollingBall(true);
+                    }, 10000);
+                }else{
+                    loadAnim(DisplayScreen, Anims.rollingBall[`rollingLeft${animHits++}`]);
+                }
+            }else{
+                if(animHits > 18){
+                    loadAnim(DisplayScreen, null, true);
+                    clearInterval(intervalAnim);
+                    clearAllTimeouts();
+                    auxiliarTimeout = setTimeout(() => {
+                        basicAnim(true, false, true, true);
+                    }, 6000);
+                }else{
+                    loadAnim(DisplayScreen, Anims.rollingBall[`rollingRight${animHits++}`]);
+                }
+
+            }  
+        }
+    }
+
     function backFlip() {
         clearInterval(intervalAnim);
         animStatus = 'backFlip'
@@ -1889,20 +1956,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }else if(amount >= 700 && amount < 800){
                 if(randomAnim <= 4){
-                    flying();
-                    //rollingBall
+                    rollingBall();
                 }else if(randomAnim > 4 && randomAnim <= 8){
                     diving();
                 }else{
                     flying();
                 }
             }else if(amount >= 800 && amount < 998){
-                if(randomAnim <= 4){
+                if(randomAnim <= 3){
                     playPiano();
-                }else if(randomAnim > 4 && randomAnim <= 8){
+                }else if(randomAnim > 3 && randomAnim <= 6){
                     flying();
-                }else{
+                }else if(randomAnim > 6 && randomAnim <= 8){
                     diving();
+                }else{
+                    rollingBall();
                 }
             }else{
                 if(friendShipStatus == 'mad') {
@@ -1910,7 +1978,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }else if(friendShipStatus == 'ok'){
                     playPiano();
                 }else if(friendShipStatus == 'likes'){
-                    diving();
+                    rollingBall();
                 }else if(friendShipStatus == 'loves'){
                     diving();
                 }
@@ -1968,14 +2036,22 @@ function cleanStates() {
 // CARGA DE ANIMACIONES
 function loadAnim(screen, anim, clear, full){
     screen.innerHTML = '';
+    let j = 1;
+    let k = 30;
     for(i = 0; i < 1080; i++){
         let newDiv = document.createElement("div");
+        if(screen.classList[0] == "createScreen"){
+            k = (j == 37)? --k : k;
+            j = (j == 37)? 1 : j;
+            newDiv.innerHTML = `<span class='number'>${j++}</span><span class='numberVer'>${k}</span>`
+        }
         newDiv.classList.add('pixel');
         newDiv.classList.add(`num-${i}`);
         
         // Se puede sumar o restar a la i de abajo para mover a izq o der
         // Si la i se suma con 36 se mueve una fila arriba todo
         // Crear otra func con mas de una anim de entrada y mas de un some / clock / game
+
         if(!clear && anim.some(elem => elem == `num-${i}`) || full){
             newDiv.classList.add('clicked');
         }

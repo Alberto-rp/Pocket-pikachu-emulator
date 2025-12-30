@@ -117,11 +117,20 @@ body {
 
 /* PIXELS */
 .pixel {
+    font-size: 8px;
     width: 8px;
     height: 8px;
     margin: 0.5px;
     padding: 0.5px;
     /* background-color: rgb(162, 233, 209); */
+}
+
+.pixel .number {
+    display: none;
+}
+
+.pixel .numberVer {
+    display: none;
 }
 
 .createScreen .pixel{
