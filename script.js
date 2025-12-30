@@ -90,6 +90,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // const audioShake = document.querySelector('#shakeAudio');
     // const audioShaking = document.querySelector('#shakingAudio');
 
+    // Info Version and Updates modal
+    let infoModal = document.querySelector("#updateModal");
+    let infoModalButton = document.querySelector("#closeModal");
+    let currentVersion = document.querySelector('#updateModal .version').innerHTML;
+    coockieInfoModal = document.cookie.split("; ").find((row) => row.startsWith(`Closed${currentVersion}=`))?.split("=")[1];
+    
+    if(!coockieInfoModal) {
+        infoModal.showModal();
+        infoModalButton.addEventListener('click', () => {
+            // Declare cookie
+            let now = new Date();
+            now.setFullYear(now.getFullYear() + 1);
+            document.cookie = `Closed${currentVersion}=true; expires="${now}"; path=/`;
+        })
+    }
+
 
     if(localStorage.getItem("InitTamagotchi") == null){
         restartTamagotchi(DisplayScreen);

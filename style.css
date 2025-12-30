@@ -344,6 +344,61 @@ footer p {
     }
 }
 
+/* UPDATE MODAL */
+
+#updateModal {
+    z-index: 9999;
+    border: solid 5px;
+    border-radius: 20px;
+    border-color: #30343a;
+}
+
+#updateModal h2 {
+    text-align: center;
+    margin: 0px;
+    text-decoration: underline;
+    font-family: supertrend;
+    font-weight: 100;
+    font-size: 30px;
+}
+
+#updateModal .updateList {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+#updateModal h2::first-letter{
+    font-size: 40px;
+}
+
+#updateModal .version {
+    font-family: digital;
+    margin-bottom: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#updateModal .closeContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+}
+
+#closeModal {
+    width: 50%;
+    height: 50px;
+    background-color: white;
+    border-color: #1d2632;
+    color: #1d2632;
+    border-radius: 15px;
+    padding: 5px 50px;
+    font-family: supertrend;
+    letter-spacing: 2px;
+    font-size: 30px;
+}
+
+/* LOADER */
 .preloader {
     width: 100%;
     position: absolute;
@@ -386,5 +441,5 @@ footer p {
         height: 64px;
         transform: rotate(360deg)
     }
-    }
+}
     
