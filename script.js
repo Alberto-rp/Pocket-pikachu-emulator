@@ -500,6 +500,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let menus = ['clockMenu', 'giftMenu', 'gameMenu'];
 
     document.querySelector("#state-button").addEventListener('click', () => {
+        //Event Analitics
+        gtag('event', 'stateButtonEvent', {
+            'boton_id': 'stateButton',
+            'friendship_level': pokeStatus.friendshipLevel,
+            'total_steps': pokeStatus.totalSteps,
+            'watts': pokeStatus.watts
+        });
+
         if(!isiOS()){
             window.navigator.vibrate(10);
         }

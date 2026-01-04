@@ -319,7 +319,7 @@ button {
 
 footer {
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    position: absolute;
+    position: fixed;
     bottom: 0;
     width: 100%;
 }
