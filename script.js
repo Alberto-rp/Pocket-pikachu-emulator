@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.rollingBall.rollingRightAux4;
+    Anims.edit = Anims.horn.auxStandRight;
 });
 
 // Anim vars
@@ -40,6 +40,7 @@ pokeStatus.totalSteps = (localStorage.getItem("totalSteps") != null)? Number(loc
 pokeStatus.watts = (localStorage.getItem("watts") != null)? Number(localStorage.getItem("watts")) : 50;
 pokeStatus.friendshipLevel = (localStorage.getItem("friendshipLevel") != null)? Number(localStorage.getItem("friendshipLevel")) : 0;
 pokeStatus.eatingtHours = [10, 12, 16, 18];
+pokeStatus.lollypopHours = [15];
 pokeStatus.playHours = [9, 10, 11, 12, 13, 14, 15, 16, 17];
 pokeStatus.tvHours = [13, 14, 15, 16, 17, 18, 19];
 pokeStatus.consecutiveSteps = 0;
@@ -496,7 +497,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     // STATE BUTTON / FRIENDSHIP BUTTON
-    let allowedAnims = ['stand', 'standMad', 'sleeping', 'yawnHappy', 'tongueAnim', 'happySteps', 'heartSmiles', 'writeLetter', 'flying', 'rollingBall', 'diving', 'backFlip', 'piano', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'reading', 'watchTV', 'bathTime', 'buildingBlocks', 'lollypop', 'walking', 'eating'];
+    let allowedAnims = ['stand', 'standMad', 'sleeping', 'yawnHappy', 'tongueAnim', 'happySteps', 'heartSmiles', 'writeLetter', 'flying', 'rollingBall', 'diving', 'backFlip', 'piano', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'reading', 'watchTV', 'bathTime', 'buildingBlocks', 'lollypop', 'playingHorn', 'walking', 'eating'];
     let menus = ['clockMenu', 'giftMenu', 'gameMenu'];
 
     document.querySelector("#state-button").addEventListener('click', () => {
@@ -625,7 +626,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Test Animation / test anim
     document.querySelector("#startAnim").addEventListener('click', () => {
-        rollingBall();
+        playingHorn();
     })
 
     // ShowHelp Grid
@@ -733,6 +734,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     }else if(coockieHasBrushed != 'true'){ //cockie tooth
                         brushTeeth();
                     }
+                }else if(!avoidActivity && pokeStatus.lollypopHours.some(elem => elem == startTime.getHours())){
+                    lollypop();
                 }else{
                     if(pokeStatus.friendshipLevel <= -500){ // If pikachu is mad he doesn't play
                         animStatus = 'standMad'
@@ -766,15 +769,14 @@ document.addEventListener('DOMContentLoaded', () => {
                             // Random activities
                             console.log("PlayingTime" + randomActivity)
                             
-                            if(randomActivity >= 1 && randomActivity <= 7){
+                            if(randomActivity <= 7){
                                 sandcastle();
                             }else if(randomActivity >= 8 && randomActivity <= 14){
                                 buildingBlocks();
-                            }else if(randomActivity >= 15 && randomActivity <= 18){
+                            }else if(randomActivity >= 15){
                                 reading();
-                            }else{
-                                lollypop();
                             }
+
                         }else if(!avoidActivity && pokeStatus.tvHours.some(elem => elem == startTime.getHours()) && randomAnim <= 2){//Watching TV
                             watchTV();
                         }else{
@@ -1497,6 +1499,50 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function playingHorn(finishEnter=false) {
+        clearInterval(intervalAnim);
+        animStatus = 'playingHorn'
+        console.log(animStatus)
+        let animHits = 1
+
+        if(!finishEnter){
+            loadAnim(DisplayScreen, Anims.horn[`hornLeft${animHits++}`])
+            auxiliarTimeout = setTimeout(() => {
+                document.querySelector("#clockMenu").classList.add('selected')
+            }, 700);
+        }else{
+            loadAnim(DisplayScreen, Anims.horn[`hornRight${animHits++}`])
+        }
+
+        intervalAnim = setInterval(animate, 600);
+        
+        function animate() {
+            if(!finishEnter){
+                if(animHits > 23){
+                    loadAnim(DisplayScreen, null, true);
+                    clearAllTimeouts();
+                    clearInterval(intervalAnim);
+                    auxiliarTimeout2 = setTimeout(() => {
+                        playingHorn(true);
+                    }, 8000);
+                }else{
+                    loadAnim(DisplayScreen, Anims.horn[`hornLeft${animHits++}`]);
+                }
+            }else{
+                if(animHits > 23){
+                    loadAnim(DisplayScreen, null, true);
+                    clearInterval(intervalAnim);
+                    clearAllTimeouts();
+                    auxiliarTimeout = setTimeout(() => {
+                        basicAnim(true, false, true, true);
+                    }, 6000);
+                }else{
+                    loadAnim(DisplayScreen, Anims.horn[`hornRight${animHits++}`]);
+                }
+            }  
+        }
+    }
+
     function backFlip() {
         clearInterval(intervalAnim);
         animStatus = 'backFlip'
@@ -1920,7 +1966,7 @@ document.addEventListener('DOMContentLoaded', () => {
             clearAllTimeouts();
             resetGivenWatts();
             let friendShipStatus = '';
-            randomAnim = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
+            let randomAnimGift = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
 
             if(originalFrienship <= -1500){
                 friendShipStatus = 'left'
@@ -1941,54 +1987,57 @@ document.addEventListener('DOMContentLoaded', () => {
             }else if(amount >= 100 && amount < 300){
                 happySteps();
             }else if(amount >= 300 && amount < 400){
-                if(randomAnim > 3 || friendShipStatus == 'mad') {
+                if(randomAnimGift >= 5) {
                     heartSmiles();
                 }else {
                     backFlip();
                 }
             }else if(amount >= 400 && amount < 500){
-                if(randomAnim <= 4 || friendShipStatus == 'mad'){
+                if(randomAnimGift <= 4 || friendShipStatus == 'mad'){
                     heartSmiles();
-                }else if(randomAnim > 4 && randomAnim <= 8){
+                }else if(randomAnimGift > 4 && randomAnimGift <= 8){
                     backFlip();
                 }else{
                     writtingLetter();
                 }
             }else if(amount >= 500 && amount < 700){
-                if(randomAnim <= 3){
+                if(randomAnimGift <= 3){
                     heartSmiles();
-                }else if(randomAnim > 3 && randomAnim <= 6){
+                }else if(randomAnimGift > 3 && randomAnimGift <= 6){
                     backFlip();
                 }else{
                     writtingLetter();
                 }
             }else if(amount >= 700 && amount < 800){
-                if(randomAnim <= 4){
+                if(randomAnimGift <= 4){
                     rollingBall();
-                }else if(randomAnim > 4 && randomAnim <= 8){
+                }else if(randomAnimGift > 4 && randomAnimGift <= 8){
                     diving();
                 }else{
                     flying();
                 }
-            }else if(amount >= 800 && amount < 998){
-                if(randomAnim <= 3){
+            }else if(amount >= 800 && amount < 899){
+                if(randomAnimGift <= 3){
                     playPiano();
-                }else if(randomAnim > 3 && randomAnim <= 6){
+                }else if(randomAnimGift > 3 && randomAnimGift <= 6){
                     flying();
-                }else if(randomAnim > 6 && randomAnim <= 8){
+                }else if(randomAnimGift > 6 && randomAnimGift <= 8){
                     diving();
                 }else{
                     rollingBall();
                 }
-            }else{
-                if(friendShipStatus == 'mad') {
-                    flying();
-                }else if(friendShipStatus == 'ok'){
+            }else if(amount >= 900){
+                console.log(randomAnimGift)
+                if( [1,2].includes(randomAnimGift) ){
                     playPiano();
-                }else if(friendShipStatus == 'likes'){
-                    rollingBall();
-                }else if(friendShipStatus == 'loves'){
+                }else if( [3,4].includes(randomAnimGift) ){
+                    flying();
+                }else if( [5,6].includes(randomAnimGift) ){
                     diving();
+                }else if( [7,8].includes(randomAnimGift) ){
+                    rollingBall();
+                }else{
+                    playingHorn();
                 }
             }
         }
@@ -1998,7 +2047,6 @@ document.addEventListener('DOMContentLoaded', () => {
 /* ////////////////
 AUX FUNCS
 //////////////////*/
-
 function clearAllTimeouts() {
     clearTimeout(actionTimeOut);
     clearTimeout(auxiliarTimeout);
@@ -2059,7 +2107,6 @@ function loadAnim(screen, anim, clear, full){
         // Se puede sumar o restar a la i de abajo para mover a izq o der
         // Si la i se suma con 36 se mueve una fila arriba todo
         // Crear otra func con mas de una anim de entrada y mas de un some / clock / game
-
         if(!clear && anim.some(elem => elem == `num-${i}`) || full){
             newDiv.classList.add('clicked');
         }

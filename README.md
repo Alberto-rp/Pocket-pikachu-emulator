@@ -20,7 +20,7 @@
 - Friendship-system (left, mad, ok, like and love states available)
 - NEW Relation/FriendShip dropdown could be disabled from the settings menu; ON by default
 - Slot machine (with a special hack if you walk more than 150 steps or if you loose more than 5 times)
-- Gift Menu (With 8 differents animations depending the amount and friendship level)
+- Gift Menu (COMPLETED) (With 11 differents animations depending the amount and friendship level)
 - State of the Relation/FriendShip status
 
 ## links of interest
