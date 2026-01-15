@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.settingsDiff.medium;
+    Anims.edit = Anims.eating.angryToast;
 });
 
 // Anim vars
@@ -19,6 +19,7 @@ let screenOff;
 let throwBlocks = false;
 let throwCandy = false;
 let isWalking = false;
+let throwTableAnim = '';
 let avoidEatAfterWalk = false;
 let isLateAwake = false;
 let actionTimeOut = undefined; 
@@ -45,6 +46,8 @@ pokeStatus.playHours = [9, 10, 11, 12, 13, 14, 15, 16, 17];
 pokeStatus.tvHours = [18, 19];
 pokeStatus.consecutiveSteps = 0;
 pokeStatus.lastConected = (localStorage.getItem("lastConected") != null)? localStorage.getItem("lastConected") : new Date().toDateString();
+pokeStatus.todayHasReachLimit = document.cookie.split("; ").find((row) => row.startsWith("has_reach_goal="))?.split("=")[1];
+pokeStatus.todayHasReachLimit = (pokeStatus.todayHasReachLimit == undefined)? false : pokeStatus.todayHasReachLimit;
 
 // Watts
 let wattsAux = {};
@@ -68,7 +71,7 @@ settings.dificultyLevels = {
             "skateboard": [3000, 3999],
             "stilts": [4000],
         },
-        "unlockAnims": [1500, 3000, 4500, 10000]
+        "unlockAnims": [3000, 4500, 10000]
     },
     "medium" : {
         "walkAnims": {
@@ -79,7 +82,7 @@ settings.dificultyLevels = {
             "skateboard": [30000, 39999],
             "stilts": [40000],
         },
-        "unlockAnims": [15000, 30000, 45000, 100000]
+        "unlockAnims": [30000, 45000, 100000]
     },
     "hard" : {
         "walkAnims": {
@@ -90,7 +93,7 @@ settings.dificultyLevels = {
             "skateboard": [300000, 399999],
             "stilts": [400000],
         },
-        "unlockAnims": [150000, 300000, 450000, 1000000]
+        "unlockAnims": [300000, 450000, 1000000]
     }
 }
 
@@ -361,7 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     break;
 
                 case 'diffLevel':
-                    // Show the actual setting selected
+                    // Show the actual difficulty selected
                     animStatus = 'settingsDiff'
                     loadAnim(DisplayScreen, Anims.settingsDiff[`${settings.dificultySelected}Selected`])
                     break;
@@ -374,7 +377,10 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(`${settings.dificultySelected} difficulty selected`);
             loadAnim(DisplayScreen, Anims.settingsDiff[`${settings.dificultySelected}Selected`]);
             localStorage.setItem("dificultyLevel", settings.dificultySelected);
-
+            let limit300 = settings.dificultyLevels[settings.dificultySelected]["unlockAnims"][0];
+            if(pokeStatus.totalSteps < limit300){
+                localStorage.removeItem('hasReach300');
+            }
         }else if(animStatus != 'restart'){
             // Init screen (Timeouts to emulate analogic)
             setTimeout(() => {
@@ -689,7 +695,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Test Animation / test anim
     document.querySelector("#startAnim").addEventListener('click', () => {
-        playingHorn();
+        clearAllTimeouts();
+        clearInterval(intervalAnim);
+        eating();
     })
 
     // ShowHelp Grid
@@ -716,7 +724,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Basic stand animation
     function basicAnim(avoidActivity=false, avoidSleep=false, avoidGreeting=false, avoidEat=false) {
-        avoidSleep = avoidSleepGiftDev; //For development
+        avoidSleep = (avoidSleep)? avoidSleep : avoidSleepGiftDev; //For development
         avoidActivity = (avoidActivity)? avoidActivity : stopPlaying;
         animStatus = 'stand'
         let startTime = new Date();
@@ -788,7 +796,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             }else {
-                // Eating -- eatingtHours = [10, 12, 18]
+                // Eating -- eatingtHours = [12, 18]
                 if( !avoidEat && pokeStatus.eatingtHours.some(elem => elem == startTime.getHours()) && coockieHasBrushed != 'true' && startTime.getMinutes() <= 30) {
                     if(coockieHadEating != 'true'){
                         eating();
@@ -1056,7 +1064,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, 1000);
             }else if(animStatus == 'eating'){
                 actionTimeOut = setTimeout(() => {
-                    console.log("Throw Table")
+                    if(pokeStatus.consecutiveSteps >= 15 && throwTableAnim != ''){
+                        clearInterval(intervalAnim);
+                        eating(true);
+                    }
                     pokeStatus.consecutiveSteps = 0;
                 }, 1000);
             }else if(animStatus == 'sleeping'){
@@ -1663,55 +1674,75 @@ document.addEventListener('DOMContentLoaded', () => {
     //////////////////*/
 
     // Eating Anims
-    function eating() {
+    function eating(throwTable=false) {
         animStatus = 'eating'
         console.log(animStatus)
-        const BreadHours = [10];
-        let eatCounter = 1;
-        let startAnim;
-        let nomnom;
-        let nomnom2;
-        intervalAnim = setInterval(animate, 500);
-        
-        var now = new Date();
-        
-        if(BreadHours.some(elem => elem == now.getHours()) || randomAnim >= 5){
-            startAnim =  Anims.eating.breakfast1;
-            nomnom = Anims.eating.nomnom
-            nomnom2 =  Anims.eating.nomnom2
+        if(!throwTable){
+            let eatCounter = 1;
+            let startAnim;
+            let nomnom;
+            let nomnom2;
+            let chopstickLimit = settings.dificultyLevels[settings.dificultySelected]["unlockAnims"][0]
+            let randomAnimEat = Math.floor(Math.random() * (15 - 1 + 1) + 1); //1-15
+            let randomLimit = (pokeStatus.totalSteps > chopstickLimit)? 5 : 7;
+
+            if(randomAnimEat <= randomLimit && !pokeStatus.todayHasReachLimit){
+                //TOAST
+                startAnim =  Anims.eating.eatingToast;
+                nomnom = Anims.eating.nomnomToast
+                nomnom2 =  Anims.eating.nomnomToast2
+                throwTableAnim = 'Toast';
+            }else if(randomAnimEat >= randomLimit+1 && ((pokeStatus.totalSteps < chopstickLimit) || randomAnimEat <= 10) && !pokeStatus.todayHasReachLimit){
+                //ONIGIRI
+                startAnim =  Anims.eating.eatingOnigiri;
+                nomnom = Anims.eating.nonomOnigiri
+                nomnom2 =  Anims.eating.nonomOnigiri2
+                throwTableAnim = 'Onigiri';
+            }else{
+                //RICE
+                startAnim =  Anims.eating.eatingChopsticks;
+                nomnom = Anims.eating.nomnomChopsticks;
+                nomnom2 =  Anims.eating.nomnomChopsticks2;
+                throwTableAnim = '';
+            }
+            
+            // Start animation
+            intervalAnim = setInterval(animate, 500);
+            
+            // Declare ate cookie
+            let now = new Date();
+            now.setTime(now.getTime() + 3600 * 1000); // Agregamos 1 hora en milisegundos
+            document.cookie = "had_eating=true; expires=" + now + "; path=/";
+            console.log("Cookie Eating declared")
+            
+            function animate() {
+                endTime = new Date();
+                if(eatCounter <= 1){
+                    loadAnim(DisplayScreen, startAnim)
+                    eatCounter++
+                }else if(eatCounter == 2 || eatCounter == 4){
+                    loadAnim(DisplayScreen, nomnom)
+                    eatCounter = (eatCounter >= 4)? 1 : (eatCounter + 1)
+                }else if(eatCounter == 3){
+                    loadAnim(DisplayScreen, nomnom2)
+                    eatCounter++
+                }
+            }
         }else{
-            startAnim =  Anims.eating.eatingOnigiri;
-            nomnom = Anims.eating.nonomOnigiri
-            nomnom2 =  Anims.eating.nonomOnigiri2
-        }
-        
-        // Declare cookie
-        now.setTime(now.getTime() + 3600 * 1000); // Agregamos 1 hora en milisegundos
-        document.cookie = "had_eating=true; expires=" + now + "; path=/";
-        console.log("Cookie Eating declared")
-        
-        function animate() {
-            endTime = new Date();
-
-            if(eatCounter <= 1){
-                loadAnim(DisplayScreen, startAnim)
-                eatCounter++
-            }else if(eatCounter == 2 || eatCounter == 4){
-                loadAnim(DisplayScreen, nomnom)
-                eatCounter = (eatCounter >= 4)? 1 : (eatCounter + 1)
-            }else if(eatCounter == 3){
-                loadAnim(DisplayScreen, nomnom2)
-                eatCounter++
-            }
-
-            //eatingtHours = [10, 12, 16, 18]
-            if(!pokeStatus.eatingtHours.some(elem => elem == endTime.getHours())) {
+            loadAnim(DisplayScreen, Anims.eating[`angry${throwTableAnim}`]);
+            auxiliarTimeout = setTimeout(() => {
+                loadAnim(DisplayScreen, Anims.eating.angry2);
+            }, 2000);
+            auxiliarTimeout2 = setTimeout(() => {
+                loadAnim(DisplayScreen, Anims.eating.angry3);
+            }, 2750);
+            auxiliarTimeout2 = setTimeout(() => {
+                clearAllTimeouts();
                 clearInterval(intervalAnim);
-                basicAnim(true);
-            }
+                updateFriendshipLevel(-200, false, false);
+                basicAnim(true, true, true, true);
+            }, 5250);
         }
-
-        
     }
 
     // Walking anim
@@ -1961,7 +1992,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelector('.walkCounter').innerHTML = 88888;
             loadAnim(DisplayScreen, null, true, true);
 
-            // Clear the stored data
+            // Clear the localStorage
             localStorage.clear();
             pokeStatus.steps = 0;
             pokeStatus.totalSteps = 0;
@@ -1969,9 +2000,20 @@ document.addEventListener('DOMContentLoaded', () => {
             pokeStatus.friendshipLevel = 0;
             isLateAwake = true;
             settings.relSelected = 'on';
+            settings.dificultySelected = 'medium';
             localStorage.setItem("watts", pokeStatus.watts);
             localStorage.setItem("friendshipLevel", pokeStatus.friendshipLevel);
             localStorage.setItem("relDrop", settings.relSelected);
+
+            //Remove all the cookies
+            var cookies = document.cookie.split(";");
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i];
+                var eqPos = cookie.indexOf("=");
+                var name = eqPos > -1 ? cookie.substring(0, eqPos) : cookie;
+                // Establece la fecha de expiración a una fecha pasada
+                document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            }
     
             setTimeout(() => {
                 cleanStates();
@@ -2228,34 +2270,47 @@ LOGIC AND BET FUNCS
 
 function walk() {
     // Update steps
-    pokeStatus.steps = (pokeStatus.steps < 99999)? (pokeStatus.steps + 1) : 0;
+    pokeStatus.steps = (pokeStatus.steps < 99999)? (pokeStatus.steps + 1) : 99999;
     let stepsToConvert = (localStorage.getItem("stepsToConvert") != null)? Number(localStorage.getItem("stepsToConvert")) : 0
+    let hasReach300 = (localStorage.getItem("hasReach300") != null)? localStorage.getItem("friendshipLevel") : 0;
+    let limit300 = settings.dificultyLevels[settings.dificultySelected]["unlockAnims"][0];
+    let limit450 = settings.dificultyLevels[settings.dificultySelected]["unlockAnims"][1];
+    let limitMil = settings.dificultyLevels[settings.dificultySelected]["unlockAnims"][2];
     stepsToConvert++
     roulete.hackSteps += 1;
 
     // Update totalSteps
-    if(pokeStatus.totalSteps < 999999){
+    if(pokeStatus.totalSteps < limitMil){
         pokeStatus.totalSteps += 1
+        if(pokeStatus.totalSteps > limit300 && !hasReach300){
+            var now = new Date();
+            now.setTime(now.getTime() + 86400 * 1000); // Agregamos 1 día en milisegundos
+            document.cookie = "has_reach_goal=true; expires=" + now + "; path=/";
+            localStorage.setItem("hasReach300", 1);
+            pokeStatus.todayHasReachLimit = true;
+        }
+
+        // Update Watts
+        if(stepsToConvert == 20){
+            localStorage.setItem("stepsToConvert", 0);
+            pokeStatus.watts++
+            localStorage.setItem("watts", pokeStatus.watts)
+        }else{
+            localStorage.setItem("stepsToConvert", stepsToConvert);
+        }
+    
+        localStorage.setItem("steps", pokeStatus.steps);
+        localStorage.setItem("totalSteps", pokeStatus.totalSteps);
+    
+        if(animStatus != ''){
+            document.querySelector('.walkCounter').innerHTML = pokeStatus.steps;
+        }
     }else{
         // Celebrate the million
-        pokeStatus.totalSteps = 0;
+        const DisplayScreen = document.querySelector('.screen');
+        // loadAnim(DisplayScreen, Anims.lollypop.fall);
     }
 
-    // Update Watts
-    if(stepsToConvert == 20){
-        localStorage.setItem("stepsToConvert", 0);
-        pokeStatus.watts++
-        localStorage.setItem("watts", pokeStatus.watts)
-    }else{
-        localStorage.setItem("stepsToConvert", stepsToConvert);
-    }
-
-    localStorage.setItem("steps", pokeStatus.steps);
-    localStorage.setItem("totalSteps", pokeStatus.totalSteps);
-
-    if(animStatus != ''){
-        document.querySelector('.walkCounter').innerHTML = pokeStatus.steps;
-    }
 }
 
 function printHour(screen, hours, minutes, pmState){
