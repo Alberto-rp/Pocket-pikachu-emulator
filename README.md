@@ -10,15 +10,18 @@
 
 ## Actual functionalities
 - Sleep Animation from 20PM to 8AM Hours (3 different possitions)
-- Eat Animations at 10, 12, 16 and 18 hours (2 different animations, Bread and Onigiri)
+- Eat Animations at 12 and 18 hours (2 different animations, Bread and Onigiri)
+- Brushing teeth animations after eating or shower.
 - Play Animations randomly between 9-18 hours (SandCastle, BuildingBlocks, Lollypop, Reading)
-- TV Animation randomly between 13-21 hours
-- Bath anim at 19 hours
+- TV Animation randomly between 18-19 hours
+- Bath animation at 19 hours
 - Clock Menu (without alarm)
 - Step Counter (Based on the shake button)
-- Settings Menu (Reset steps and Relation Dropdown enabled, sound doesn't)
-- Friendship-system (left, mad, ok, like and love states available)
+- Settings Menu (Reset steps, Relation Dropdown and Difficulty Level setting)
+- Friendship-system (LEFT, MAD, OK, LIKE and LOVE states available)
+- Special hack if pik is in LEFT status and you shake at least 20 times: (He comes back)
 - NEW Relation/FriendShip dropdown could be disabled from the settings menu; ON by default
+- NEW Difficulty/Setting, setting the final goal of the tamagotchi, between 10K, 100K or 1M Steps (100K by default)
 - Slot machine (with a special hack if you walk more than 150 steps or if you loose more than 5 times)
 - Gift Menu (COMPLETED) (With 11 differents animations depending the amount and friendship level)
 - State of the Relation/FriendShip status

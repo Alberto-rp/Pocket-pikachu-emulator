@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.horn.auxStandRight;
+    Anims.edit = Anims.settingsDiff.medium;
 });
 
 // Anim vars
@@ -39,10 +39,10 @@ pokeStatus.steps = (localStorage.getItem("steps") != null)? Number(localStorage.
 pokeStatus.totalSteps = (localStorage.getItem("totalSteps") != null)? Number(localStorage.getItem("totalSteps")) : 0;
 pokeStatus.watts = (localStorage.getItem("watts") != null)? Number(localStorage.getItem("watts")) : 50;
 pokeStatus.friendshipLevel = (localStorage.getItem("friendshipLevel") != null)? Number(localStorage.getItem("friendshipLevel")) : 0;
-pokeStatus.eatingtHours = [10, 12, 16, 18];
+pokeStatus.eatingtHours = [12, 18];
 pokeStatus.lollypopHours = [15];
 pokeStatus.playHours = [9, 10, 11, 12, 13, 14, 15, 16, 17];
-pokeStatus.tvHours = [13, 14, 15, 16, 17, 18, 19];
+pokeStatus.tvHours = [18, 19];
 pokeStatus.consecutiveSteps = 0;
 pokeStatus.lastConected = (localStorage.getItem("lastConected") != null)? localStorage.getItem("lastConected") : new Date().toDateString();
 
@@ -57,6 +57,42 @@ wattsAux.givenAmountWatts = 0
 //Settings
 let settings = {};
 settings.relSelected = (localStorage.getItem("relDrop") != null)? localStorage.getItem("relDrop") : 'on';
+settings.dificultySelected = (localStorage.getItem("dificultyLevel") != null)? localStorage.getItem("dificultyLevel") : "medium";
+settings.dificultyLevels = {
+    "easy" : {
+        "walkAnims": {
+            "toyCar": [250, 999],
+            "bike": [500, 1490],
+            "kart": [1000, 2249],
+            "unicycle": [2250, 2999],
+            "skateboard": [3000, 3999],
+            "stilts": [4000],
+        },
+        "unlockAnims": [1500, 3000, 4500, 10000]
+    },
+    "medium" : {
+        "walkAnims": {
+            "toyCar": [2500, 9999],
+            "bike": [5000, 14900],
+            "kart": [10000, 22499],
+            "unicycle": [22500, 29999],
+            "skateboard": [30000, 39999],
+            "stilts": [40000],
+        },
+        "unlockAnims": [15000, 30000, 45000, 100000]
+    },
+    "hard" : {
+        "walkAnims": {
+            "toyCar": [25000, 99999],
+            "bike": [50000, 149000],
+            "kart": [100000, 224999],
+            "unicycle": [225000, 299999],
+            "skateboard": [300000, 399999],
+            "stilts": [400000],
+        },
+        "unlockAnims": [150000, 300000, 450000, 1000000]
+    }
+}
 
 //Roulette
 let roulete = {};
@@ -323,11 +359,22 @@ document.addEventListener('DOMContentLoaded', () => {
                     animStatus = 'settingsRel'
                     loadAnim(DisplayScreen, Anims.settingsRel[settings.relSelected])
                     break;
+
+                case 'diffLevel':
+                    // Show the actual setting selected
+                    animStatus = 'settingsDiff'
+                    loadAnim(DisplayScreen, Anims.settingsDiff[`${settings.dificultySelected}Selected`])
+                    break;
             }
         }else if(animStatus == 'settingsRel'){
             settings.relSelected = settings.relSelected == 'off' ? 'on' : 'off';
             loadAnim(DisplayScreen, Anims.settingsRel[settings.relSelected])
             localStorage.setItem("relDrop", settings.relSelected);
+        }else if(animStatus == 'settingsDiff'){
+            console.log(`${settings.dificultySelected} difficulty selected`);
+            loadAnim(DisplayScreen, Anims.settingsDiff[`${settings.dificultySelected}Selected`]);
+            localStorage.setItem("dificultyLevel", settings.dificultySelected);
+
         }else if(animStatus != 'restart'){
             // Init screen (Timeouts to emulate analogic)
             setTimeout(() => {
@@ -493,6 +540,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }else if(animStatus == 'settingsRel'){
             animStatus = 'settings'
             loadAnim(DisplayScreen, Anims.settings.relDrop)
+        }else if(animStatus == 'settingsDiff'){
+            animStatus = 'settings'
+            settings.dificultySelected = (localStorage.getItem("dificultyLevel") != null)? localStorage.getItem("dificultyLevel") : "medium";
+            loadAnim(DisplayScreen, Anims.settings.diffLevel)
         }
     })
 
@@ -522,7 +573,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     // START BUTTON / SETTINGS
-    let settingsMenus = ['reset', 'sound', 'relDrop'];
+    let settingsMenus = ['reset', 'diffLevel', 'relDrop'];
     let selectedSettingMenu = settingsMenus[1]
     document.querySelector("#menu-button").addEventListener('click', () => {
         if(!isiOS()){
@@ -533,7 +584,7 @@ document.addEventListener('DOMContentLoaded', () => {
             animStatus = 'settings'
             clearInterval(intervalAnim)
             clearAllTimeouts();
-            loadAnim(DisplayScreen, Anims.settings.sound)
+            loadAnim(DisplayScreen, Anims.settings.diffLevel)
         }
     })
 
@@ -586,6 +637,12 @@ document.addEventListener('DOMContentLoaded', () => {
             let indexSelected = settingsMenus.indexOf(selectedSettingMenu);
             selectedSettingMenu = (indexSelected > 0)? settingsMenus[indexSelected - 1] : selectedSettingMenu;
             loadAnim(DisplayScreen, Anims.settings[selectedSettingMenu])
+        }else if(animStatus == 'settingsDiff') {
+            let {dificultyLevels, dificultySelected} = settings;
+            const levels = Object.keys(dificultyLevels);
+            let indexSelected = levels.indexOf(dificultySelected);
+            settings.dificultySelected = (indexSelected > 0)? levels[indexSelected - 1] : dificultySelected;
+            loadAnim(DisplayScreen, Anims.settingsDiff[settings.dificultySelected])
         }
     })
 
@@ -610,6 +667,12 @@ document.addEventListener('DOMContentLoaded', () => {
             let indexSelected = settingsMenus.indexOf(selectedSettingMenu);
             selectedSettingMenu = (indexSelected < 2)? settingsMenus[indexSelected + 1] : selectedSettingMenu;
             loadAnim(DisplayScreen, Anims.settings[selectedSettingMenu])
+        }else if(animStatus == 'settingsDiff') {
+            let {dificultyLevels, dificultySelected} = settings;
+            const levels = Object.keys(dificultyLevels);
+            let indexSelected = levels.indexOf(dificultySelected);
+            settings.dificultySelected = (indexSelected < 2)? levels[indexSelected + 1] : dificultySelected;
+            loadAnim(DisplayScreen, Anims.settingsDiff[settings.dificultySelected])
         }
     })
 
@@ -725,13 +788,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             }else {
-                // if avoid Sleep, limpiar cookie de acostarse
-                // Eating
-                //eatingtHours = [10, 12, 16, 18]
+                // Eating -- eatingtHours = [10, 12, 18]
                 if( !avoidEat && pokeStatus.eatingtHours.some(elem => elem == startTime.getHours()) && coockieHasBrushed != 'true' && startTime.getMinutes() <= 30) {
-                    if(coockieHadEating != 'true'){ // && startTime.getMinutes() <= 30
+                    if(coockieHadEating != 'true'){
                         eating();
-                    }else if(coockieHasBrushed != 'true'){ //cockie tooth
+                    }else if(coockieHasBrushed != 'true'){
                         brushTeeth();
                     }
                 }else if(!avoidActivity && pokeStatus.lollypopHours.some(elem => elem == startTime.getHours())){
@@ -743,20 +804,17 @@ document.addEventListener('DOMContentLoaded', () => {
                         intervalAnim = setInterval(animate, 1000);
         
                         function animate() {
-                            // Check the time pased
                             endTime = new Date();
-                            var timeDiff = endTime - startTime; //in ms
+                            var timeDiff = endTime - startTime;
                             timeDiff /= 1000;
                             secondsElapsed = Math.round(timeDiff)
                 
                             if(secondsElapsed % 4 == 0 && secondsElapsed != 0){
                                 loadAnim(DisplayScreen, Anims.standMad.extend)
-                                // animStatus = 'extend'
                             }else {
                                 loadAnim(DisplayScreen, Anims.standMad.stand)
                             }
                         }
-    
                     }else{ //Friendship level OK
                         console.log(randomAnim);
                         if(startTime.getHours() == 19 && (coockieHasTakeBath != 'true' || coockieHasBrushed != 'true')){// Bath Time
@@ -768,7 +826,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         }else if(!avoidActivity && pokeStatus.playHours.some(elem => elem == startTime.getHours()) && randomAnim > 5){//PlayingTime
                             // Random activities
                             console.log("PlayingTime" + randomActivity)
-                            
+
+                            // if total steps < 300K
                             if(randomActivity <= 7){
                                 sandcastle();
                             }else if(randomActivity >= 8 && randomActivity <= 14){
