@@ -397,7 +397,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let limit300 = settings.dificultyLevels[settings.dificultySelected]["unlockAnims"][1];
             if(pokeStatus.totalSteps < limit300){
                 localStorage.removeItem('hasReach300');
-                deteleCookies('has_reach_goal');
+                deleteCookies('has_reach_goal');
             }
         }else if(animStatus != 'restart'){
             // Init screen (Timeouts to emulate analogic)
@@ -2026,7 +2026,7 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem("relDrop", settings.relSelected);
 
             //Remove all the cookies
-            deteleCookies();
+            deleteCookies();
             
     
             setTimeout(() => {
@@ -2203,17 +2203,19 @@ function cleanStates() {
     document.querySelector("#gameMenu").classList.remove('selected')
 }
 
-function deteleCookies(specific=false) {
+function deleteCookies(specific=false) {
     if(specific){
         document.cookie = specific + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     }else{
         var cookies = document.cookie.split(";");
         for (var i = 0; i < cookies.length; i++) {
             var cookie = cookies[i];
-            var eqPos = cookie.indexOf("=");
-            var name = eqPos > -1 ? cookie.substring(0, eqPos) : cookie;
-            // Establece la fecha de expiración a una fecha pasada
-            document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            if(cookie.indexOf("ClosedVer") == -1){
+                var eqPos = cookie.indexOf("=");
+                var name = eqPos > -1 ? cookie.substring(0, eqPos) : cookie;
+                // Establece la fecha de expiración a una fecha pasada
+                document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            }
         }
     }
 }
