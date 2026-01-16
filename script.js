@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.record.baseAux;
+    Anims.edit = Anims.licking.lollypopFall;
 });
 
 // Anim vars
@@ -41,9 +41,11 @@ pokeStatus.totalSteps = (localStorage.getItem("totalSteps") != null)? Number(loc
 pokeStatus.watts = (localStorage.getItem("watts") != null)? Number(localStorage.getItem("watts")) : 50;
 pokeStatus.friendshipLevel = (localStorage.getItem("friendshipLevel") != null)? Number(localStorage.getItem("friendshipLevel")) : 0;
 pokeStatus.eatingtHours = [12, 18];
-pokeStatus.lollypopHours = [15];
+pokeStatus.lickingHours = [15];
 pokeStatus.playHours = [9, 10, 11, 12, 13, 14, 15, 16, 17];
 pokeStatus.tvHours = [18, 19];
+pokeStatus.bathHours = [19];
+greetingHours = [8, 12, 19];
 pokeStatus.consecutiveSteps = 0;
 pokeStatus.lastConected = (localStorage.getItem("lastConected") != null)? localStorage.getItem("lastConected") : new Date().toDateString();
 pokeStatus.todayHasReachLimit = (document.cookie.split("; ").find((row) => row.startsWith("has_reach_goal="))?.split("=")[1])? true : false;
@@ -572,7 +574,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     // STATE BUTTON / FRIENDSHIP BUTTON
-    let allowedAnims = ['stand', 'standMad', 'sleeping', 'yawnHappy', 'tongueAnim', 'happySteps', 'heartSmiles', 'writeLetter', 'flying', 'rollingBall', 'diving', 'backFlip', 'piano', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'reading', 'watchTV', 'bathTime', 'buildingBlocks', 'lollypop', 'playingHorn', 'walking', 'eating'];
+    let allowedAnims = ['stand', 'standMad', 'sleeping', 'yawnHappy', 'tongueAnim', 'happySteps', 'heartSmiles', 'writeLetter', 'flying', 'rollingBall', 'diving', 'backFlip', 'piano', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'reading', 'watchTV', 'bathTime', 'buildingBlocks', 'licking', 'playingHorn', 'walking', 'eating'];
     let menus = ['clockMenu', 'giftMenu', 'gameMenu'];
 
     document.querySelector("#state-button").addEventListener('click', () => {
@@ -715,7 +717,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector("#startAnim").addEventListener('click', () => {
         clearAllTimeouts();
         clearInterval(intervalAnim);
-        eating();
+        randomAnim = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
+        licking();
     })
 
     // ShowHelp Grid
@@ -821,8 +824,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     }else if(coockieHasBrushed != 'true'){
                         brushTeeth();
                     }
-                }else if(!avoidActivity && pokeStatus.lollypopHours.some(elem => elem == startTime.getHours())){
-                    lollypop();
+                }else if(!avoidActivity && pokeStatus.lickingHours.some(elem => elem == startTime.getHours())){
+                    licking();
                 }else{
                     if(pokeStatus.friendshipLevel <= -500){ // If pikachu is mad he doesn't play
                         animStatus = 'standMad'
@@ -842,7 +845,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             }
                         }
                     }else{ //Friendship level OK
-                        if(startTime.getHours() == 19 && (coockieHasTakeBath != 'true' || coockieHasBrushed != 'true')){// Bath Time
+                        if(pokeStatus.bathHours.some(elem => elem == startTime.getHours()) && (coockieHasTakeBath != 'true' || coockieHasBrushed != 'true')){// Bath Time
                             if(coockieHasTakeBath != 'true'){
                                 bathTime();
                             }else{
@@ -885,8 +888,13 @@ document.addEventListener('DOMContentLoaded', () => {
                                     
                                 }
                             }else if(pokeStatus.friendshipLevel > 1500){ // Like and love status
-                                if(!avoidGreeting && startTime.getHours() == 8){
-                                    yawnAnim()
+                                if(!avoidGreeting && pokeStatus.tvHours.some(elem => elem == startTime.getHours())){
+                                    let randomGreeting = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
+                                    if(randomGreeting <= 7){
+                                        yawnAnim();
+                                    }else{
+                                        heartSmiles();
+                                    }
                                 }else{
                                     if(pokeStatus.friendshipLevel <= 3000){
                                         standLike();                                
@@ -1050,7 +1058,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     throwBlocks = true;
                     stopPlaying = true;
                 }, 1000);
-            }else if(animStatus == 'lollypop'){
+            }else if(animStatus == 'licking'){
                 actionTimeOut = setTimeout(() => {
                     throwCandy = true;
                     stopPlaying = true;
@@ -1073,12 +1081,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 actionTimeOut = setTimeout(() => {
                     console.log("EING?")
                     clearInterval(intervalAnim);
-                    loadAnim(DisplayScreen, Anims.shower.look);
+                    clearAllTimeouts();
+                    loadAnim(DisplayScreen, lookBathAnim);
                     pokeStatus.consecutiveSteps = 0;
-                    auxiliarTimeout = setTimeout(() => {
-                        basicAnim();
-                    }, 3000);
-                }, 1000);
+                    auxiliarTimeout2 = setTimeout(() => {
+                        bathTime();
+                    }, 2000);
+                }, 2500);
             }else if(animStatus == 'eating'){
                 actionTimeOut = setTimeout(() => {
                     if(pokeStatus.consecutiveSteps >= 15 && throwTableAnim != ''){
@@ -1699,9 +1708,9 @@ document.addEventListener('DOMContentLoaded', () => {
             let startAnim;
             let nomnom;
             let nomnom2;
-            let chopstickLimit = settings.dificultyLevels[settings.dificultySelected]["unlockAnims"][1]
+            const ChopstickLimit = (localStorage.getItem("hasReach300") != null)? true : false;
             let randomAnimEat = Math.floor(Math.random() * (15 - 1 + 1) + 1); //1-15
-            let randomLimit = (pokeStatus.totalSteps > chopstickLimit)? 5 : 7;
+            let randomLimit = (ChopstickLimit)? 5 : 7;
 
             if(randomAnimEat <= randomLimit && !pokeStatus.todayHasReachLimit){
                 //TOAST
@@ -1709,7 +1718,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 nomnom = Anims.eating.nomnomToast
                 nomnom2 =  Anims.eating.nomnomToast2
                 throwTableAnim = 'Toast';
-            }else if(randomAnimEat >= randomLimit+1 && ((pokeStatus.totalSteps < chopstickLimit) || randomAnimEat <= 10) && !pokeStatus.todayHasReachLimit){
+            }else if(randomAnimEat >= randomLimit+1 && ((!ChopstickLimit) || randomAnimEat <= 10) && !pokeStatus.todayHasReachLimit){
                 //ONIGIRI
                 startAnim =  Anims.eating.eatingOnigiri;
                 nomnom = Anims.eating.nonomOnigiri
@@ -1794,19 +1803,35 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Take a Bath
+    let lookBathAnim;
     function bathTime() {
         animStatus = 'bathTime'
         console.log(animStatus)
         let bathCounter = 1;
-        loadAnim(DisplayScreen, Anims.shower.stand1)
+        let bathAnim1;
+        let bathAnim2;
+        const BathLimit = (localStorage.getItem("hasReach300") != null)? true : false;
+
+        if((!BathLimit) || (randomAnim <= 5 && !pokeStatus.todayHasReachLimit)){
+            //SHOWER
+            bathAnim1 =  Anims.bath.shower1;
+            bathAnim2 = Anims.bath.shower2;
+            lookBathAnim =  Anims.bath.showerLook;
+        }else if(((BathLimit) && randomAnim >= 6) || pokeStatus.todayHasReachLimit){
+            //BATH
+            bathAnim1 =  Anims.bath.bath1;
+            bathAnim2 = Anims.bath.bath2;
+            lookBathAnim =  Anims.bath.bathLook;
+        }
+        
+        loadAnim(DisplayScreen, bathAnim1)
         intervalAnim = setInterval(animate, 700);
 
         function animate() {
-            
             if(bathCounter <= 1){
-                loadAnim(DisplayScreen, Anims.shower.stand2)
+                loadAnim(DisplayScreen, bathAnim2)
             }else {
-                loadAnim(DisplayScreen, Anims.shower.stand1)
+                loadAnim(DisplayScreen, bathAnim1)
                 bathCounter = 0;
             }
             bathCounter++
@@ -1884,18 +1909,35 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Lollypop anim
-    function lollypop() {
-        animStatus = 'lollypop'
+    // Lollypop / Icecream anim
+    function licking() {
+        animStatus = 'licking'
         console.log(animStatus)
         let animHits = 1;
-        loadAnim(DisplayScreen, Anims.lollypop.lick1)
+        let lick1;
+        let lick2;
+        let throwCandyAnim;
+        const LickLimit = (localStorage.getItem("hasReach300") != null)? true : false;
+
+        if((!LickLimit) || (randomAnim <= 5 && !pokeStatus.todayHasReachLimit)){
+            //LOLLYPOP
+            lick1 =  Anims.licking.lollypop1;
+            lick2 = Anims.licking.lollypop2;
+            throwCandyAnim =  Anims.licking.lollypopFall;
+        }else if(((LickLimit) && randomAnim >= 6) || pokeStatus.todayHasReachLimit){
+            //ICECREAM
+            lick1 =  Anims.licking.icecream1;
+            lick2 = Anims.licking.icecream2;
+            throwCandyAnim =  Anims.licking.icecreamFall;
+        }
+
+        loadAnim(DisplayScreen, lick1)
         intervalAnim = setInterval(animate, 1000);
         
         function animate() {
             if(throwCandy){
                 clearInterval(intervalAnim);
-                loadAnim(DisplayScreen, Anims.lollypop.fall)
+                loadAnim(DisplayScreen, throwCandyAnim)
                 auxiliarTimeout = setTimeout(() => {
                     updateFriendshipLevel(-30, false, false);
                     randomAnim = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
@@ -1903,11 +1945,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     basicAnim(true, false, true, true);
                 }, 3000);
             }else if(animHits % 2 == 0){
-                loadAnim(DisplayScreen, Anims.lollypop.lick1)
+                loadAnim(DisplayScreen, lick1)
             }else{
-                loadAnim(DisplayScreen, Anims.lollypop.lick2)
+                loadAnim(DisplayScreen, lick2)
             }
-
             animHits++
         }
     }
@@ -2261,7 +2302,7 @@ LOGIC AND BET FUNCS
 function walk() {
     // Update steps
     let stepsToConvert = (localStorage.getItem("stepsToConvert") != null)? Number(localStorage.getItem("stepsToConvert")) : 0
-    let hasReach300 = (localStorage.getItem("hasReach300") != null)? localStorage.getItem("friendshipLevel") : 0;
+    let hasReach300 = (localStorage.getItem("hasReach300") != null)? true : false;
     let limit150 = settings.dificultyLevels[settings.dificultySelected]["unlockAnims"][0];
     let limit300 = settings.dificultyLevels[settings.dificultySelected]["unlockAnims"][1];
     let limit450 = settings.dificultyLevels[settings.dificultySelected]["unlockAnims"][2];
