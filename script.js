@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.eating.angryToast;
+    Anims.edit = Anims.record.baseAux;
 });
 
 // Anim vars
@@ -46,8 +46,14 @@ pokeStatus.playHours = [9, 10, 11, 12, 13, 14, 15, 16, 17];
 pokeStatus.tvHours = [18, 19];
 pokeStatus.consecutiveSteps = 0;
 pokeStatus.lastConected = (localStorage.getItem("lastConected") != null)? localStorage.getItem("lastConected") : new Date().toDateString();
-pokeStatus.todayHasReachLimit = document.cookie.split("; ").find((row) => row.startsWith("has_reach_goal="))?.split("=")[1];
-pokeStatus.todayHasReachLimit = (pokeStatus.todayHasReachLimit == undefined)? false : pokeStatus.todayHasReachLimit;
+pokeStatus.todayHasReachLimit = (document.cookie.split("; ").find((row) => row.startsWith("has_reach_goal="))?.split("=")[1])? true : false;
+pokeStatus.reachEnd = (localStorage.getItem("reachEnd") != null)? true : false;
+
+// Fix Temporal
+if(localStorage.getItem("initTamDate") == null){
+    let auxDate = new Date();
+    localStorage.setItem("initTamDate", `${auxDate.toDateString()} ${auxDate.getHours()}:00`);
+}
 
 // Watts
 let wattsAux = {};
@@ -71,7 +77,7 @@ settings.dificultyLevels = {
             "skateboard": [3000, 3999],
             "stilts": [4000],
         },
-        "unlockAnims": [3000, 4500, 10000]
+        "unlockAnims": [1500, 3000, 4500, 10000]
     },
     "medium" : {
         "walkAnims": {
@@ -82,7 +88,7 @@ settings.dificultyLevels = {
             "skateboard": [30000, 39999],
             "stilts": [40000],
         },
-        "unlockAnims": [30000, 45000, 100000]
+        "unlockAnims": [15000, 30000, 45000, 100000]
     },
     "hard" : {
         "walkAnims": {
@@ -93,7 +99,7 @@ settings.dificultyLevels = {
             "skateboard": [300000, 399999],
             "stilts": [400000],
         },
-        "unlockAnims": [300000, 450000, 1000000]
+        "unlockAnims": [150000, 300000, 450000, 1000000]
     }
 }
 
@@ -127,8 +133,6 @@ roulete.hackSteps = 0;
 document.addEventListener('DOMContentLoaded', () => {
     const createScreen = document.querySelector('.createScreen');
     const DisplayScreen = document.querySelector('.screen');
-    // const audioShake = document.querySelector('#shakeAudio');
-    // const audioShaking = document.querySelector('#shakingAudio');
 
     // Info Version and Updates modal
     let infoModal = document.querySelector("#updateModal");
@@ -276,7 +280,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //INIT TAMAGOTCHI / ENTER
     // var clockInterval;
-    document.querySelector("#enter-button").addEventListener('click', enterButton); 
+    document.querySelector("#enter-button").addEventListener('click', () => {
+        if(!pokeStatus.reachEnd){
+            enterButton();  
+        }else{
+            if(document.querySelector('.walkCounter').innerHTML == ''){
+                document.querySelector('.walkCounter').innerHTML = pokeStatus.steps;
+                loadEnd();
+            }else{
+                //Show Record
+                loadAnim(DisplayScreen, Anims.record.base);
+                displayRecord(DisplayScreen);
+            }
+        }
+    }); 
     function enterButton () {
         let timeStart = new Date();
         if(!isiOS()){
@@ -377,9 +394,10 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(`${settings.dificultySelected} difficulty selected`);
             loadAnim(DisplayScreen, Anims.settingsDiff[`${settings.dificultySelected}Selected`]);
             localStorage.setItem("dificultyLevel", settings.dificultySelected);
-            let limit300 = settings.dificultyLevels[settings.dificultySelected]["unlockAnims"][0];
+            let limit300 = settings.dificultyLevels[settings.dificultySelected]["unlockAnims"][1];
             if(pokeStatus.totalSteps < limit300){
                 localStorage.removeItem('hasReach300');
+                deteleCookies('has_reach_goal');
             }
         }else if(animStatus != 'restart'){
             // Init screen (Timeouts to emulate analogic)
@@ -585,7 +603,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(!isiOS()){
             window.navigator.vibrate(10);
         }
-        if(allowedAnims.some(anim => anim == animStatus)){
+        if(allowedAnims.some(anim => anim == animStatus) && !pokeStatus.reachEnd){
             cleanStates();
             animStatus = 'settings'
             clearInterval(intervalAnim)
@@ -824,7 +842,6 @@ document.addEventListener('DOMContentLoaded', () => {
                             }
                         }
                     }else{ //Friendship level OK
-                        console.log(randomAnim);
                         if(startTime.getHours() == 19 && (coockieHasTakeBath != 'true' || coockieHasBrushed != 'true')){// Bath Time
                             if(coockieHasTakeBath != 'true'){
                                 bathTime();
@@ -1682,7 +1699,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let startAnim;
             let nomnom;
             let nomnom2;
-            let chopstickLimit = settings.dificultyLevels[settings.dificultySelected]["unlockAnims"][0]
+            let chopstickLimit = settings.dificultyLevels[settings.dificultySelected]["unlockAnims"][1]
             let randomAnimEat = Math.floor(Math.random() * (15 - 1 + 1) + 1); //1-15
             let randomLimit = (pokeStatus.totalSteps > chopstickLimit)? 5 : 7;
 
@@ -1993,6 +2010,7 @@ document.addEventListener('DOMContentLoaded', () => {
             loadAnim(DisplayScreen, null, true, true);
 
             // Clear the localStorage
+            let initDate = new Date();
             localStorage.clear();
             pokeStatus.steps = 0;
             pokeStatus.totalSteps = 0;
@@ -2001,19 +2019,15 @@ document.addEventListener('DOMContentLoaded', () => {
             isLateAwake = true;
             settings.relSelected = 'on';
             settings.dificultySelected = 'medium';
+            pokeStatus.reachEnd = false;
+            localStorage.setItem("initTamDate", `${initDate.toDateString()} ${initDate.getHours()}:00`);
             localStorage.setItem("watts", pokeStatus.watts);
             localStorage.setItem("friendshipLevel", pokeStatus.friendshipLevel);
             localStorage.setItem("relDrop", settings.relSelected);
 
             //Remove all the cookies
-            var cookies = document.cookie.split(";");
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = cookies[i];
-                var eqPos = cookie.indexOf("=");
-                var name = eqPos > -1 ? cookie.substring(0, eqPos) : cookie;
-                // Establece la fecha de expiración a una fecha pasada
-                document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-            }
+            deteleCookies();
+            
     
             setTimeout(() => {
                 cleanStates();
@@ -2183,11 +2197,25 @@ function restartGame(screen) {
     }
 }
 
-
 function cleanStates() {
     document.querySelector("#clockMenu").classList.remove('selected')
     document.querySelector("#giftMenu").classList.remove('selected')
     document.querySelector("#gameMenu").classList.remove('selected')
+}
+
+function deteleCookies(specific=false) {
+    if(specific){
+        document.cookie = specific + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    }else{
+        var cookies = document.cookie.split(";");
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i];
+            var eqPos = cookie.indexOf("=");
+            var name = eqPos > -1 ? cookie.substring(0, eqPos) : cookie;
+            // Establece la fecha de expiración a una fecha pasada
+            document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        }
+    }
 }
 
 // CARGA DE ANIMACIONES
@@ -2216,46 +2244,6 @@ function loadAnim(screen, anim, clear, full){
     }
 }
 
-//Carga de animaciones experimental (requiere eliminar todos los metodos antiguos like yawn)
-/*let previusAnim = '';
-function loadAnim(screen, anim, clear, full){
-    if(previusAnim != '' && previusAnim.classList[0] == screen.classList[0] && !clear && !full){
-        previusAnim = screen;
-        for(i = 0; i < 1080; i++){
-            if(previusAnim.childNodes[i].classList.contains('clicked') && !(anim.some(elem => elem == `num-${i}`))){
-                previusAnim.childNodes[i].classList.add('halfClicked')
-            }
-            //console.log(previusAnim.childNodes[i].classList)
-        }
-        screen = previusAnim;
-        auxiliarTimeout = setTimeout(() => {
-            printAnim();
-        }, 50);
-    }else{
-        printAnim();
-    }
-
-    function printAnim() {
-        screen.innerHTML = '';
-        for(i = 0; i < 1080; i++){
-            let newDiv = document.createElement("div");
-            newDiv.classList.add('pixel');
-            newDiv.classList.add(`num-${i}`);
-            
-            // Se puede sumar o restar a la i de abajo para mover a izq o der
-            // Si la i se suma con 36 se mueve una fila arriba todo
-            // Crear otra func con mas de una anim de entrada y mas de un some / clock / game
-            if(!clear && anim.some(elem => elem == `num-${i}`) || full){
-                newDiv.classList.add('clicked');
-            }
-    
-            screen.appendChild(newDiv)
-        }
-        previusAnim = screen;
-    }
-}
-*/
-
 function loadLocatedAnim(screen, anim){
     for(i = 0; i < 1080; i++){
         if(anim.some(elem => elem == `num-${i}`)){
@@ -2270,26 +2258,20 @@ LOGIC AND BET FUNCS
 
 function walk() {
     // Update steps
-    pokeStatus.steps = (pokeStatus.steps < 99999)? (pokeStatus.steps + 1) : 99999;
     let stepsToConvert = (localStorage.getItem("stepsToConvert") != null)? Number(localStorage.getItem("stepsToConvert")) : 0
     let hasReach300 = (localStorage.getItem("hasReach300") != null)? localStorage.getItem("friendshipLevel") : 0;
-    let limit300 = settings.dificultyLevels[settings.dificultySelected]["unlockAnims"][0];
-    let limit450 = settings.dificultyLevels[settings.dificultySelected]["unlockAnims"][1];
-    let limitMil = settings.dificultyLevels[settings.dificultySelected]["unlockAnims"][2];
-    stepsToConvert++
-    roulete.hackSteps += 1;
-
+    let limit150 = settings.dificultyLevels[settings.dificultySelected]["unlockAnims"][0];
+    let limit300 = settings.dificultyLevels[settings.dificultySelected]["unlockAnims"][1];
+    let limit450 = settings.dificultyLevels[settings.dificultySelected]["unlockAnims"][2];
+    let limitMil = settings.dificultyLevels[settings.dificultySelected]["unlockAnims"][3];
+    
     // Update totalSteps
     if(pokeStatus.totalSteps < limitMil){
+        pokeStatus.steps = (pokeStatus.steps < 99999)? (pokeStatus.steps + 1) : 99999;
         pokeStatus.totalSteps += 1
-        if(pokeStatus.totalSteps > limit300 && !hasReach300){
-            var now = new Date();
-            now.setTime(now.getTime() + 86400 * 1000); // Agregamos 1 día en milisegundos
-            document.cookie = "has_reach_goal=true; expires=" + now + "; path=/";
-            localStorage.setItem("hasReach300", 1);
-            pokeStatus.todayHasReachLimit = true;
-        }
-
+        stepsToConvert++
+        roulete.hackSteps += 1;
+        
         // Update Watts
         if(stepsToConvert == 20){
             localStorage.setItem("stepsToConvert", 0);
@@ -2298,19 +2280,51 @@ function walk() {
         }else{
             localStorage.setItem("stepsToConvert", stepsToConvert);
         }
-    
+        
         localStorage.setItem("steps", pokeStatus.steps);
         localStorage.setItem("totalSteps", pokeStatus.totalSteps);
-    
+        
         if(animStatus != ''){
             document.querySelector('.walkCounter').innerHTML = pokeStatus.steps;
         }
-    }else{
-        // Celebrate the million
-        const DisplayScreen = document.querySelector('.screen');
-        // loadAnim(DisplayScreen, Anims.lollypop.fall);
-    }
 
+        // Reach First Limit
+        if(pokeStatus.totalSteps > limit300 && !hasReach300){
+            var now = new Date();
+            now.setTime(now.getTime() + 86400 * 1000); // Agregamos 1 día en milisegundos
+            document.cookie = "has_reach_goal=true; expires=" + now + "; path=/";
+            localStorage.setItem("hasReach300", 1);
+            pokeStatus.todayHasReachLimit = true;
+        }
+        // Reach End / Celebrate the million
+        if(pokeStatus.totalSteps == limitMil){
+            animStatus = '';
+            loadEnd();
+        }
+    }
+}
+
+function loadEnd() {
+    let limitMil = settings.dificultyLevels[settings.dificultySelected]["unlockAnims"][3];
+    let animSel = '';
+    switch (limitMil) {
+        case 10000:
+            animSel = 'tenKsteps';
+            break;
+        case 100000:
+            animSel = 'hundredKsteps';
+            break;
+        case 1000000:
+            animSel = 'milliomSteps';
+            break;
+    }
+    const DisplayScreen = document.querySelector('.screen');
+    clearAllTimeouts();
+    clearInterval(intervalAnim);
+    pokeStatus.reachEnd = true;
+    localStorage.setItem("reachEnd", true);
+    document.querySelector("#clockMenu").classList.remove('selected');
+    loadAnim(DisplayScreen, Anims.finalScreen[animSel]);
 }
 
 function printHour(screen, hours, minutes, pmState){
@@ -2417,6 +2431,47 @@ function displayState(screen) {
         }
         // milcent
         if(totalStepArray.length == 6 && Anims.totalSteps.milcent[totalStepArray[5]].some(elem => elem == `num-${i}`)){
+            newDiv.classList.add('clicked');
+        }
+    
+        screen.appendChild(newDiv)
+    }
+}
+
+// Display Record Hours
+function displayRecord(screen) {
+    let totalHoursArray = calculatePastHours().toString().split('').reverse();
+    screen.innerHTML = '';
+
+    for(i = 0; i < 1080; i++){
+        let newDiv = document.createElement("div");
+        newDiv.classList.add('pixel');
+        newDiv.classList.add(`num-${i}`);
+
+        // State
+        if(Anims.record.base.some(elem => elem == `num-${i}`)){
+            newDiv.classList.add('clicked');
+        }
+
+        /* Total Hours */
+        // Unit
+        if(Anims.record.unit[totalHoursArray[0]].some(elem => elem == `num-${i}`)){
+            newDiv.classList.add('clicked');
+        }
+        // Decen
+        if(totalHoursArray.length >= 2 && Anims.record.dec[totalHoursArray[1]].some(elem => elem == `num-${i}`)){
+            newDiv.classList.add('clicked');
+        }
+        // cent
+        if(totalHoursArray.length >= 3 && Anims.record.cent[totalHoursArray[2]].some(elem => elem == `num-${i}`)){
+            newDiv.classList.add('clicked');
+        }
+        // mil
+        if(totalHoursArray.length >= 4 && Anims.record.mil[totalHoursArray[3]].some(elem => elem == `num-${i}`)){
+            newDiv.classList.add('clicked');
+        }
+        // milDec
+        if(totalHoursArray.length >= 5 && Anims.record.milDec[totalHoursArray[4]].some(elem => elem == `num-${i}`)){
             newDiv.classList.add('clicked');
         }
     
@@ -2798,4 +2853,16 @@ window.addEventListener('load', function() {
     const preloader = document.querySelector('.preloader');
     preloader.style.display = 'none';
 });
+
+function calculatePastHours() {
+  const Start = new Date((localStorage.getItem("initTamDate") != null)? localStorage.getItem("initTamDate") : new Date().toDateString());
+  const End = new Date();  
+  const MilisecondDiff = End.getTime() - Start.getTime();
+
+  //Convert to Hours miliseconds:
+  const MilisecondsPerHour = 1000 * 60 * 60;
+  const pastHours = MilisecondDiff / MilisecondsPerHour;
+
+  return pastHours.toFixed(0);
+}
 
