@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.licking.lollypopFall;
+    Anims.edit = Anims.study.studyStand;
 });
 
 // Anim vars
@@ -32,7 +32,10 @@ let coockieHasBrushed = document.cookie.split("; ").find((row) => row.startsWith
 let coockieHasGoneSleep = document.cookie.split("; ").find((row) => row.startsWith("has_gone_sleep="))?.split("=")[1];
 let isBrushing = false;
 let stopPlaying = false;
+let isAskingStudy = false;
 let avoidSleepGiftDev = false; //For development
+const hasReach150 = (localStorage.getItem("hasReach150") != null)? true : false;
+const hasReach300 = (localStorage.getItem("hasReach300") != null)? true : false;
 
 // Steps
 let pokeStatus = {};
@@ -42,13 +45,16 @@ pokeStatus.watts = (localStorage.getItem("watts") != null)? Number(localStorage.
 pokeStatus.friendshipLevel = (localStorage.getItem("friendshipLevel") != null)? Number(localStorage.getItem("friendshipLevel")) : 0;
 pokeStatus.eatingtHours = [12, 18];
 pokeStatus.lickingHours = [15];
-pokeStatus.playHours = [9, 10, 11, 12, 13, 14, 15, 16, 17];
-pokeStatus.tvHours = [18, 19];
+pokeStatus.playHours = [9, 10, 11, 13, 14, 16, 17];
+pokeStatus.yoyoKiteHours = [16, 17];
+pokeStatus.tvHours = [19, 20];
+pokeStatus.greetingHours = [8, 12, 18];
 pokeStatus.bathHours = [19];
 greetingHours = [8, 12, 19];
 pokeStatus.consecutiveSteps = 0;
 pokeStatus.lastConected = (localStorage.getItem("lastConected") != null)? localStorage.getItem("lastConected") : new Date().toDateString();
-pokeStatus.todayHasReachLimit = (document.cookie.split("; ").find((row) => row.startsWith("has_reach_goal="))?.split("=")[1])? true : false;
+pokeStatus.todayHasReachLimit150 = (document.cookie.split("; ").find((row) => row.startsWith("has_reach150_goal="))?.split("=")[1])? true : false;
+pokeStatus.todayHasReachLimit300 = (document.cookie.split("; ").find((row) => row.startsWith("has_reach300_goal="))?.split("=")[1])? true : false;
 pokeStatus.reachEnd = (localStorage.getItem("reachEnd") != null)? true : false;
 
 // Fix Temporal
@@ -403,6 +409,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }else if(animStatus != 'restart'){
             // Init screen (Timeouts to emulate analogic)
+            //STANDAR START
             setTimeout(() => {
                 document.querySelector('.walkCounter').innerHTML = pokeStatus.steps;
             }, 200);
@@ -574,7 +581,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     // STATE BUTTON / FRIENDSHIP BUTTON
-    let allowedAnims = ['stand', 'standMad', 'sleeping', 'yawnHappy', 'tongueAnim', 'happySteps', 'heartSmiles', 'writeLetter', 'flying', 'rollingBall', 'diving', 'backFlip', 'piano', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'reading', 'watchTV', 'bathTime', 'buildingBlocks', 'licking', 'playingHorn', 'walking', 'eating'];
+    let allowedAnims = ['stand', 'standMad', 'sleeping', 'yawnHappy', 'tongueAnim', 'happySteps', 'heartSmiles', 'writeLetter', 'flying', 'rollingBall', 'diving', 'backFlip', 'piano', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'reading', 'watchTV', 'bathTime', 'buildingBlocks', 'licking', 'studying', 'playingHorn', 'walking', 'eating'];
     let menus = ['clockMenu', 'giftMenu', 'gameMenu'];
 
     document.querySelector("#state-button").addEventListener('click', () => {
@@ -605,12 +612,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if(!isiOS()){
             window.navigator.vibrate(10);
         }
-        if(allowedAnims.some(anim => anim == animStatus) && !pokeStatus.reachEnd){
+        if(allowedAnims.some(anim => anim == animStatus) && !pokeStatus.reachEnd) {
             cleanStates();
             animStatus = 'settings'
             clearInterval(intervalAnim)
             clearAllTimeouts();
             loadAnim(DisplayScreen, Anims.settings.diffLevel)
+        }else if(animStatus == '' && !pokeStatus.reachEnd) {
+            enterButton();
         }
     })
 
@@ -718,7 +727,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clearAllTimeouts();
         clearInterval(intervalAnim);
         randomAnim = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
-        licking();
+        eating();
     })
 
     // ShowHelp Grid
@@ -851,22 +860,42 @@ document.addEventListener('DOMContentLoaded', () => {
                             }else{
                                 brushTeeth();
                             }
-                        }else if(!avoidActivity && pokeStatus.playHours.some(elem => elem == startTime.getHours()) && randomAnim > 5){//PlayingTime
+                        }else if(!avoidActivity && pokeStatus.yoyoKiteHours.some(elem => elem == startTime.getHours()) && ((hasReach150 && randomAnim > 5) || hasReach300 || pokeStatus.todayHasReachLimit150)){
+                            // YOYO / KITE
+                            if(randomActivity <= 10 || !hasReach300){
+                                console.log('kite')
+                                // kite();
+                            }else {
+                                console.log('yoyo')
+                                // yoyo();
+                            }
+                        }else if(!avoidActivity && pokeStatus.playHours.some(elem => elem == startTime.getHours()) && randomAnim >= 4){//PlayingTime
                             // Random activities
                             console.log("PlayingTime" + randomActivity)
 
-                            // if total steps < 300K
                             if(randomActivity <= 7){
-                                sandcastle();
+                                if(!hasReach300){
+                                    sandcastle();
+                                }else{
+                                    study('maths');
+                                }
                             }else if(randomActivity >= 8 && randomActivity <= 14){
-                                buildingBlocks();
+                                if(!hasReach300){
+                                    buildingBlocks();
+                                }else{
+                                    study('history');
+                                }
                             }else if(randomActivity >= 15){
-                                reading();
+                                if(!hasReach300){
+                                    reading();
+                                }else{
+                                    sandcastle();
+                                }
                             }
-
                         }else if(!avoidActivity && pokeStatus.tvHours.some(elem => elem == startTime.getHours()) && randomAnim <= 2){//Watching TV
                             watchTV();
                         }else{
+                            // STAND ANIM
                             if(pokeStatus.friendshipLevel > -500 && pokeStatus.friendshipLevel <= 1500){ // OK status
                                 animate(true);
                                 intervalAnim = setInterval(animate, 1000);
@@ -888,7 +917,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     
                                 }
                             }else if(pokeStatus.friendshipLevel > 1500){ // Like and love status
-                                if(!avoidGreeting && pokeStatus.tvHours.some(elem => elem == startTime.getHours())){
+                                if(!avoidGreeting && pokeStatus.greetingHours.some(elem => elem == startTime.getHours())){
                                     let randomGreeting = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
                                     if(randomGreeting <= 7){
                                         yawnAnim();
@@ -1023,6 +1052,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     }, 6000);
                     pokeStatus.consecutiveSteps = 0;
                 }, 1000);
+            }else if(animStatus == 'studying'){
+                actionTimeOut = setTimeout(() => {
+                    isAskingStudy = true;
+                }, 2000);
             }else if(animStatus == 'reading'){
                 actionTimeOut = setTimeout(() => {
                     clearInterval(intervalAnim);
@@ -1708,17 +1741,17 @@ document.addEventListener('DOMContentLoaded', () => {
             let startAnim;
             let nomnom;
             let nomnom2;
-            const ChopstickLimit = (localStorage.getItem("hasReach300") != null)? true : false;
+            const ChopstickLimit = hasReach300;
             let randomAnimEat = Math.floor(Math.random() * (15 - 1 + 1) + 1); //1-15
             let randomLimit = (ChopstickLimit)? 5 : 7;
 
-            if(randomAnimEat <= randomLimit && !pokeStatus.todayHasReachLimit){
+            if(randomAnimEat <= randomLimit && !pokeStatus.todayHasReachLimit300){
                 //TOAST
                 startAnim =  Anims.eating.eatingToast;
                 nomnom = Anims.eating.nomnomToast
                 nomnom2 =  Anims.eating.nomnomToast2
                 throwTableAnim = 'Toast';
-            }else if(randomAnimEat >= randomLimit+1 && ((!ChopstickLimit) || randomAnimEat <= 10) && !pokeStatus.todayHasReachLimit){
+            }else if(randomAnimEat >= randomLimit+1 && ((!ChopstickLimit) || randomAnimEat <= 10) && !pokeStatus.todayHasReachLimit300){
                 //ONIGIRI
                 startAnim =  Anims.eating.eatingOnigiri;
                 nomnom = Anims.eating.nonomOnigiri
@@ -1810,14 +1843,14 @@ document.addEventListener('DOMContentLoaded', () => {
         let bathCounter = 1;
         let bathAnim1;
         let bathAnim2;
-        const BathLimit = (localStorage.getItem("hasReach300") != null)? true : false;
+        const BathLimit = hasReach300;
 
-        if((!BathLimit) || (randomAnim <= 5 && !pokeStatus.todayHasReachLimit)){
+        if((!BathLimit) || (randomAnim <= 5 && !pokeStatus.todayHasReachLimit300)){
             //SHOWER
             bathAnim1 =  Anims.bath.shower1;
             bathAnim2 = Anims.bath.shower2;
             lookBathAnim =  Anims.bath.showerLook;
-        }else if(((BathLimit) && randomAnim >= 6) || pokeStatus.todayHasReachLimit){
+        }else if(((BathLimit) && randomAnim >= 6) || pokeStatus.todayHasReachLimit300){
             //BATH
             bathAnim1 =  Anims.bath.bath1;
             bathAnim2 = Anims.bath.bath2;
@@ -1917,14 +1950,14 @@ document.addEventListener('DOMContentLoaded', () => {
         let lick1;
         let lick2;
         let throwCandyAnim;
-        const LickLimit = (localStorage.getItem("hasReach300") != null)? true : false;
+        const LickLimit = hasReach300;
 
-        if((!LickLimit) || (randomAnim <= 5 && !pokeStatus.todayHasReachLimit)){
+        if((!LickLimit) || (randomAnim <= 5 && !pokeStatus.todayHasReachLimit300)){
             //LOLLYPOP
             lick1 =  Anims.licking.lollypop1;
             lick2 = Anims.licking.lollypop2;
             throwCandyAnim =  Anims.licking.lollypopFall;
-        }else if(((LickLimit) && randomAnim >= 6) || pokeStatus.todayHasReachLimit){
+        }else if(((LickLimit) && randomAnim >= 6) || pokeStatus.todayHasReachLimit300){
             //ICECREAM
             lick1 =  Anims.licking.icecream1;
             lick2 = Anims.licking.icecream2;
@@ -1950,6 +1983,51 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadAnim(DisplayScreen, lick2)
             }
             animHits++
+        }
+    }
+
+    // Study
+    function study(subject) {
+        animStatus = 'studying'
+        console.log(animStatus)
+        let studyStand = Anims.study.studyStand;
+        let studyAsk;
+        let studyAnswer;
+        // Include in the future English or Sleeping
+        // const studyLimit = (localStorage.getItem("hasReach450") != null)? true : false;
+
+        switch (subject) {
+            case 'history':
+                studyAsk = Anims.study.studyAskHistory;
+                studyAnswer =  Anims.study.studyAnswerHistory;
+            break;
+            case 'maths':
+                studyAsk = Anims.study.studyAskMaths;
+                studyAnswer =  Anims.study.studyAnswerMaths;
+            break;
+        }
+
+        loadAnim(DisplayScreen, studyStand)
+        intervalAnim = setInterval(animate, 1000);
+        
+        function animate() {
+            if(!isAskingStudy){
+                loadAnim(DisplayScreen, studyStand)
+            }else {
+                clearInterval(intervalAnim);
+                loadAnim(DisplayScreen, studyAsk)
+                auxiliarTimeout = setTimeout(() => {
+                    loadAnim(DisplayScreen, studyStand)
+                    auxiliarTimeout2 = setTimeout(() => {
+                        loadAnim(DisplayScreen, studyAnswer)
+                        auxiliarTimeout3 = setTimeout(() => {
+                            loadAnim(DisplayScreen, studyStand)
+                            isAskingStudy = false;
+                            study(subject);
+                        }, 2000);
+                    }, 1500);
+                }, 2500);
+            }
         }
     }
 
@@ -2302,7 +2380,7 @@ LOGIC AND BET FUNCS
 function walk() {
     // Update steps
     let stepsToConvert = (localStorage.getItem("stepsToConvert") != null)? Number(localStorage.getItem("stepsToConvert")) : 0
-    let hasReach300 = (localStorage.getItem("hasReach300") != null)? true : false;
+    // let hasReach300 = (localStorage.getItem("hasReach300") != null)? true : false;
     let limit150 = settings.dificultyLevels[settings.dificultySelected]["unlockAnims"][0];
     let limit300 = settings.dificultyLevels[settings.dificultySelected]["unlockAnims"][1];
     let limit450 = settings.dificultyLevels[settings.dificultySelected]["unlockAnims"][2];
@@ -2331,14 +2409,24 @@ function walk() {
             document.querySelector('.walkCounter').innerHTML = pokeStatus.steps;
         }
 
-        // Reach First Limit
+        // Reach 150 Limit
+        if(pokeStatus.totalSteps > limit150 && !hasReach150){
+            var now = new Date();
+            now.setTime(now.getTime() + 86400 * 1000); // Agregamos 1 día en milisegundos
+            document.cookie = "has_reach150_goal=true; expires=" + now + "; path=/";
+            localStorage.setItem("hasReach150", 1);
+            pokeStatus.todayHasReachLimit150 = true;
+        }
+
+        // Reach 300 Limit
         if(pokeStatus.totalSteps > limit300 && !hasReach300){
             var now = new Date();
             now.setTime(now.getTime() + 86400 * 1000); // Agregamos 1 día en milisegundos
-            document.cookie = "has_reach_goal=true; expires=" + now + "; path=/";
+            document.cookie = "has_reach300_goal=true; expires=" + now + "; path=/";
             localStorage.setItem("hasReach300", 1);
-            pokeStatus.todayHasReachLimit = true;
+            pokeStatus.todayHasReachLimit300 = true;
         }
+
         // Reach End / Celebrate the million
         if(pokeStatus.totalSteps == limitMil){
             animStatus = '';
