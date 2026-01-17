@@ -43,14 +43,14 @@ pokeStatus.steps = (localStorage.getItem("steps") != null)? Number(localStorage.
 pokeStatus.totalSteps = (localStorage.getItem("totalSteps") != null)? Number(localStorage.getItem("totalSteps")) : 0;
 pokeStatus.watts = (localStorage.getItem("watts") != null)? Number(localStorage.getItem("watts")) : 50;
 pokeStatus.friendshipLevel = (localStorage.getItem("friendshipLevel") != null)? Number(localStorage.getItem("friendshipLevel")) : 0;
-pokeStatus.eatingtHours = [12, 18];
+pokeStatus.eatingtHours = (!hasReach300)? [10, 12, 18] : [12, 18];
 pokeStatus.lickingHours = [15];
 pokeStatus.playHours = [9, 10, 11, 13, 14, 16, 17];
 pokeStatus.yoyoKiteHours = [16, 17];
-pokeStatus.tvHours = [19, 20];
-pokeStatus.greetingHours = [8, 12, 18];
-pokeStatus.bathHours = [19];
-greetingHours = [8, 12, 19];
+pokeStatus.tvHours = (!hasReach300)? [18, 19] : [19, 20];
+pokeStatus.greetingHours = (!hasReach300)? [8, 12, 18] : [8, 12, 18, 19];
+pokeStatus.bathHours = (!hasReach300)? [19] : [20];
+pokeStatus.sleepHour = (!hasReach300)? 20 : 21;
 pokeStatus.consecutiveSteps = 0;
 pokeStatus.lastConected = (localStorage.getItem("lastConected") != null)? localStorage.getItem("lastConected") : new Date().toDateString();
 pokeStatus.todayHasReachLimit150 = (document.cookie.split("; ").find((row) => row.startsWith("has_reach150_goal="))?.split("=")[1])? true : false;
@@ -315,7 +315,7 @@ document.addEventListener('DOMContentLoaded', () => {
             clearAllTimeouts();
             restartTamagotchi(DisplayScreen, true)
         }else if(animStatus == 'gift'){
-            if((isLateAwake || !(timeStart.getHours() >= 20 && timeStart.getHours() <= 23 || timeStart.getHours() >= 0 && timeStart.getHours() < 8)) || avoidSleepGiftDev){
+            if((isLateAwake || !(timeStart.getHours() >= pokeStatus.sleepHour && timeStart.getHours() <= 23 || timeStart.getHours() >= 0 && timeStart.getHours() < 8)) || avoidSleepGiftDev){
                 if(wattsAux.selectedUnitWatt != 'give'){
                     let posibleUnits = ['cent', 'dec', 'unit', 'give'];
                     // Seleccionar la siguiente unidad
@@ -471,7 +471,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     loadAnim(DisplayScreen, Anims.gift.whereIsPikachu)
                                 }else{
                                     // Sleep
-                                    if ((!isLateAwake && (timeStart.getHours() >= 20 && timeStart.getHours() <= 23 || timeStart.getHours() >= 0 && timeStart.getHours() < 8)) && !avoidSleepGiftDev){
+                                    if ((!isLateAwake && (timeStart.getHours() >= pokeStatus.sleepHour && timeStart.getHours() <= 23 || timeStart.getHours() >= 0 && timeStart.getHours() < 8)) && !avoidSleepGiftDev){
                                         loadAnim(DisplayScreen, Anims.gift.sleeping)
                                     }else{
                                         // Prepare Gift
@@ -778,14 +778,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }else{
             // Sleep
-            if (!avoidSleep && !isLateAwake && (startTime.getHours() >= 20 && startTime.getHours() <= 23 ||
+            if (!avoidSleep && !isLateAwake && (startTime.getHours() >= pokeStatus.sleepHour && startTime.getHours() <= 23 ||
                 startTime.getHours() >= 0 && startTime.getHours() < 8)){
                 animStatus = 'sleeping';
                 
                 // Update the cookieValue after goinToSleep, to avoid error of multiple times going to sleep
                 coockieHasGoneSleep = document.cookie.split("; ").find((row) => row.startsWith("has_gone_sleep="))?.split("=")[1];
 
-                if((coockieHasGoneSleep != 'true' && startTime.getHours() == 20) || randomAnim <= 3) {
+                if((coockieHasGoneSleep != 'true' && startTime.getHours() == pokeStatus.sleepHour) || randomAnim <= 3) {
                     slepAnim = Anims.sleep.frontSleep;
                     slepAnim2 = Anims.sleep.frontSleep2;
                 }else if(randomAnim >= 4 && randomAnim <= 6){
@@ -796,7 +796,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     slepAnim2 = Anims.sleep.backSleep2;
                 }
 
-                if(startTime.getHours() == 20 && coockieHasGoneSleep != 'true'){
+                if(startTime.getHours() == pokeStatus.sleepHour && coockieHasGoneSleep != 'true'){
                     loadAnim(DisplayScreen, Anims.sleep.goingToSleep)
                     auxiliarTimeout = setTimeout(() => {
                         loadAnim(DisplayScreen, Anims.sleep.enteringBed)
