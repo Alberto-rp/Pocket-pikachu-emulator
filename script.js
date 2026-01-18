@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.flyingKite.kiteAuxHop2;
+    Anims.edit = Anims.yoyo.yoyo1;
 });
 
 // Anim vars
@@ -33,6 +33,7 @@ let coockieHasGoneSleep = document.cookie.split("; ").find((row) => row.startsWi
 let isBrushing = false;
 let stopPlaying = false;
 let isAskingStudy = false;
+let isDogTrick = false;
 let avoidSleepGiftDev = false; //For development
 const hasReach150 = (localStorage.getItem("hasReach150") != null)? true : false;
 const hasReach300 = (localStorage.getItem("hasReach300") != null)? true : false;
@@ -587,7 +588,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     // STATE BUTTON / FRIENDSHIP BUTTON
-    let allowedAnims = ['stand', 'standMad', 'sleeping', 'yawnHappy', 'tongueAnim', 'happySteps', 'heartSmiles', 'writeLetter', 'flying', 'rollingBall', 'diving', 'backFlip', 'piano', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'reading', 'watchTV', 'bathTime', 'buildingBlocks', 'licking', 'studying', 'flyKite', 'flyKiteFast', 'playingHorn', 'walking', 'eating'];
+    let allowedAnims = ['stand', 'standMad', 'sleeping', 'yawnHappy', 'tongueAnim', 'happySteps', 'heartSmiles', 'writeLetter', 'flying', 'rollingBall', 'diving', 'backFlip', 'piano', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'reading', 'watchTV', 'bathTime', 'buildingBlocks', 'licking', 'studying', 'flyKite', 'flyKiteFast', 'playingYoyo', 'playingHorn', 'walking', 'eating'];
     let menus = ['clockMenu', 'giftMenu', 'gameMenu'];
 
     document.querySelector("#state-button").addEventListener('click', () => {
@@ -733,7 +734,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clearAllTimeouts();
         clearInterval(intervalAnim);
         randomAnim = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
-        flyKite();
+        playingYoyo();
     })
 
     // ShowHelp Grid
@@ -871,8 +872,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             if(randomActivity <= 10 || !hasReach300){
                                 flyKite();
                             }else {
-                                console.log('yoyo')
-                                // yoyo();
+                                playingYoyo();
                             }
                         }else if(!avoidActivity && pokeStatus.playHours.some(elem => elem == startTime.getHours()) && randomAnim >= 4){//PlayingTime
                             // Random activities
@@ -1061,6 +1061,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 actionTimeOut = setTimeout(() => {
                     isAskingStudy = true;
                 }, 2000);
+            }else if(animStatus == 'playingYoyo'){
+                actionTimeOut = setTimeout(() => {
+                    isDogTrick = true;
+                }, 500);
             }else if(animStatus == 'flyKite'){
                 actionTimeOut = setTimeout(() => {
                     clearInterval(intervalAnim);
@@ -2073,6 +2077,43 @@ document.addEventListener('DOMContentLoaded', () => {
                     intervalAnim = setInterval(animate, 600);
                 }, comeBack);
             }
+        }
+    }
+
+    //Playing with yoyo
+    function playingYoyo() {
+        clearInterval(intervalAnim);
+        animStatus = 'playingYoyo'
+        console.log(animStatus)
+        let animHits = 1
+        let sum = 1;
+        let trick = '';
+
+        loadAnim(DisplayScreen, Anims.yoyo[`yoyo${trick}${animHits++}`]);
+        intervalAnim = setInterval(animate, 400);
+        
+        function animate() {
+            if(!isDogTrick || animHits != 1){
+                loadAnim(DisplayScreen, Anims.yoyo[`yoyo${trick}${animHits}`]);
+                if(animHits == 2 && sum == -1 && trick == 'Dog') trick = '';
+            }else if(animHits == 1){
+                loadAnim(DisplayScreen, Anims.yoyo[`yoyoDog${animHits}`]);
+            }
+            if(animHits == 3) sum = -1;
+            if(animHits == 1){
+                clearInterval(intervalAnim);
+                auxiliarTimeout = setTimeout(() => {
+                    animHits = 1
+                    sum = 1;
+                    if(isDogTrick){
+                        trick = 'Dog';
+                        isDogTrick = false;
+                    }
+                    loadAnim(DisplayScreen, Anims.yoyo[`yoyo${trick}${animHits++}`]);
+                    intervalAnim = setInterval(animate, 400);
+                }, 1000);
+            }
+            animHits += sum;
         }
     }
 
