@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.study.studyStand;
+    Anims.edit = Anims.flyingKite.kiteAuxHop2;
 });
 
 // Anim vars
@@ -581,7 +581,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     // STATE BUTTON / FRIENDSHIP BUTTON
-    let allowedAnims = ['stand', 'standMad', 'sleeping', 'yawnHappy', 'tongueAnim', 'happySteps', 'heartSmiles', 'writeLetter', 'flying', 'rollingBall', 'diving', 'backFlip', 'piano', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'reading', 'watchTV', 'bathTime', 'buildingBlocks', 'licking', 'studying', 'playingHorn', 'walking', 'eating'];
+    let allowedAnims = ['stand', 'standMad', 'sleeping', 'yawnHappy', 'tongueAnim', 'happySteps', 'heartSmiles', 'writeLetter', 'flying', 'rollingBall', 'diving', 'backFlip', 'piano', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'reading', 'watchTV', 'bathTime', 'buildingBlocks', 'licking', 'studying', 'flyKite', 'flyKiteFast', 'playingHorn', 'walking', 'eating'];
     let menus = ['clockMenu', 'giftMenu', 'gameMenu'];
 
     document.querySelector("#state-button").addEventListener('click', () => {
@@ -727,7 +727,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clearAllTimeouts();
         clearInterval(intervalAnim);
         randomAnim = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
-        eating();
+        flyKite();
     })
 
     // ShowHelp Grid
@@ -863,8 +863,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }else if(!avoidActivity && pokeStatus.yoyoKiteHours.some(elem => elem == startTime.getHours()) && ((hasReach150 && randomAnim > 5) || hasReach300 || pokeStatus.todayHasReachLimit150)){
                             // YOYO / KITE
                             if(randomActivity <= 10 || !hasReach300){
-                                console.log('kite')
-                                // kite();
+                                flyKite();
                             }else {
                                 console.log('yoyo')
                                 // yoyo();
@@ -1056,6 +1055,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 actionTimeOut = setTimeout(() => {
                     isAskingStudy = true;
                 }, 2000);
+            }else if(animStatus == 'flyKite'){
+                actionTimeOut = setTimeout(() => {
+                    clearInterval(intervalAnim);
+                    loadAnim(DisplayScreen, null, true);
+                    auxiliarTimeout = setTimeout(() => {
+                        flyKite(true);
+                    }, 500);
+                }, 3000);
             }else if(animStatus == 'reading'){
                 actionTimeOut = setTimeout(() => {
                     clearInterval(intervalAnim);
@@ -1993,6 +2000,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let studyStand = Anims.study.studyStand;
         let studyAsk;
         let studyAnswer;
+        let intervalTime = 2000; 
         // Include in the future English or Sleeping
         // const studyLimit = (localStorage.getItem("hasReach450") != null)? true : false;
 
@@ -2004,6 +2012,7 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'maths':
                 studyAsk = Anims.study.studyAskMaths;
                 studyAnswer =  Anims.study.studyAnswerMaths;
+                intervalTime = 3500;
             break;
         }
 
@@ -2024,9 +2033,39 @@ document.addEventListener('DOMContentLoaded', () => {
                             loadAnim(DisplayScreen, studyStand)
                             isAskingStudy = false;
                             study(subject);
-                        }, 2000);
+                        }, intervalTime);
                     }, 1500);
                 }, 2500);
+            }
+        }
+    }
+
+    //Flying Kite
+    function flyKite(isFast=false) {
+        clearInterval(intervalAnim);
+        animStatus = (!isFast)? 'flyKite' : 'flyKiteFast';
+        console.log(animStatus)
+        let animHits = 1
+        let direction = 'Left';
+        let comeBack = (!isFast)? 8000 : 3000;
+        let limit = (!isFast)? 23 : 8;
+        let fast = (isFast)? 'Fast' : '';
+
+        loadAnim(DisplayScreen, Anims.flyingKite[`kite${direction}${fast}${animHits++}`])
+        intervalAnim = setInterval(animate, 600);
+        
+        function animate() {
+            if(animHits <= limit){
+                loadAnim(DisplayScreen, Anims.flyingKite[`kite${direction}${fast}${animHits++}`])
+            }else{
+                clearInterval(intervalAnim);
+                loadAnim(DisplayScreen, null, true);
+                animHits = 1;
+                direction = (direction == 'Left')? 'Right' : 'Left';
+                if(isFast) limit = (direction == 'Left')? 8 : 9;
+                auxiliarTimeout = setTimeout(() => {
+                    intervalAnim = setInterval(animate, 600);
+                }, comeBack);
             }
         }
     }
