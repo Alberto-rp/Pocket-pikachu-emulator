@@ -47,7 +47,7 @@ pokeStatus.eatingtHours = (!hasReach300)? [10, 12, 18] : [12, 18];
 pokeStatus.lickingHours = [15];
 pokeStatus.playHours = [9, 10, 11, 13, 14, 16, 17];
 pokeStatus.yoyoKiteHours = [16, 17];
-pokeStatus.tvHours = (!hasReach300)? [18, 19] : [19, 20];
+pokeStatus.tvHours = (!hasReach300)? [18, 19] : [18, 19, 20];
 pokeStatus.greetingHours = (!hasReach300)? [8, 12, 18] : [8, 12, 18, 19];
 pokeStatus.bathHours = (!hasReach300)? [19] : [20];
 pokeStatus.sleepHour = (!hasReach300)? 20 : 21;
@@ -402,10 +402,16 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(`${settings.dificultySelected} difficulty selected`);
             loadAnim(DisplayScreen, Anims.settingsDiff[`${settings.dificultySelected}Selected`]);
             localStorage.setItem("dificultyLevel", settings.dificultySelected);
+            let limit150 = settings.dificultyLevels[settings.dificultySelected]["unlockAnims"][0];
             let limit300 = settings.dificultyLevels[settings.dificultySelected]["unlockAnims"][1];
+
+            if(pokeStatus.totalSteps < limit150){
+                localStorage.removeItem('hasReach150');
+                deleteCookies('has_reach150_goal');
+            }
             if(pokeStatus.totalSteps < limit300){
                 localStorage.removeItem('hasReach300');
-                deleteCookies('has_reach_goal');
+                deleteCookies('has_reach300_goal');
             }
         }else if(animStatus != 'restart'){
             // Init screen (Timeouts to emulate analogic)
