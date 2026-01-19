@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.yoyo.yoyo1;
+    Anims.edit = Anims.radioControl.radio1;
 });
 
 // Anim vars
@@ -34,6 +34,7 @@ let isBrushing = false;
 let stopPlaying = false;
 let isAskingStudy = false;
 let isDogTrick = false;
+let isFastRC = false;
 let avoidSleepGiftDev = false; //For development
 const hasReach150 = (localStorage.getItem("hasReach150") != null)? true : false;
 const hasReach300 = (localStorage.getItem("hasReach300") != null)? true : false;
@@ -588,7 +589,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     // STATE BUTTON / FRIENDSHIP BUTTON
-    let allowedAnims = ['stand', 'standMad', 'sleeping', 'yawnHappy', 'tongueAnim', 'happySteps', 'heartSmiles', 'writeLetter', 'flying', 'rollingBall', 'diving', 'backFlip', 'piano', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'reading', 'watchTV', 'bathTime', 'buildingBlocks', 'licking', 'studying', 'flyKite', 'flyKiteFast', 'playingYoyo', 'playingHorn', 'walking', 'eating'];
+    let allowedAnims = ['stand', 'standMad', 'sleeping', 'yawnHappy', 'tongueAnim', 'happySteps', 'heartSmiles', 'writeLetter', 'flying', 'rollingBall', 'diving', 'backFlip', 'piano', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'reading', 'watchTV', 'bathTime', 'buildingBlocks', 'licking', 'studying', 'flyKite', 'flyKiteFast', 'playingRC', 'playingRCfast', 'playingYoyo', 'playingHorn', 'walking', 'eating'];
     let menus = ['clockMenu', 'giftMenu', 'gameMenu'];
 
     document.querySelector("#state-button").addEventListener('click', () => {
@@ -734,7 +735,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clearAllTimeouts();
         clearInterval(intervalAnim);
         randomAnim = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
-        playingYoyo();
+        playingRC();
     })
 
     // ShowHelp Grid
@@ -897,8 +898,12 @@ document.addEventListener('DOMContentLoaded', () => {
                                     sandcastle();
                                 }
                             }
-                        }else if(!avoidActivity && pokeStatus.tvHours.some(elem => elem == startTime.getHours()) && randomAnim <= 2){//Watching TV
-                            watchTV();
+                        }else if(!avoidActivity && pokeStatus.tvHours.some(elem => elem == startTime.getHours()) && randomAnim <= 4){//Watching TV
+                            if(randomActivity <= 10 || !hasReach300){
+                                watchTV();
+                            }else {
+                                playingRC();
+                            }
                         }else{
                             // STAND ANIM
                             if(pokeStatus.friendshipLevel > -500 && pokeStatus.friendshipLevel <= 1500){ // OK status
@@ -1064,6 +1069,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }else if(animStatus == 'playingYoyo'){
                 actionTimeOut = setTimeout(() => {
                     isDogTrick = true;
+                }, 500);
+            }else if(animStatus == 'playingRC'){
+                actionTimeOut = setTimeout(() => {
+                    isFastRC = true;
                 }, 500);
             }else if(animStatus == 'flyKite'){
                 actionTimeOut = setTimeout(() => {
@@ -1395,6 +1404,7 @@ document.addEventListener('DOMContentLoaded', () => {
         auxiliarTimeout = setTimeout(() => {
             document.querySelector("#clockMenu").classList.add('selected')
         }, 500);
+        loadAnim(DisplayScreen, Anims.happy1.happyStand);
 
         function animate() {
             // Check the time pased
@@ -1402,8 +1412,6 @@ document.addEventListener('DOMContentLoaded', () => {
             var timeDiff = endTime - startTime; //in ms
             timeDiff /= 1000;
             secondsElapsed = timeDiff.toFixed(1);
-
-            loadAnim(DisplayScreen, Anims.happy1.happyStand);
             if(secondsElapsed > 1.0) loadAnim(DisplayScreen, Anims.happy1.happyStartScream);
             if(secondsElapsed > 2.0) loadAnim(DisplayScreen, Anims.happy1.scream1);
             if(secondsElapsed > 3.0) loadAnim(DisplayScreen, Anims.happy1.scream2);
@@ -2076,6 +2084,42 @@ document.addEventListener('DOMContentLoaded', () => {
                 if(isFast) limit = (direction == 'Left')? 8 : 9;
                 auxiliarTimeout = setTimeout(() => {
                     intervalAnim = setInterval(animate, 600);
+                }, comeBack);
+            }
+        }
+    }
+
+    //Playing with RC
+    function playingRC(isFast=false) {
+        clearInterval(intervalAnim);
+        animStatus = (!isFast)? 'playingRC' : 'playingRCfast';
+        console.log(animStatus)
+        let animHits = 1
+        let comeBack = 2400;
+        let speed = 800;
+        
+        loadAnim(DisplayScreen, Anims.radioControl[`radio${animHits++}`])
+        intervalAnim = setInterval(animate, speed);
+        
+        function animate() {
+            if(isFastRC){
+                comeBack = 1200;
+                speed = 400;
+                isFastRC = false;
+            }
+            if(animHits != 5 && animHits != 10){
+                loadAnim(DisplayScreen, Anims.radioControl[`radio${animHits++}`])
+            }else{
+                clearInterval(intervalAnim);
+                loadAnim(DisplayScreen, Anims.radioControl[`radio${animHits++}`])
+                if(animHits >= 10) animHits = 1;
+                auxiliarTimeout = setTimeout(() => {
+                    if(isFastRC){
+                        comeBack = 1200;
+                        speed = 400;
+                        isFastRC = false;
+                    }
+                    intervalAnim = setInterval(animate, speed);
                 }, comeBack);
             }
         }
