@@ -24,7 +24,8 @@
 - Special hack if pik is in LEFT status and you shake at least 20 times: (He comes back)
 - NEW Relation/FriendShip dropdown could be disabled from the settings menu; ON by default
 - NEW Difficulty/Setting, setting the final goal of the tamagotchi, between 10K, 100K or 1M Steps (100K by default)
-- New animations is related to the total steps; Reach 150.000 or 300.000 (Different amount depending difficulty) will show new animations
+- New animations is related to the total steps; Reach 150.000 or 300.000 (Different amount depending difficulty, 1500, 15.000 or 150.000 for example) <b>will show new animations</b>
+- When the limit (10K, 100K or 1M Steps) is reach, will appear the congrats Screen + Record screen
 - Slot machine (with a special hack if you walk more than 150 steps or if you loose more than 5 times)
 - Gift Menu (COMPLETED) (With 11 differents animations depending the amount and friendship level)
 - State of the Relation/FriendShip status
