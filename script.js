@@ -735,7 +735,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clearAllTimeouts();
         clearInterval(intervalAnim);
         randomAnim = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
-        playingRC();
+        yawnAnim();
     })
 
     // ShowHelp Grid
@@ -1396,36 +1396,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Yawn Anim
     function yawnAnim() {
+        clearInterval(intervalAnim);
         animStatus = 'yawnHappy'
         console.log(animStatus)
-        clearInterval(intervalAnim);
-        intervalAnim = setInterval(animate, 500);
-        startTime = new Date();
+        animHits = 1;
+
         auxiliarTimeout = setTimeout(() => {
             document.querySelector("#clockMenu").classList.add('selected')
         }, 500);
+        
         loadAnim(DisplayScreen, Anims.happy1.happyStand);
+        intervalAnim = setInterval(animate, 500);
 
         function animate() {
-            // Check the time pased
-            endTime = new Date();
-            var timeDiff = endTime - startTime; //in ms
-            timeDiff /= 1000;
-            secondsElapsed = timeDiff.toFixed(1);
-            if(secondsElapsed > 1.0) loadAnim(DisplayScreen, Anims.happy1.happyStartScream);
-            if(secondsElapsed > 2.0) loadAnim(DisplayScreen, Anims.happy1.scream1);
-            if(secondsElapsed > 3.0) loadAnim(DisplayScreen, Anims.happy1.scream2);
-            if(secondsElapsed > 4.5) loadAnim(DisplayScreen, Anims.happy1.scream1);
-            if(secondsElapsed > 5.5) loadAnim(DisplayScreen, Anims.happy1.scream2);
-            if(secondsElapsed > 7.0) loadAnim(DisplayScreen, Anims.happy1.scream1);
-            if(secondsElapsed > 7.5) loadAnim(DisplayScreen, Anims.happy1.happyStartScream);
-            if(secondsElapsed > 8.0) loadAnim(DisplayScreen, Anims.happy1.happyStand);
-            if(secondsElapsed > 9.0) {
+            if(animHits == 3){
+                loadAnim(DisplayScreen, Anims.happy1.happyStartScream);
+            }else if(animHits == 4){
+                loadAnim(DisplayScreen, Anims.happy1.scream1);
+            }else if(animHits == 6){
+                loadAnim(DisplayScreen, Anims.happy1.scream2);
+            }else if(animHits == 9){
+                loadAnim(DisplayScreen, Anims.happy1.scream1);
+            }else if(animHits == 11){
+                loadAnim(DisplayScreen, Anims.happy1.scream2);
+            }else if(animHits == 14){
+                loadAnim(DisplayScreen, Anims.happy1.scream1);
+            }else if(animHits == 16){
+                loadAnim(DisplayScreen, Anims.happy1.happyStartScream);
+            }else if(animHits == 17){
+                loadAnim(DisplayScreen, Anims.happy1.happyStand);
+            }else if(animHits > 17){
                 clearInterval(intervalAnim);
                 // Para no jugar o saludar despues de un gift
-                basicAnim(true, false, true, true);
+                auxiliarTimeout = setTimeout(() => {
+                    basicAnim(true, false, true, true);
+                }, 1500);
             }
-            
+            animHits++
         }
     }
 
