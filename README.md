@@ -13,7 +13,7 @@
 - Eat Animations at 10, 12 and 18 hours (3 different animations, Bread, Onigiri and Chopsticks)
 - Shower/Bathtub anim at 19/20PM
 - Brushing teeth animations after eating or shower. 
-- Play Animations randomly between 9-18 hours (SandCastle, BuildingBlocks, Reading, )
+- Play Animations randomly between 9-18 hours (SandCastle, BuildingBlocks, Reading, Playing-yoyo, Study-Maths, Study-History)
 - TV or RC Animations randomly between 18-19 hours
 - Icecream or Lollypop Animations between 15-16 hours
 - Playing-yoyo or Fly-Kite Animations randomly between 16-18 hours
@@ -22,13 +22,14 @@
 - Settings Menu (Reset steps, Relation Dropdown and Difficulty Level setting)
 - Friendship-system (LEFT, MAD, OK, LIKE and LOVE states available)
 - Special hack if pik is in LEFT status and you shake at least 20 times: (He comes back)
+- Slot machine (with a special hack if you walk more than 150 steps or if you loose more than 5 times)
+- Gift Menu (COMPLETED) (With 11 differents animations depending the amount and friendship level)
+- State of the Relation/FriendShip status
+
 - NEW Relation/FriendShip dropdown could be disabled from the settings menu; ON by default
 - NEW Difficulty/Setting, setting the final goal of the tamagotchi, between 10K, 100K or 1M Steps (100K by default)
 - New animations is related to the total steps; Reach 150.000 or 300.000 (Different amount depending difficulty, 1500, 15.000 or 150.000 for example) <b>will show new animations</b>
 - When the limit (10K, 100K or 1M Steps) is reach, will appear the congrats Screen + Record screen
-- Slot machine (with a special hack if you walk more than 150 steps or if you loose more than 5 times)
-- Gift Menu (COMPLETED) (With 11 differents animations depending the amount and friendship level)
-- State of the Relation/FriendShip status
 
 ## links of interest
 
