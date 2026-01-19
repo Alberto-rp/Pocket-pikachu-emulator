@@ -867,7 +867,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             }else{
                                 brushTeeth();
                             }
-                        }else if(!avoidActivity && pokeStatus.yoyoKiteHours.some(elem => elem == startTime.getHours()) && ((hasReach150 && randomAnim > 5) || hasReach300 || pokeStatus.todayHasReachLimit150)){
+                        }else if(!avoidActivity && pokeStatus.yoyoKiteHours.some(elem => elem == startTime.getHours()) && randomAnim >= 4 && ((hasReach150 && randomAnim > 5) || hasReach300 || pokeStatus.todayHasReachLimit150)){
                             // YOYO / KITE
                             if(randomActivity <= 10 || !hasReach300){
                                 flyKite();
@@ -1068,6 +1068,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }else if(animStatus == 'flyKite'){
                 actionTimeOut = setTimeout(() => {
                     clearInterval(intervalAnim);
+                    clearAllTimeouts();
                     loadAnim(DisplayScreen, null, true);
                     auxiliarTimeout = setTimeout(() => {
                         flyKite(true);
