@@ -999,7 +999,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // To start walking or make its action
-        let walkingAllowedAnims = ['stand', 'standMad', 'sandcastle', 'standLove', 'standLike', 'eating', 'bathTime']
+        //['stand', 'standMad', 'sleeping', 'yawnHappy', 'tongueAnim', 'happySteps', 'heartSmiles', 'writeLetter', 'flying', 'rollingBall', 'diving', 'backFlip', 'piano', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'reading', 'watchTV', 'bathTime', 'buildingBlocks', 'licking', 'studying', 'flyKite', 'flyKiteFast', 'playingRC', 'playingRCfast', 'playingYoyo', 'playingHorn', 'walking', 'eating'];
+        let walkingAllowedAnims = ['stand', 'standMad', 'sandcastle', 'standLove', 'standLike', 'eating', 'bathTime', 'playingRC', 'playingRCfast', 'watchTV', 'reading', 'buildingBlocks'];
         if(pokeStatus.consecutiveSteps >= 20 && !isWalking && walkingAllowedAnims.some(anim => anim == animStatus)) {
             clearInterval(intervalAnim);
             clearAllTimeouts();
