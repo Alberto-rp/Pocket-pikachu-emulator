@@ -127,7 +127,7 @@ roulete.randomWinSel = '';
 roulete.selectedSlot1 = (localStorage.getItem("selectedSlot1") != null)? Number(localStorage.getItem("selectedSlot1")) : 0;
 roulete.selectedSlot2 = (localStorage.getItem("selectedSlot2") != null)? Number(localStorage.getItem("selectedSlot2")) : 0;
 roulete.selectedSlot3 = (localStorage.getItem("selectedSlot3") != null)? Number(localStorage.getItem("selectedSlot3")) : 0;
-roulete.hasWin777 = document.cookie.split("; ").find((row) => row.startsWith("has_win_777="))?.split("=")[1];
+roulete.hasWin777 = (document.cookie.split("; ").find((row) => row.startsWith("has_win_777="))?.split("=")[1])? true : false;
 roulete.intervalRoulette1 = undefined;
 roulete.intervalRoulette2 = undefined;
 roulete.intervalRoulette3 = undefined;
@@ -342,7 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 roulete.forcedSlot1 = '';
                 if(roulete.totalLosses == 5){
                     roulete.forcedSlot1 = randomWinSel; //If it's necesary to force a victory
-                }else if(roulete.hackSteps > 150){
+                }else if(roulete.hackSteps > 150 && !roulete.hasWin777){
                     roulete.forcedSlot1 = 'seven';
                 }
             }
@@ -353,7 +353,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 roulete.forcedSlot2 = '';
                 if(roulete.totalLosses == 5){
                     roulete.forcedSlot2 = randomWinSel; //If it's necesary to force a victory
-                }else if(roulete.hackSteps > 150){
+                }else if(roulete.hackSteps > 150 && !roulete.hasWin777){
                     roulete.forcedSlot2 = 'seven';
                 }
             }
@@ -365,7 +365,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 roulete.forcedSlot3 = '';
                 if(roulete.totalLosses == 5){
                     roulete.forcedSlot3 = randomWinSel; //If it's necesary to force a victory
-                }else if(roulete.hackSteps > 150 && roulete.hasWin777 != 'true'){
+                }else if(roulete.hackSteps > 150 && !roulete.hasWin777){
                     roulete.forcedSlot3 = 'seven';
                     roulete.hackSteps += 1; //To avoid the hack to soon
                 }
@@ -3025,8 +3025,8 @@ function rouletteGame(screen) {
             // Stop the slot && avoid seven if the cookie is declared and the other slot are in seven
             if(roulete.stopSlot3 && auxArray[counter3] == '' 
                 && (roulete.forcedSlot3 == '' || roulete.forcedSlot3 == selectedSlot3) 
-                && (roulete.hasWin777 != 'true' || ((roulete.hasWin777 == 'true' && selectedSlot3 != 'seven') 
-                || (roulete.hasWin777 == 'true' && (selectedSlot1 != 'seven' || selectedSlot2 != 'seven'))))){
+                && (!roulete.hasWin777 || ((roulete.hasWin777 && selectedSlot3 != 'seven') 
+                || (roulete.hasWin777 && (selectedSlot1 != 'seven' || selectedSlot2 != 'seven'))))){
 
                 // End of the game
                 endgame = true;
