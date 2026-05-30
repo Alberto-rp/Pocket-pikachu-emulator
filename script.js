@@ -307,11 +307,19 @@ document.addEventListener('DOMContentLoaded', () => {
     function enterButton () {
         let timeStart = new Date();
         if(!isiOS()){
+            try {
             window.navigator.vibrate(10);
+            } catch (error) {
+                console.error("Error al intentar vibrar:", error);
+            }
         }
         if(animStatus == 'pokeball') {
             if(!isiOS()){
+                try {
                 window.navigator.vibrate([200, 700, 200]);
+                } catch (error) {
+                    console.error("Error al intentar vibrar:", error);
+                }
             }
             clearInterval(intervalAnim);
             clearAllTimeouts();
@@ -542,7 +550,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let backMenusAllowed = ['clock', 'state', 'settings', 'game']
     document.querySelector("#back-button").addEventListener('click', () => {
         if(!isiOS()){
-            window.navigator.vibrate(10);
+            try {
+                window.navigator.vibrate(10);
+            } catch (error) {
+                console.error("Error al intentar vibrar:", error);
+            }
         }
         if(backMenusAllowed.some(anim => anim == animStatus) && !(animStatus == 'game' && roulete.gameStarted) || animStatus == 'gift' && wattsAux.selectedUnitWatt == 'cent'){
             selectedSettingMenu = settingsMenus[1];
@@ -602,7 +614,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         if(!isiOS()){
-            window.navigator.vibrate(10);
+            try {
+                window.navigator.vibrate(10);
+            } catch (error) {
+                console.error("Error al intentar vibrar:", error);
+            }
         }
         if(allowedAnims.some(anim => anim == animStatus)){
             cleanStates();
@@ -618,7 +634,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedSettingMenu = settingsMenus[1]
     document.querySelector("#menu-button").addEventListener('click', () => {
         if(!isiOS()){
-            window.navigator.vibrate(10);
+            try {
+                window.navigator.vibrate(10);
+            } catch (error) {
+                console.error("Error al intentar vibrar:", error);
+            }
         }
         if(allowedAnims.some(anim => anim == animStatus) && !pokeStatus.reachEnd) {
             cleanStates();
@@ -634,7 +654,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // RIGHT BUTTON
     document.querySelector('#right-button').addEventListener('click', () => {
         if(!isiOS()){
-            window.navigator.vibrate(10);
+            try {
+                window.navigator.vibrate(10);
+            } catch (error) {
+                console.error("Error al intentar vibrar:", error);
+            }
         }
         if(animStatus != '' && allowedAnims.some(anim => anim == animStatus)){
             let selected = menus.find(item => document.querySelector(`#${item}`).classList.contains('selected'))
@@ -648,7 +672,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // LEFT BUTTON
     document.querySelector('#left-button').addEventListener('click', () => {
         if(!isiOS()){
-            window.navigator.vibrate(10);
+            try {
+                window.navigator.vibrate(10);
+            } catch (error) {
+                console.error("Error al intentar vibrar:", error);
+            }
         }
         if(animStatus != '' && allowedAnims.some(anim => anim == animStatus)){
             let selected = menus.find(item => document.querySelector(`#${item}`).classList.contains('selected'))
@@ -662,7 +690,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // TOP BUTTON
     document.querySelector('#top-button').addEventListener('click', () => {
         if(!isiOS()){
-            window.navigator.vibrate(10);
+            try {
+                window.navigator.vibrate(10);
+            } catch (error) {
+                console.error("Error al intentar vibrar:", error);
+            }
         }
         if(animStatus == 'gift'){
             switch (wattsAux.selectedUnitWatt) {
@@ -692,7 +724,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // BOTTOM BUTTON
     document.querySelector('#bottom-button').addEventListener('click', () => {
         if(!isiOS()){
-            window.navigator.vibrate(10);
+            try {
+                window.navigator.vibrate(10);
+            } catch (error) {
+                console.error("Error al intentar vibrar:", error);
+            }
         }
         if(animStatus == 'gift'){
             switch (wattsAux.selectedUnitWatt) {
@@ -722,7 +758,11 @@ document.addEventListener('DOMContentLoaded', () => {
     //RESET BUTTON
     document.querySelector('#reset-button').addEventListener('click', () => {
         if(!isiOS()){
-            window.navigator.vibrate(2000);
+            try {
+                window.navigator.vibrate(2000);
+            } catch (error) {
+                console.error("Error al intentar vibrar:", error);
+            }
         }
         console.log(animStatus)
         if(animStatus != 'restart' && animStatus != 'pokeball'){
@@ -955,7 +995,11 @@ document.addEventListener('DOMContentLoaded', () => {
     //SHAKE WALK
     document.querySelector('#shake').addEventListener('click', () => {
         if(!isiOS()){
-            window.navigator.vibrate(10);
+            try {
+                window.navigator.vibrate(10);
+            } catch (error) {
+                console.error("Error al intentar vibrar:", error);
+            }
         }
         let screenShaked = document.querySelector('.screenContainer, .buttonsContainer');
         let buttonShake = document.querySelector('#shake');
