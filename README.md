@@ -11,6 +11,7 @@
 ## Actual functionalities
 - Sleep Animation from 20/21PM to 8AM Hours (3 different possitions)
 - Eat Animations at 10, 12 and 18 hours (3 different animations, Bread, Onigiri and Chopsticks)
+- Greeting animations at 8, 12, 18 or 8, 12, 18, 19 depending total steps
 - Shower/Bathtub anim at 19/20PM
 - Brushing teeth animations after eating or shower. 
 - Play Animations randomly between 9-18 hours (SandCastle, BuildingBlocks, Reading, Playing-yoyo, Study-Maths, Study-History)
