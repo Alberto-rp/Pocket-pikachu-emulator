@@ -40,6 +40,7 @@ let isFastRC = false;
 let avoidSleepGiftDev = false; //For development
 const hasReach150 = (localStorage.getItem("hasReach150") != null)? true : false;
 const hasReach300 = (localStorage.getItem("hasReach300") != null)? true : false;
+const hasReach450 = (localStorage.getItem("hasReach450") != null)? true : false;
 
 // Steps
 let pokeStatus = {};
@@ -776,8 +777,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector("#startAnim").addEventListener('click', () => {
         clearAllTimeouts();
         clearInterval(intervalAnim);
-        randomAnim = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
-        yawnAnim();
+
+        randomGreeting();
     })
 
     // ShowHelp Grid
@@ -877,7 +878,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }else {
                 // Eating -- eatingtHours = [12, 18]
-                if( !coockieHadThrowTable && !avoidEat && pokeStatus.eatingtHours.some(elem => elem == startTime.getHours()) && coockieHasBrushed != 'true' && startTime.getMinutes() <= 30) {
+                if(!coockieHadThrowTable && !avoidEat && pokeStatus.eatingtHours.some(elem => elem == startTime.getHours()) && coockieHasBrushed != 'true' && startTime.getMinutes() <= 30) {
                     if(coockieHadEating != 'true'){
                         eating();
                     }else if(coockieHasBrushed != 'true'){
@@ -947,8 +948,12 @@ document.addEventListener('DOMContentLoaded', () => {
                                 playingRC();
                             }
                         }else{
-                            // STAND ANIM
-                            if(pokeStatus.friendshipLevel > -500 && pokeStatus.friendshipLevel <= 1500){ // OK status
+                            // GREETING ANIM
+                            if(!avoidGreeting && pokeStatus.greetingHours.some(elem => elem == startTime.getHours())){
+                                randomGreeting();
+
+                            //STAND ANIM
+                            }else if(pokeStatus.friendshipLevel > -500 && pokeStatus.friendshipLevel <= 1500){ // OK status
                                 animate(true);
                                 intervalAnim = setInterval(animate, 1000);
                                 
@@ -968,28 +973,14 @@ document.addEventListener('DOMContentLoaded', () => {
                                     }
                                     
                                 }
-                            }else if(pokeStatus.friendshipLevel > 1500){ // Like and love status
-                                if(!avoidGreeting && pokeStatus.greetingHours.some(elem => elem == startTime.getHours())){
-                                    let randomGreeting = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
-                                    if(randomGreeting <= 7){
-                                        yawnAnim();
-                                    }else{
-                                        heartSmiles();
-                                    }
-                                }else{
-                                    if(pokeStatus.friendshipLevel <= 3000){
-                                        standLike();                                
-                                    }else{
-                                        standLove();
-                                    }
-                                }
+                            }else if(pokeStatus.friendshipLevel > 1500 && pokeStatus.friendshipLevel <= 3000){ // LIKE status
+                                standLike();                                    
+                            }else if(pokeStatus.friendshipLevel > 3000){ //LOVE status
+                                standLove();
                             }
-
                         }
                     }
-        
                 }
-    
             }
         }
     }
@@ -1805,6 +1796,37 @@ document.addEventListener('DOMContentLoaded', () => {
                 animHits = 0;
             }
             animHits++
+        }
+    }
+
+    function randomGreeting() {
+        let randomGreeting = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
+        if(!hasReach300){
+            if(randomGreeting <= 8){
+                yawnAnim();
+            }else{
+                heartSmiles();
+            }
+        }else if(hasReach300 && !hasReach450){
+            if(randomGreeting <= 3){
+                heartSmiles();
+            }else if(randomGreeting > 3 && randomGreeting <= 6){
+                happySteps();
+            }else if(randomGreeting > 6 && randomGreeting <= 8){
+                writtingLetter();
+            }else if(randomGreeting > 8){
+                backFlip();
+            }
+        }else{ //If hasReach450
+            if(randomGreeting <= 3){
+                backFlip();
+            }else if(randomGreeting > 3 && randomGreeting <= 6){
+                playPiano();
+            }else if(randomGreeting > 6 && randomGreeting <= 8){
+                playingHorn();
+            }else if(randomGreeting > 8){
+                writtingLetter();
+            }
         }
     }
 
