@@ -26,7 +26,9 @@ let actionTimeOut = undefined;
 let auxiliarTimeout = undefined;
 let auxiliarTimeout2 = undefined;
 let auxiliarTimeout3 = undefined;
+let randomAnimEat = Math.floor(Math.random() * (15 - 1 + 1) + 1); //1-15
 let coockieHadEating = document.cookie.split("; ").find((row) => row.startsWith("had_eating="))?.split("=")[1];
+let coockieHadThrowTable = document.cookie.split("; ").find((row) => row.startsWith("had_throw="))?.split("=")[1];
 let coockieHasTakeBath = document.cookie.split("; ").find((row) => row.startsWith("had_take_bath="))?.split("=")[1];
 let coockieHasBrushed = document.cookie.split("; ").find((row) => row.startsWith("has_brushed="))?.split("=")[1];
 let coockieHasGoneSleep = document.cookie.split("; ").find((row) => row.startsWith("has_gone_sleep="))?.split("=")[1];
@@ -875,7 +877,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }else {
                 // Eating -- eatingtHours = [12, 18]
-                if( !avoidEat && pokeStatus.eatingtHours.some(elem => elem == startTime.getHours()) && coockieHasBrushed != 'true' && startTime.getMinutes() <= 30) {
+                if( !coockieHadThrowTable && !avoidEat && pokeStatus.eatingtHours.some(elem => elem == startTime.getHours()) && coockieHasBrushed != 'true' && startTime.getMinutes() <= 30) {
                     if(coockieHadEating != 'true'){
                         eating();
                     }else if(coockieHasBrushed != 'true'){
@@ -1819,9 +1821,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let startAnim;
             let nomnom;
             let nomnom2;
-            const ChopstickLimit = hasReach300;
-            let randomAnimEat = Math.floor(Math.random() * (15 - 1 + 1) + 1); //1-15
-            let randomLimit = (ChopstickLimit)? 5 : 7;
+            let randomLimit = (hasReach300)? 5 : 7;
 
             if(randomAnimEat <= randomLimit && !pokeStatus.todayHasReachLimit300){
                 //TOAST
@@ -1829,7 +1829,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 nomnom = Anims.eating.nomnomToast
                 nomnom2 =  Anims.eating.nomnomToast2
                 throwTableAnim = 'Toast';
-            }else if(randomAnimEat >= randomLimit+1 && ((!ChopstickLimit) || randomAnimEat <= 10) && !pokeStatus.todayHasReachLimit300){
+            }else if(randomAnimEat >= randomLimit+1 && ((!hasReach300) || randomAnimEat <= 10) && !pokeStatus.todayHasReachLimit300){
                 //ONIGIRI
                 startAnim =  Anims.eating.eatingOnigiri;
                 nomnom = Anims.eating.nonomOnigiri
@@ -1874,6 +1874,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadAnim(DisplayScreen, Anims.eating.angry3);
             }, 2750);
             auxiliarTimeout2 = setTimeout(() => {
+                // Declare ate cookie
+                let now = new Date();
+                now.setTime(now.getTime() + 3600 * 1000); // Agregamos 1 hora en milisegundos
+                document.cookie = "had_throw=true; expires=" + now + "; path=/";
+                console.log("Cookie throw declared")
+                coockieHadThrowTable = true;
+
                 clearAllTimeouts();
                 clearInterval(intervalAnim);
                 updateFriendshipLevel(-200, false, false);
