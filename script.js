@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.radioControl.radio1;
+    Anims.edit = Anims.computer.stand;
 });
 
 // Anim vars
@@ -605,7 +605,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     // STATE BUTTON / FRIENDSHIP BUTTON
-    let allowedAnims = ['stand', 'standMad', 'sleeping', 'yawnHappy', 'tongueAnim', 'happySteps', 'heartSmiles', 'writeLetter', 'flying', 'rollingBall', 'diving', 'backFlip', 'piano', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'reading', 'watchTV', 'bathTime', 'buildingBlocks', 'licking', 'studying', 'flyKite', 'flyKiteFast', 'playingRC', 'playingRCfast', 'playingYoyo', 'playingHorn', 'walking', 'eating'];
+    let allowedAnims = ['stand', 'standMad', 'sleeping', 'yawnHappy', 'tongueAnim', 'happySteps', 'heartSmiles', 'writeLetter', 'flying', 'rollingBall', 'diving', 'backFlip', 'piano', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'reading', 'watchTV', 'computer', 'bathTime', 'buildingBlocks', 'licking', 'studying', 'flyKite', 'flyKiteFast', 'playingRC', 'playingRCfast', 'playingYoyo', 'playingHorn', 'walking', 'eating'];
     let menus = ['clockMenu', 'giftMenu', 'gameMenu'];
 
     document.querySelector("#state-button").addEventListener('click', () => {
@@ -779,7 +779,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clearAllTimeouts();
         clearInterval(intervalAnim);
 
-        randomGreeting();
+        computer();
     })
 
     // ShowHelp Grid
@@ -953,7 +953,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 }
                             }else{ //hasReach450
                                 if(randomActivity <= 2 || pokeStatus.todayHasReachLimit450){
-                                    //computer();
+                                    computer();
                                 }else if(randomActivity > 2 && randomActivity <= 10){
                                     watchTV();
                                 }else{
@@ -1049,7 +1049,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // To start walking or make its action
-        //['stand', 'standMad', 'sleeping', 'yawnHappy', 'tongueAnim', 'happySteps', 'heartSmiles', 'writeLetter', 'flying', 'rollingBall', 'diving', 'backFlip', 'piano', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'reading', 'watchTV', 'bathTime', 'buildingBlocks', 'licking', 'studying', 'flyKite', 'flyKiteFast', 'playingRC', 'playingRCfast', 'playingYoyo', 'playingHorn', 'walking', 'eating'];
+        //['stand', 'standMad', 'sleeping', 'yawnHappy', 'tongueAnim', 'happySteps', 'heartSmiles', 'writeLetter', 'flying', 'rollingBall', 'diving', 'backFlip', 'piano', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'reading', 'watchTV', 'computer', 'bathTime', 'buildingBlocks', 'licking', 'studying', 'flyKite', 'flyKiteFast', 'playingRC', 'playingRCfast', 'playingYoyo', 'playingHorn', 'walking', 'eating'];
         let walkingAllowedAnims = ['stand', 'standMad', 'sandcastle', 'standLove', 'standLike', 'eating', 'bathTime', 'playingRC', 'playingRCfast', 'watchTV', 'reading', 'buildingBlocks'];
         if(pokeStatus.consecutiveSteps >= 20 && !isWalking && walkingAllowedAnims.some(anim => anim == animStatus)) {
             clearInterval(intervalAnim);
@@ -1151,6 +1151,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     auxiliarTimeout = setTimeout(() => {
                         clearInterval(intervalAnim);
                         watchTV();
+                    }, 3000);
+                    pokeStatus.consecutiveSteps = 0;
+                }, 1000);
+            }else if(animStatus == 'computer'){
+                actionTimeOut = setTimeout(() => {
+                    clearInterval(intervalAnim);
+                    computer(true); //Jump
+                    auxiliarTimeout = setTimeout(() => {
+                        clearInterval(intervalAnim);
+                        computer();
                     }, 3000);
                     pokeStatus.consecutiveSteps = 0;
                 }, 1000);
@@ -2216,6 +2226,26 @@ document.addEventListener('DOMContentLoaded', () => {
                     intervalAnim = setInterval(animate, speed);
                 }, comeBack);
             }
+        }
+    }
+
+    //Using the Computer
+    function computer(shake) {
+        animStatus = 'computer'
+        console.log(animStatus)
+        let animHits = 1;
+        loadAnim(DisplayScreen, Anims.computer['stand'])
+        intervalAnim = (!shake)? setInterval(animate, 1000) : setInterval(animate, 500);
+
+        function animate() {
+            
+            if(animHits == 1){
+                loadAnim(DisplayScreen, (!shake)? Anims.computer.lookup : Anims.computer.tabtab)
+            }else {
+                loadAnim(DisplayScreen, Anims.computer.stand)
+                animHits = 0;
+            }
+            animHits++
         }
     }
 
