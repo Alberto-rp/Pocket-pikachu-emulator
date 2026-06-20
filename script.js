@@ -60,6 +60,7 @@ pokeStatus.consecutiveSteps = 0;
 pokeStatus.lastConected = (localStorage.getItem("lastConected") != null)? localStorage.getItem("lastConected") : new Date().toDateString();
 pokeStatus.todayHasReachLimit150 = (document.cookie.split("; ").find((row) => row.startsWith("has_reach150_goal="))?.split("=")[1])? true : false;
 pokeStatus.todayHasReachLimit300 = (document.cookie.split("; ").find((row) => row.startsWith("has_reach300_goal="))?.split("=")[1])? true : false;
+pokeStatus.todayHasReachLimit450 = (document.cookie.split("; ").find((row) => row.startsWith("has_reach450_goal="))?.split("=")[1])? true : false;
 pokeStatus.reachEnd = (localStorage.getItem("reachEnd") != null)? true : false;
 
 // Fix Temporal
@@ -942,10 +943,22 @@ document.addEventListener('DOMContentLoaded', () => {
                                 }
                             }
                         }else if(!avoidActivity && pokeStatus.tvHours.some(elem => elem == startTime.getHours()) && randomAnim <= 4){//Watching TV
-                            if(randomActivity <= 10 || !hasReach300){
+                            if(!hasReach300){
                                 watchTV();
-                            }else {
-                                playingRC();
+                            }else if(hasReach300 && !hasReach450){
+                                if(randomActivity <= 10 || pokeStatus.todayHasReachLimit300){
+                                    playingRC();
+                                }else{
+                                    watchTV();
+                                }
+                            }else{ //hasReach450
+                                if(randomActivity <= 2 || pokeStatus.todayHasReachLimit450){
+                                    //computer();
+                                }else if(randomActivity > 2 && randomActivity <= 10){
+                                    watchTV();
+                                }else{
+                                    playingRC();
+                                }
                             }
                         }else{
                             // GREETING ANIM
