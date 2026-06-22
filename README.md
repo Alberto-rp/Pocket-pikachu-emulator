@@ -14,8 +14,8 @@
 - Greeting animations at 8, 12, 18 or 8, 12, 18, 19 depending total steps
 - Shower/Bathtub anim at 19/20PM
 - Brushing teeth animations after eating or shower. 
-- Play Animations randomly between 9-18 hours (SandCastle, BuildingBlocks, Reading, Playing-yoyo, Study-Maths, Study-History)
-- TV or RC Animations randomly between 18-19 hours
+- Play Animations randomly between 9-18 hours (SandCastle, BuildingBlocks, Reading, Playing-yoyo, Study-Maths, Study-History, Study-English, Sleep-Studying)
+- TV or RC or Computer Animations randomly between 18-19 hours (depending total steps)
 - Icecream or Lollypop Animations between 15-16 hours
 - Playing-yoyo or Fly-Kite Animations randomly between 16-18 hours
 - Clock Menu (without alarm)
