@@ -5,7 +5,7 @@ fetch('./anims.json')
 .then((data) => {
     Anims = data;
     // EDIT ANIMATION
-    Anims.edit = Anims.computer.stand;
+    Anims.edit = Anims.study.studyAnswerEnglish;
 });
 
 // Anim vars
@@ -35,6 +35,7 @@ let coockieHasGoneSleep = document.cookie.split("; ").find((row) => row.startsWi
 let isBrushing = false;
 let stopPlaying = false;
 let isAskingStudy = false;
+let itHasBeenAwakedFromStudy = false;
 let isDogTrick = false;
 let isFastRC = false;
 let avoidSleepGiftDev = false; //For development
@@ -605,7 +606,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     // STATE BUTTON / FRIENDSHIP BUTTON
-    let allowedAnims = ['stand', 'standMad', 'sleeping', 'yawnHappy', 'tongueAnim', 'happySteps', 'heartSmiles', 'writeLetter', 'flying', 'rollingBall', 'diving', 'backFlip', 'piano', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'reading', 'watchTV', 'computer', 'bathTime', 'buildingBlocks', 'licking', 'studying', 'flyKite', 'flyKiteFast', 'playingRC', 'playingRCfast', 'playingYoyo', 'playingHorn', 'walking', 'eating'];
+    let allowedAnims = ['stand', 'standMad', 'sleeping', 'yawnHappy', 'tongueAnim', 'happySteps', 'heartSmiles', 'writeLetter', 'flying', 'rollingBall', 'diving', 'backFlip', 'piano', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'reading', 'watchTV', 'computer', 'bathTime', 'buildingBlocks', 'licking', 'studying', 'sleepStudying', 'flyKite', 'flyKiteFast', 'playingRC', 'playingRCfast', 'playingYoyo', 'playingHorn', 'walking', 'eating'];
     let menus = ['clockMenu', 'giftMenu', 'gameMenu'];
 
     document.querySelector("#state-button").addEventListener('click', () => {
@@ -779,7 +780,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clearAllTimeouts();
         clearInterval(intervalAnim);
 
-        computer();
+        study('english');
     })
 
     // ShowHelp Grid
@@ -938,8 +939,10 @@ document.addEventListener('DOMContentLoaded', () => {
                             }else if(randomActivity >= 15){
                                 if(!hasReach300){
                                     reading();
-                                }else{
+                                }else if(hasReach300 && !hasReach450){
                                     sandcastle();
+                                }else{
+                                    study('english');
                                 }
                             }
                         }else if(!avoidActivity && pokeStatus.tvHours.some(elem => elem == startTime.getHours()) && randomAnim <= 4){//Watching TV
@@ -1049,7 +1052,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // To start walking or make its action
-        //['stand', 'standMad', 'sleeping', 'yawnHappy', 'tongueAnim', 'happySteps', 'heartSmiles', 'writeLetter', 'flying', 'rollingBall', 'diving', 'backFlip', 'piano', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'reading', 'watchTV', 'computer', 'bathTime', 'buildingBlocks', 'licking', 'studying', 'flyKite', 'flyKiteFast', 'playingRC', 'playingRCfast', 'playingYoyo', 'playingHorn', 'walking', 'eating'];
+        //['stand', 'standMad', 'sleeping', 'yawnHappy', 'tongueAnim', 'happySteps', 'heartSmiles', 'writeLetter', 'flying', 'rollingBall', 'diving', 'backFlip', 'piano', 'standLike', 'standLove', 'left', 'brushTeeth', 'sandcastle', 'reading', 'watchTV', 'computer', 'bathTime', 'buildingBlocks', 'licking', 'studying', 'sleepStudying', 'flyKite', 'flyKiteFast', 'playingRC', 'playingRCfast', 'playingYoyo', 'playingHorn', 'walking', 'eating'];
         let walkingAllowedAnims = ['stand', 'standMad', 'sandcastle', 'standLove', 'standLike', 'eating', 'bathTime', 'playingRC', 'playingRCfast', 'watchTV', 'reading', 'buildingBlocks'];
         if(pokeStatus.consecutiveSteps >= 20 && !isWalking && walkingAllowedAnims.some(anim => anim == animStatus)) {
             clearInterval(intervalAnim);
@@ -1116,6 +1119,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }else if(animStatus == 'studying'){
                 actionTimeOut = setTimeout(() => {
                     isAskingStudy = true;
+                }, 2000);
+            }else if(animStatus == 'sleepStudying'){
+                actionTimeOut = setTimeout(() => {
+                    clearInterval(intervalAnim);
+                    loadAnim(DisplayScreen,  Anims.study.studyAwake);
+                    auxiliarTimeout = setTimeout(() => {
+                        itHasBeenAwakedFromStudy = true;
+                        let randomStudy = Math.floor(Math.random() * 3);
+                        studys = ['history', 'maths', 'english']
+                        study(studys[randomStudy])
+                    }, 500);
                 }, 2000);
             }else if(animStatus == 'playingYoyo'){
                 actionTimeOut = setTimeout(() => {
@@ -1848,7 +1862,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }else if(randomGreeting > 6 && randomGreeting <= 8){
                 playingHorn();
             }else if(randomGreeting > 8){
-                writtingLetter();
+                flying();
             }
         }
     }
@@ -2123,44 +2137,74 @@ document.addEventListener('DOMContentLoaded', () => {
         let studyStand = Anims.study.studyStand;
         let studyAsk;
         let studyAnswer;
-        let intervalTime = 2000; 
-        // Include in the future English or Sleeping
-        // const studyLimit = (localStorage.getItem("hasReach450") != null)? true : false;
-
-        switch (subject) {
-            case 'history':
-                studyAsk = Anims.study.studyAskHistory;
-                studyAnswer =  Anims.study.studyAnswerHistory;
-            break;
-            case 'maths':
-                studyAsk = Anims.study.studyAskMaths;
-                studyAnswer =  Anims.study.studyAnswerMaths;
-                intervalTime = 3500;
-            break;
-        }
-
-        loadAnim(DisplayScreen, studyStand)
-        intervalAnim = setInterval(animate, 1000);
+        let intervalTime = 2000;
+        let isSleeping = false;
         
-        function animate() {
-            if(!isAskingStudy){
-                loadAnim(DisplayScreen, studyStand)
-            }else {
-                clearInterval(intervalAnim);
-                loadAnim(DisplayScreen, studyAsk)
-                auxiliarTimeout = setTimeout(() => {
-                    loadAnim(DisplayScreen, studyStand)
-                    auxiliarTimeout2 = setTimeout(() => {
-                        loadAnim(DisplayScreen, studyAnswer)
-                        auxiliarTimeout3 = setTimeout(() => {
-                            loadAnim(DisplayScreen, studyStand)
-                            isAskingStudy = false;
-                            study(subject);
-                        }, intervalTime);
-                    }, 1500);
-                }, 2500);
-            }
+        if(hasReach450 && !itHasBeenAwakedFromStudy){
+            let randomSleep = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
+            isSleeping = (randomSleep <= 3);
         }
+
+        //!isSleeping
+        if(!isSleeping){
+            switch (subject) {
+                case 'history':
+                    studyAsk = Anims.study.studyAskHistory;
+                    studyAnswer =  Anims.study.studyAnswerHistory;
+                break;
+                case 'maths':
+                    studyAsk = Anims.study.studyAskMaths;
+                    studyAnswer =  Anims.study.studyAnswerMaths;
+                    intervalTime = 3500;
+                break;
+                case 'english':
+                    studyAsk = Anims.study.studyAskEnglish;
+                    studyAnswer =  Anims.study.studyAnswerEnglish;
+                    intervalTime = 2500;
+                break;
+            }
+    
+            loadAnim(DisplayScreen, studyStand)
+            intervalAnim = setInterval(animate, 1000);
+            
+            function animate() {
+                if(!isAskingStudy){
+                    loadAnim(DisplayScreen, studyStand)
+                }else {
+                    clearInterval(intervalAnim);
+                    loadAnim(DisplayScreen, studyAsk)
+                    auxiliarTimeout = setTimeout(() => {
+                        loadAnim(DisplayScreen, studyStand)
+                        auxiliarTimeout2 = setTimeout(() => {
+                            loadAnim(DisplayScreen, studyAnswer)
+                            auxiliarTimeout3 = setTimeout(() => {
+                                loadAnim(DisplayScreen, studyStand)
+                                isAskingStudy = false;
+                                study(subject);
+                            }, intervalTime);
+                        }, 1500);
+                    }, 2500);
+                }
+            }
+        }else{
+            animStatus = 'sleepStudying'
+            console.log(animStatus)
+            loadAnim(DisplayScreen,  Anims.study.studySleep1)
+            let animHits = 1;
+            intervalAnim = setInterval(animate, 2000);
+            
+            function animate() {
+                if(animHits == 1){
+                    loadAnim(DisplayScreen,  Anims.study.studySleep2)
+                }else{
+                    loadAnim(DisplayScreen,  Anims.study.studySleep1)
+                    animHits = 0;
+                }
+                animHits++
+            }
+
+        }
+
     }
 
     //Flying Kite
@@ -2680,6 +2724,15 @@ function walk() {
             document.cookie = "has_reach300_goal=true; expires=" + now + "; path=/";
             localStorage.setItem("hasReach300", 1);
             pokeStatus.todayHasReachLimit300 = true;
+        }
+
+        // Reach 450 Limit
+        if(pokeStatus.totalSteps > limit450 && !hasReach450){
+            var now = new Date();
+            now.setTime(now.getTime() + 86400 * 1000); // Agregamos 1 día en milisegundos
+            document.cookie = "has_reach450_goal=true; expires=" + now + "; path=/";
+            localStorage.setItem("hasReach450", 1);
+            pokeStatus.todayHasReachLimit450 = true;
         }
 
         // Reach End / Celebrate the million
