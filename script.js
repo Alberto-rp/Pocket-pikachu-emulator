@@ -2649,7 +2649,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 3. Comprobar si la fuerza supera el umbral Y si pasó el tiempo mínimo entre pasos
         if (userForce > SHAKE_THRESHOLD) {
             if ((currentTime - lastStepTime) > STEP_DELAY) {
-                registrarPaso();
+                walk();
                 lastStepTime = currentTime;
             }
         }
