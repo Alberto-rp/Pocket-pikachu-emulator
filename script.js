@@ -2136,7 +2136,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Study
     function study(subject) {
-        animStatus = `studying`
+        animStatus = 'studying'
         console.log(animStatus+'-'+subject)
         let studyStand = Anims.study.studyStand;
         let studyAsk;
@@ -2579,7 +2579,99 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         }
-    }    
+    }
+    //Pedometer
+    const toggleBtnPedo = document.querySelector('#toggle-pedometer');
+    // Variables de estado del emulador
+    let isPedometerActive = false;
+
+    // Umbral de sensibilidad para detectar una sacudida (ajusta según pruebas)
+    const SHAKE_THRESHOLD = 15; 
+    let lastX = 0, lastY = 0, lastZ = 0;
+    let lastUpdate = 0;
+
+    // 2. Lógica del Podómetro Móvil (Opcional y Bajo Demanda)
+    async function activarPodometroMovil() {
+        // Verificar si el navegador soporta el evento de movimiento
+        if (!window.DeviceMotionEvent) {
+            alert("El podómetro no es compatible con este navegador o dispositivo.");
+            return false;
+        }
+
+        try {
+            // Requisito estricto de iOS (Safari): Requiere solicitar permiso explícito
+            if (typeof DeviceMotionEvent.requestPermission === 'function') {
+                const permissionState = await DeviceMotionEvent.requestPermission();
+                if (permissionState !== 'granted') {
+                    alert("Permiso denegado. Puedes seguir usando el botón 'Shake'.");
+                    return false;
+                }
+            }
+
+            // Si se otorga el permiso o es Android (que no requiere ventana de permiso), activamos el listener
+            window.addEventListener('devicemotion', procesarMovimiento, true);
+            isPedometerActive = true;
+            console.log("Podómetro móvil activado con éxito.");
+            return true;
+
+        } catch (error) {
+            console.error("Error al inicializar el sensor de movimiento:", error);
+            return false;
+        }
+    }
+
+    // 4. Desactivar el sensor si el usuario quiere apagarlo
+    function desactivarPodometroMovil() {
+        window.removeEventListener('devicemotion', procesarMovimiento, true);
+        isPedometerActive = false;
+        console.log("Podómetro móvil desactivado.");
+    }
+
+    // 3. Procesar los datos del acelerómetro
+    function procesarMovimiento(event) {
+        const currentTime = Date.now();
+        // Evitar procesar demasiados eventos por segundo para ahorrar batería
+        if ((currentTime - lastUpdate) > 100) {
+            const diffTime = currentTime - lastUpdate;
+            lastUpdate = currentTime;
+
+            // Capturar aceleración incluyendo la gravedad
+            const acceleration = event.accelerationIncludingGravity;
+            if (!acceleration) return;
+
+            const x = acceleration.x || 0;
+            const y = acceleration.y || 0;
+            const z = acceleration.z || 0;
+
+            // Calcular la velocidad del movimiento relativo
+            const speed = Math.abs(x + y + z - lastX - lastY - lastZ) / diffTime * 10000;
+
+            // Si supera el umbral, el usuario está caminando o agitando el móvil
+            if (speed > SHAKE_THRESHOLD) {
+                walk();
+            }
+
+            lastX = x;
+            lastY = y;
+            lastZ = z;
+        }
+    }
+
+    //Ask Permission
+    toggleBtnPedo.addEventListener('click', async () => {
+        console.log("hey")
+        if (!isPedometerActive) {
+            const activado = await activarPodometroMovil();
+            if (activado) {
+                toggleBtnPedo.textContent = "Desactivate Auto Pedometer";
+                toggleBtnPedo.classList.add('active');
+            }
+        } else {
+            desactivarPodometroMovil();
+            toggleBtnPedo.textContent = "Activate Auto Pedometer (Testing)";
+            toggleBtnPedo.classList.remove('active');
+        }
+    });    
 })
 
 /* ////////////////

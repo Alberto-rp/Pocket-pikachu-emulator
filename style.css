@@ -320,6 +320,10 @@ button {
 footer {
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
     bottom: 0;
     width: 100%;
 }
@@ -330,6 +334,18 @@ footer p {
     font-size: 12px;
     width: fit-content;
     margin: 0 auto;
+}
+
+footer button{
+    width: fit-content;
+    display: flex;
+    background-color: #1d2632;
+    color: white;
+    border-radius: 15px;
+    padding: 5px 50px;
+    font-family: supertrend;
+    letter-spacing: 2px;
+    font-size: 10px;
 }
 
 .emailme {

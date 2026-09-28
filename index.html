@@ -9,6 +9,7 @@
     <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
     <script src="script.js"></script>
     <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="/manifest.json">
 </head>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-S1RQVC5TXE"></script>
@@ -56,7 +57,7 @@
             <!-- Buttons -->
             <button id="saveAnimation">SAVE ANIMATION</button><br>
             <button id="printInit">PRINT SELECTED</button><br>
-            <button id="editPrint">EDIT ANIM</button>
+            <button id="editPrint">EDIT KKK ANIM</button>
             <button id="eraser">ERASER</button><br>
             <button id="startAnim">START ANIM</button><br><br>
             <button id="showGrid">SHOW HOR GRID</button><br>
@@ -92,8 +93,22 @@
         </div>
     </div>
     <footer>
+        <button id="toggle-pedometer">Activate Auto Pedometer (Testing)</button>
         <p>Pocket Pikachu Emulator is a non-profit fan-made project, inspired by the famous toy from the late 90s.</p>
         <p class="emailme"><a href="https://github.com/Alberto-rp/Pocket-pikachu-emulator">Github-Project</a> · <a href="http://www.bookmice.net/fleur/pikadirect.html">Instructions</a></p>
     </footer>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                .then(registration => {
+                    console.log('PokPik SW registrado con éxito en el alcance: ', registration.scope);
+                })
+                .catch(error => {
+                    console.error('Fallo en el registro del SW de PokPik: ', error);
+                });
+            });
+        }
+    </script>
 </body>
 </html>
