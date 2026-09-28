@@ -2586,10 +2586,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let isPedometerActive = false;
 
     // Umbral de sensibilidad para detectar una sacudida (ajusta según pruebas)
-    const SHAKE_THRESHOLD = 15; 
-    let lastX = 0, lastY = 0, lastZ = 0;
-    let lastUpdate = 0;
+    const SHAKE_THRESHOLD = 30;      // Subido de 15 a 22 (más duro, requiere paso o sacudida firme)
+    const STEP_DELAY = 350;          // Mínimo de milisegundos entre un paso y el siguiente (humano)
 
+    let lastUpdate = 0;
+    let lastStepTime = 0;            // Controla cuándo se sumó el último paso
+    let lastX = 0, lastY = 0, lastZ = 0;
     // 2. Lógica del Podómetro Móvil (Opcional y Bajo Demanda)
     async function activarPodometroMovil() {
         // Verificar si el navegador soporta el evento de movimiento
@@ -2630,25 +2632,29 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. Procesar los datos del acelerómetro
     function procesarMovimiento(event) {
         const currentTime = Date.now();
-        // Evitar procesar demasiados eventos por segundo para ahorrar batería
+        
+        // 1. Controlar la tasa de muestreo (cada 100ms)
         if ((currentTime - lastUpdate) > 100) {
             const diffTime = currentTime - lastUpdate;
             lastUpdate = currentTime;
 
-            // Capturar aceleración incluyendo la gravedad
-            const acceleration = event.accelerationIncludingGravity;
+            // Usamos acceleration sin gravedad si está disponible, es más preciso para pasos
+            const acceleration = event.acceleration || event.accelerationIncludingGravity;
             if (!acceleration) return;
 
             const x = acceleration.x || 0;
             const y = acceleration.y || 0;
             const z = acceleration.z || 0;
 
-            // Calcular la velocidad del movimiento relativo
+            // 2. Calcular el vector de fuerza delta (Fuerza del movimiento)
             const speed = Math.abs(x + y + z - lastX - lastY - lastZ) / diffTime * 10000;
 
-            // Si supera el umbral, el usuario está caminando o agitando el móvil
+            // 3. Evaluar si supera el umbral Y si ha pasado suficiente tiempo desde el último paso
             if (speed > SHAKE_THRESHOLD) {
-                walk();
+                if ((currentTime - lastStepTime) > STEP_DELAY) {
+                    registrarPaso();
+                    lastStepTime = currentTime; // Guardar marca de tiempo del paso válido
+                }
             }
 
             lastX = x;
