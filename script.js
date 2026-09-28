@@ -1006,6 +1006,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //SHAKE WALK
     document.querySelector('#shake').addEventListener('click', () => {
+        ShakingSteps();
+    })
+
+    function ShakingSteps () {
         if(!isiOS()){
             try {
                 window.navigator.vibrate(10);
@@ -1271,7 +1275,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 pokeStatus.consecutiveSteps = 0;
             }
         }
-    })
+    }
 
     /* ////////////////
         STAND STATE ANIMATIONS 
@@ -2586,7 +2590,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let isPedometerActive = false;
 
     // Umbral de sensibilidad para detectar una sacudida (ajusta según pruebas)
-    const SHAKE_THRESHOLD = 3.5;     // Fuerza G mínima por encima de la gravedad (3.5 es ideal para pasos/sacudidas)
+    const SHAKE_THRESHOLD = 3.0;     // Fuerza G mínima por encima de la gravedad (3.5 es ideal para pasos/sacudidas)
     const STEP_DELAY = 300;          // Evita doble conteo en una misma zancada (300ms)
 
     let lastStepTime = 0;
@@ -2649,7 +2653,14 @@ document.addEventListener('DOMContentLoaded', () => {
         // 3. Comprobar si la fuerza supera el umbral Y si pasó el tiempo mínimo entre pasos
         if (userForce > SHAKE_THRESHOLD) {
             if ((currentTime - lastStepTime) > STEP_DELAY) {
-                walk();
+                if(!isiOS()){
+                    try {
+                    window.navigator.vibrate(40);
+                    } catch (error) {
+                        console.error("Error al intentar vibrar:", error);
+                    }
+                }
+                ShakingSteps();
                 lastStepTime = currentTime;
             }
         }

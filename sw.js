@@ -1,5 +1,5 @@
 //Change this to update in peoples mobiles
-const CACHE_VERSION = 'v3.0.5'; 
+const CACHE_VERSION = 'v3.0.6'; 
 const CACHE_NAME = `pokpik-${CACHE_VERSION}`;
 const ASSETS_TO_CACHE = [
   '/',
