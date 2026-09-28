@@ -2586,12 +2586,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let isPedometerActive = false;
 
     // Umbral de sensibilidad para detectar una sacudida (ajusta según pruebas)
-    const SHAKE_THRESHOLD = 17;      // Subido de 15 a 22 (más duro, requiere paso o sacudida firme)
-    const STEP_DELAY = 250;          // Mínimo de milisegundos entre un paso y el siguiente (humano)
+    const SHAKE_THRESHOLD = 3.5;     // Fuerza G mínima por encima de la gravedad (3.5 es ideal para pasos/sacudidas)
+    const STEP_DELAY = 300;          // Evita doble conteo en una misma zancada (300ms)
 
-    let lastUpdate = 0;
-    let lastStepTime = 0;            // Controla cuándo se sumó el último paso
-    let lastX = 0, lastY = 0, lastZ = 0;
+    let lastStepTime = 0;
+
     // 2. Lógica del Podómetro Móvil (Opcional y Bajo Demanda)
     async function activarPodometroMovil() {
         // Verificar si el navegador soporta el evento de movimiento
@@ -2631,35 +2630,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 3. Procesar los datos del acelerómetro
     function procesarMovimiento(event) {
+        // Es vital usar la aceleración con gravedad para que funcione en todos los móviles
+        const acceleration = event.accelerationIncludingGravity;
+        if (!acceleration) return;
+
+        const x = acceleration.x || 0;
+        const y = acceleration.y || 0;
+        const z = acceleration.z || 0;
+
+        // 1. Calcular la fuerza total del movimiento (Magnitud del Vector)
+        const totalForce = Math.sqrt(x * x + y * y + z * z);
+
+        // 2. Restar la gravedad de la Tierra (aprox. 9.8 m/s2) para obtener la fuerza pura del usuario
+        const userForce = Math.abs(totalForce - 9.81);
+
         const currentTime = Date.now();
-        
-        // 1. Controlar la tasa de muestreo (cada 100ms)
-        if ((currentTime - lastUpdate) > 100) {
-            const diffTime = currentTime - lastUpdate;
-            lastUpdate = currentTime;
 
-            // Usamos acceleration sin gravedad si está disponible, es más preciso para pasos
-            const acceleration = event.acceleration || event.accelerationIncludingGravity;
-            if (!acceleration) return;
-
-            const x = acceleration.x || 0;
-            const y = acceleration.y || 0;
-            const z = acceleration.z || 0;
-
-            // 2. Calcular el vector de fuerza delta (Fuerza del movimiento)
-            const speed = Math.abs(x + y + z - lastX - lastY - lastZ) / diffTime * 10000;
-
-            // 3. Evaluar si supera el umbral Y si ha pasado suficiente tiempo desde el último paso
-            if (speed > SHAKE_THRESHOLD) {
-                if ((currentTime - lastStepTime) > STEP_DELAY) {
-                    registrarPaso();
-                    lastStepTime = currentTime; // Guardar marca de tiempo del paso válido
-                }
+        // 3. Comprobar si la fuerza supera el umbral Y si pasó el tiempo mínimo entre pasos
+        if (userForce > SHAKE_THRESHOLD) {
+            if ((currentTime - lastStepTime) > STEP_DELAY) {
+                registrarPaso();
+                lastStepTime = currentTime;
             }
-
-            lastX = x;
-            lastY = y;
-            lastZ = z;
         }
     }
 
