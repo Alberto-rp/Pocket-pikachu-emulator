@@ -2586,8 +2586,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let isPedometerActive = false;
 
     // Umbral de sensibilidad para detectar una sacudida (ajusta según pruebas)
-    const SHAKE_THRESHOLD = 30;      // Subido de 15 a 22 (más duro, requiere paso o sacudida firme)
-    const STEP_DELAY = 350;          // Mínimo de milisegundos entre un paso y el siguiente (humano)
+    const SHAKE_THRESHOLD = 22;      // Subido de 15 a 22 (más duro, requiere paso o sacudida firme)
+    const STEP_DELAY = 250;          // Mínimo de milisegundos entre un paso y el siguiente (humano)
 
     let lastUpdate = 0;
     let lastStepTime = 0;            // Controla cuándo se sumó el último paso
