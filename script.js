@@ -39,6 +39,7 @@ let itHasBeenAwakedFromStudy = false;
 let isDogTrick = false;
 let isFastRC = false;
 let avoidSleepGiftDev = false; //For development
+let justRestarted = false;
 const hasReach150 = (localStorage.getItem("hasReach150") != null)? true : false;
 const hasReach300 = (localStorage.getItem("hasReach300") != null)? true : false;
 const hasReach450 = (localStorage.getItem("hasReach450") != null)? true : false;
@@ -780,7 +781,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clearAllTimeouts();
         clearInterval(intervalAnim);
 
-        study('english');
+        computer();
     })
 
     // ShowHelp Grid
@@ -806,8 +807,9 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     // Basic stand animation
-    function basicAnim(avoidActivity=false, avoidSleep=false, avoidGreeting=false, avoidEat=false) {
+    function basicAnim(avoidActivity=false, avoidSleep=false, avoidGreeting=false, avoidEat=false, justRestart=false) {
         avoidSleep = (avoidSleep)? avoidSleep : avoidSleepGiftDev; //For development
+        justRestarted = (justRestarted == true)? justRestarted : justRestart;
         avoidActivity = (avoidActivity)? avoidActivity : stopPlaying;
         animStatus = 'stand'
         let startTime = new Date();
@@ -831,7 +833,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }else{
             // Sleep
-            if (!avoidSleep && !isLateAwake && (startTime.getHours() >= pokeStatus.sleepHour && startTime.getHours() <= 23 ||
+            if (!avoidSleep && !justRestarted && !isLateAwake && (startTime.getHours() >= pokeStatus.sleepHour && startTime.getHours() <= 23 ||
                 startTime.getHours() >= 0 && startTime.getHours() < 8)){
                 animStatus = 'sleeping';
                 
@@ -880,13 +882,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }else {
                 // Eating -- eatingtHours = [12, 18]
-                if(!coockieHadThrowTable && !avoidEat && pokeStatus.eatingtHours.some(elem => elem == startTime.getHours()) && coockieHasBrushed != 'true' && startTime.getMinutes() <= 30) {
+                if(!coockieHadThrowTable && !justRestarted && !avoidEat && pokeStatus.eatingtHours.some(elem => elem == startTime.getHours()) && coockieHasBrushed != 'true' && startTime.getMinutes() <= 30) {
                     if(coockieHadEating != 'true'){
                         eating();
                     }else if(coockieHasBrushed != 'true'){
                         brushTeeth();
                     }
-                }else if(!avoidActivity && pokeStatus.lickingHours.some(elem => elem == startTime.getHours())){
+                }else if(!avoidActivity && !justRestarted && pokeStatus.lickingHours.some(elem => elem == startTime.getHours())){
                     licking();
                 }else{
                     if(pokeStatus.friendshipLevel <= -500){ // If pikachu is mad he doesn't play
@@ -907,7 +909,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             }
                         }
                     }else{ //Friendship level OK
-                        if(pokeStatus.bathHours.some(elem => elem == startTime.getHours()) && (coockieHasTakeBath != 'true' || coockieHasBrushed != 'true')){// Bath Time
+                        if(!justRestarted && pokeStatus.bathHours.some(elem => elem == startTime.getHours()) && (coockieHasTakeBath != 'true' || coockieHasBrushed != 'true')){// Bath Time
                             if(coockieHasTakeBath != 'true'){
                                 bathTime();
                             }else{
@@ -2469,7 +2471,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem("InitTamagotchi", true)
                 document.querySelector('.walkCounter').innerHTML = pokeStatus.steps;
                 document.querySelector("#clockMenu").classList.add('selected')
-                basicAnim(true, true, false, true);
+                basicAnim(true, true, true, true, true);
             }, 3000);
         }
     }
