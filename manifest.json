@@ -2,7 +2,7 @@
   "name": "Pocket Pikachu Emulator",
   "short_name": "PokPik",
   "description": "Virtual pet and retro podometer emulator inspired by the late 90s toy.",
-  "start_url": "/",
+  "start_url": "/?utm_source=pwa",
   "display": "standalone",
   "background_color": "#f0f0f0",
   "theme_color": "#fccf1d",
