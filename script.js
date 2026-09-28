@@ -40,6 +40,7 @@ let isDogTrick = false;
 let isFastRC = false;
 let avoidSleepGiftDev = false; //For development
 let justRestarted = false;
+let isStudySleeping = false;
 const hasReach150 = (localStorage.getItem("hasReach150") != null)? true : false;
 const hasReach300 = (localStorage.getItem("hasReach300") != null)? true : false;
 const hasReach450 = (localStorage.getItem("hasReach450") != null)? true : false;
@@ -1128,6 +1129,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     loadAnim(DisplayScreen,  Anims.study.studyAwake);
                     auxiliarTimeout = setTimeout(() => {
                         itHasBeenAwakedFromStudy = true;
+                        isStudySleeping = false;
                         let randomStudy = Math.floor(Math.random() * 3);
                         studys = ['history', 'maths', 'english']
                         study(studys[randomStudy])
@@ -2134,17 +2136,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Study
     function study(subject) {
-        animStatus = 'studying'
-        console.log(animStatus)
+        animStatus = `studying`
+        console.log(animStatus+'-'+subject)
         let studyStand = Anims.study.studyStand;
         let studyAsk;
         let studyAnswer;
         let intervalTime = 2000;
-        let isSleeping = false;
+        let isSleeping = isStudySleeping;
         
-        if(hasReach450 && !itHasBeenAwakedFromStudy){
+        if(hasReach450 && !itHasBeenAwakedFromStudy && !isSleeping){
             let randomSleep = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
             isSleeping = (randomSleep <= 3);
+            isStudySleeping = isSleeping;
         }
 
         //!isSleeping
@@ -2742,6 +2745,8 @@ function walk() {
             animStatus = '';
             loadEnd();
         }
+    }else{
+        loadEnd();
     }
 }
 
