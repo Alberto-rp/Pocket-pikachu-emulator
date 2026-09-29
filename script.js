@@ -47,6 +47,7 @@ const hasReach450 = (localStorage.getItem("hasReach450") != null)? true : false;
 
 //Pedometer
 let isPedometerActive = (document.cookie.split("; ").find((row) => row.startsWith("is_pedometer_active="))?.split("=")[1])? true : false;
+let isFirstRead = true; 
 // Umbral de sensibilidad
 const SHAKE_THRESHOLD = 3.0;     // Fuerza G mínima por encima de la gravedad (3.5 es ideal para pasos/sacudidas)
 const STEP_DELAY = 250;          // Evita doble conteo en una misma zancada (300ms)
@@ -2629,6 +2630,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function desactivarPodometroMovil() {
         window.removeEventListener('devicemotion', procesarMovimiento, true);
         isPedometerActive = false;
+        isFirstRead = true;
         console.log("Podómetro móvil desactivado.");
     }
 
@@ -2641,6 +2643,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const x = acceleration.x || 0;
         const y = acceleration.y || 0;
         const z = acceleration.z || 0;
+
+        // 🌟 MEJORA CLAVE: Si es la primera lectura tras encenderlo, 
+        // solo guardamos la posición actual como punto de partida y salimos.
+        if (isFirstRead) {
+            // En caso de que uses la fórmula matemática del Vector Euclidiano:
+            // No necesitas hacer nada especial aquí, pero si usas deltas de X, Y, Z:
+            lastX = x;
+            lastY = y;
+            lastZ = z;
+            
+            isFirstRead = false; // Apagamos la bandera para los siguientes movimientos
+            return; // Salimos de la función sin procesar fuerza ni registrar pasos
+        }
 
         // 1. Calcular la fuerza total del movimiento (Magnitud del Vector)
         const totalForce = Math.sqrt(x * x + y * y + z * z);
@@ -2668,6 +2683,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //Change button if cookie is present
     if(isPedometerActive){
+        activarPodometroMovil();
         toggleBtnPedo.textContent = "DESACTIVATE PEDOMETER";
         toggleBtnPedo.classList.add('active');
     }
