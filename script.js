@@ -901,7 +901,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }else{
                     if(pokeStatus.friendshipLevel <= -500){ // If pikachu is mad he doesn't play
                         animStatus = 'standMad'
-                        animate(true);
+                        loadAnim(DisplayScreen, Anims.standMad.stand);
                         intervalAnim = setInterval(animate, 1000);
         
                         function animate() {
@@ -980,7 +980,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                             //STAND ANIM
                             }else if(pokeStatus.friendshipLevel > -500 && pokeStatus.friendshipLevel <= 1500){ // OK status
-                                animate(true);
+                                loadAnim(DisplayScreen, Anims.standBasic.stand)
                                 intervalAnim = setInterval(animate, 1000);
                                 
                                 function animate() {
@@ -1098,11 +1098,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 actionTimeOut = setTimeout(() => {
                     console.log("EING?")
                     clearInterval(intervalAnim);
+                    clearAllTimeouts();
                     auxiliarTimeout = setTimeout(() => {
                         loadAnim(DisplayScreen, Anims.standBasic.look);
                     }, 500);
             
                     auxiliarTimeout2 = setTimeout(() => {
+                        clearInterval(intervalAnim);
+                        clearAllTimeouts();
                         basicAnim(true, false, true);
                     }, 3000);
                     pokeStatus.consecutiveSteps = 0;
@@ -1111,11 +1114,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 actionTimeOut = setTimeout(() => {
                     console.log("EING?")
                     clearInterval(intervalAnim);
+                    clearAllTimeouts();
                     auxiliarTimeout = setTimeout(() => {
                         loadAnim(DisplayScreen, Anims.standMad.look);
                     }, 1000);
-            
+                    
                     auxiliarTimeout2 = setTimeout(() => {
+                        clearInterval(intervalAnim);
+                        clearAllTimeouts();
                         basicAnim();
                     }, 4000);
                     pokeStatus.consecutiveSteps = 0;
