@@ -2591,7 +2591,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Umbral de sensibilidad para detectar una sacudida (ajusta según pruebas)
     const SHAKE_THRESHOLD = 3.0;     // Fuerza G mínima por encima de la gravedad (3.5 es ideal para pasos/sacudidas)
-    const STEP_DELAY = 300;          // Evita doble conteo en una misma zancada (300ms)
+    const STEP_DELAY = 250;          // Evita doble conteo en una misma zancada (300ms)
 
     let lastStepTime = 0;
 

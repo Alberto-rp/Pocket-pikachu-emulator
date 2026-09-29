@@ -3,11 +3,11 @@ const CACHE_VERSION = 'v4.0.0';
 const CACHE_NAME = `pokpik-${CACHE_VERSION}`;
 const ASSETS_TO_CACHE = [
   '/',
-//   '/index.html',
+  '/index.html',
   '/manifest.json',
-//   '/script.js',
-//   '/anims.json',
-//   '/style.css',
+  '/script.js',
+  '/anims.json',
+  '/style.css',
 ];
 
 // Instalar el Service Worker y almacenar recursos en caché
