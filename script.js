@@ -1103,7 +1103,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }, 500);
             
                     auxiliarTimeout2 = setTimeout(() => {
-                        basicAnim(true);
+                        basicAnim(true, false, true);
                     }, 3000);
                     pokeStatus.consecutiveSteps = 0;
                 }, 1000);
