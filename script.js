@@ -2668,7 +2668,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //Change button if cookie is present
     if(isPedometerActive){
-        toggleBtnPedo.textContent = "Desactivate Auto Pedometer";
+        toggleBtnPedo.textContent = "DESACTIVATE PEDOMETER";
         toggleBtnPedo.classList.add('active');
     }
 
@@ -2677,7 +2677,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!isPedometerActive) {
             const activado = await activarPodometroMovil();
             if (activado) {
-                toggleBtnPedo.textContent = "Desactivate Auto Pedometer";
+                toggleBtnPedo.textContent = "DESACTIVATE PEDOMETER";
                 toggleBtnPedo.classList.add('active');
                 // Declare cookie
                 let now = new Date();
@@ -2686,7 +2686,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } else {
             desactivarPodometroMovil();
-            toggleBtnPedo.textContent = "Activate Auto Pedometer (Testing)";
+            toggleBtnPedo.textContent = "ACTIVATE PEDOMETER";
             toggleBtnPedo.classList.remove('active');
             deleteCookies('is_pedometer_active');
         }

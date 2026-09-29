@@ -330,7 +330,7 @@ footer {
 
 footer p {
     color: #000000;
-    opacity: 0.2;
+    opacity: 0.4;
     font-size: 12px;
     width: fit-content;
     margin: 0 auto;
@@ -339,13 +339,17 @@ footer p {
 footer button{
     width: fit-content;
     display: flex;
-    background-color: #1d2632;
+    background-color: #65696e;
     color: white;
     border-radius: 15px;
     padding: 5px 50px;
-    font-family: supertrend;
+    font-family: cursive;
     letter-spacing: 2px;
     font-size: 10px;
+}
+
+#toggle-pedometer.active {
+    background-color: #1d2632;
 }
 
 .emailme {
