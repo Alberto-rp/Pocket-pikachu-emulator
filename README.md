@@ -9,6 +9,7 @@
 <img src="img/eatingGif.gif" width="400" />
 
 ## Actual functionalities
+- Pedometer native for mobile, currently in testing.
 - Sleep Animation from 20/21PM to 8AM Hours (3 different possitions)
 - Eat Animations at 10, 12 and 18 hours (3 different animations, Bread, Onigiri and Chopsticks)
 - Greeting animations at 8, 12, 18 or 8, 12, 18, 19 depending total steps
