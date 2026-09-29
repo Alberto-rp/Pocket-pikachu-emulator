@@ -2686,6 +2686,7 @@ document.addEventListener('DOMContentLoaded', () => {
         activarPodometroMovil();
         toggleBtnPedo.textContent = "DESACTIVATE PEDOMETER";
         toggleBtnPedo.classList.add('active');
+        document.querySelector('#shake').style.display='none'
     }
 
     //Ask Permission
@@ -2695,6 +2696,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (activado) {
                 toggleBtnPedo.textContent = "DESACTIVATE PEDOMETER";
                 toggleBtnPedo.classList.add('active');
+                document.querySelector('#shake').style.display='none'
                 // Declare cookie
                 let now = new Date();
                 now.setFullYear(now.getFullYear() + 10);
@@ -2704,6 +2706,7 @@ document.addEventListener('DOMContentLoaded', () => {
             desactivarPodometroMovil();
             toggleBtnPedo.textContent = "ACTIVATE PEDOMETER";
             toggleBtnPedo.classList.remove('active');
+            document.querySelector('#shake').style.display='block'
             deleteCookies('is_pedometer_active');
         }
     });    
