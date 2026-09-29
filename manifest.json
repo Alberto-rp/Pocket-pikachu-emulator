@@ -5,7 +5,7 @@
   "start_url": "/?utm_source=pwa",
   "display": "standalone",
   "background_color": "#f0f0f0",
-  "theme_color": "#fccf1d",
+  "theme_color": "#ffbb00",
   "orientation": "portrait",
   "icons": [
     {
