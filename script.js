@@ -45,6 +45,12 @@ const hasReach150 = (localStorage.getItem("hasReach150") != null)? true : false;
 const hasReach300 = (localStorage.getItem("hasReach300") != null)? true : false;
 const hasReach450 = (localStorage.getItem("hasReach450") != null)? true : false;
 
+//Pedometer
+let isPedometerActive = (document.cookie.split("; ").find((row) => row.startsWith("is_pedometer_active="))?.split("=")[1])? true : false;
+// Umbral de sensibilidad
+const SHAKE_THRESHOLD = 3.0;     // Fuerza G mínima por encima de la gravedad (3.5 es ideal para pasos/sacudidas)
+const STEP_DELAY = 250;          // Evita doble conteo en una misma zancada (300ms)
+
 // Steps
 let pokeStatus = {};
 pokeStatus.steps = (localStorage.getItem("steps") != null)? Number(localStorage.getItem("steps")) : 0;
@@ -2584,15 +2590,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
-    //Pedometer
+
+    /* PEDOMETER */
     const toggleBtnPedo = document.querySelector('#toggle-pedometer');
-    // Variables de estado del emulador
-    let isPedometerActive = false;
-
-    // Umbral de sensibilidad para detectar una sacudida (ajusta según pruebas)
-    const SHAKE_THRESHOLD = 3.0;     // Fuerza G mínima por encima de la gravedad (3.5 es ideal para pasos/sacudidas)
-    const STEP_DELAY = 250;          // Evita doble conteo en una misma zancada (300ms)
-
     let lastStepTime = 0;
 
     // 2. Lógica del Podómetro Móvil (Opcional y Bajo Demanda)
@@ -2666,19 +2666,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    //Change button if cookie is present
+    if(isPedometerActive){
+        toggleBtnPedo.textContent = "Desactivate Auto Pedometer";
+        toggleBtnPedo.classList.add('active');
+    }
+
     //Ask Permission
     toggleBtnPedo.addEventListener('click', async () => {
-        console.log("hey")
         if (!isPedometerActive) {
             const activado = await activarPodometroMovil();
             if (activado) {
                 toggleBtnPedo.textContent = "Desactivate Auto Pedometer";
                 toggleBtnPedo.classList.add('active');
+                // Declare cookie
+                let now = new Date();
+                now.setFullYear(now.getFullYear() + 10);
+                document.cookie = `is_pedometer_active=true; expires="${now}"; path=/`;
             }
         } else {
             desactivarPodometroMovil();
             toggleBtnPedo.textContent = "Activate Auto Pedometer (Testing)";
             toggleBtnPedo.classList.remove('active');
+            deleteCookies('is_pedometer_active');
         }
     });    
 })
