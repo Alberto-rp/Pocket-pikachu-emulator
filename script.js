@@ -79,6 +79,12 @@ if(localStorage.getItem("initTamDate") == null){
     localStorage.setItem("initTamDate", `${auxDate.toDateString()} ${auxDate.getHours()}:00`);
 }
 
+//Check if Pika is fallen sleep studying
+if(hasReach450 && !itHasBeenAwakedFromStudy){
+    let randomSleep = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
+    isStudySleeping = (randomSleep <= 3);
+}
+
 // Watts
 let wattsAux = {};
 wattsAux.GivenCents = 0;
@@ -2160,12 +2166,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let studyAnswer;
         let intervalTime = 2000;
         let isSleeping = isStudySleeping;
-        
-        if(hasReach450 && !itHasBeenAwakedFromStudy && !isSleeping){
-            let randomSleep = Math.floor(Math.random() * (10 - 1 + 1) + 1); //1-10
-            isSleeping = (randomSleep <= 3);
-            isStudySleeping = isSleeping;
-        }
 
         //!isSleeping
         if(!isSleeping){
