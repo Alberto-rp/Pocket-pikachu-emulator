@@ -115,6 +115,16 @@ body {
     bottom: 9px;
 }
 
+.logoRP {
+    top: -9px;
+    width: 100px;
+    left: calc(50% - 55px);
+    border: solid 3px #c59100;
+    border-radius: 20px;
+    padding: 2px;
+    opacity: 30%;
+}
+
 /* PIXELS */
 .pixel {
     font-size: 8px;
