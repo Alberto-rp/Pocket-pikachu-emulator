@@ -2600,6 +2600,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* PEDOMETER */
     const toggleBtnPedo = document.querySelector('#toggle-pedometer');
+    const toggleBtnPocket = document.querySelector('#btn-toggle-wake-lock');
     let lastStepTime = 0;
 
     // 2. Lógica del Podómetro Móvil (Opcional y Bajo Demanda)
@@ -2692,6 +2693,7 @@ document.addEventListener('DOMContentLoaded', () => {
         activarPodometroMovil();
         toggleBtnPedo.textContent = "DESACTIVATE PEDOMETER";
         toggleBtnPedo.classList.add('active');
+        toggleBtnPocket.style.display = 'block';
         document.querySelector('#shake').style.display='none'
     }
 
@@ -2702,6 +2704,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (activado) {
                 toggleBtnPedo.textContent = "DESACTIVATE PEDOMETER";
                 toggleBtnPedo.classList.add('active');
+                toggleBtnPocket.style.display = 'block';
                 document.querySelector('#shake').style.display='none'
                 // Declare cookie
                 let now = new Date();
@@ -2712,10 +2715,73 @@ document.addEventListener('DOMContentLoaded', () => {
             desactivarPodometroMovil();
             toggleBtnPedo.textContent = "ACTIVATE PEDOMETER";
             toggleBtnPedo.classList.remove('active');
+            toggleBtnPocket.style.display = 'none';
             document.querySelector('#shake').style.display='block'
             deleteCookies('is_pedometer_active');
         }
-    });    
+    });
+    
+    //Bloqueo de pantalla
+    let wakeLock = null;
+    let isLockedMode = false;
+    let pulseTimer = null;
+    const HOLD_DURATION = 2000; 
+
+    async function activarModoBolsillo() {
+        try {
+            if ('wakeLock' in navigator) {
+                wakeLock = await navigator.wakeLock.request('screen');
+            }
+            document.body.classList.add('modo-bolsillo-activo');
+            isLockedMode = true;
+
+            const btnControl = document.getElementById('btn-toggle-wake-lock');
+            if (btnControl) btnControl.textContent = "⏳ Press and hold for 2s to unlock";
+        } catch (err) {
+            console.error(`Error: ${err.message}`);
+        }
+    }
+
+    async function desactivarModoBolsillo() {
+        if (wakeLock !== null) {
+            await wakeLock.release();
+            wakeLock = null;
+        }
+        document.body.classList.remove('modo-bolsillo-activo');
+        isLockedMode = false;
+
+        const btnControl = document.getElementById('btn-toggle-wake-lock');
+        if (btnControl) btnControl.textContent = "🔒 POCKET MODE";
+    }
+
+    const btnWakeLock = document.getElementById('btn-toggle-wake-lock');
+
+    if (btnWakeLock) {
+        btnWakeLock.addEventListener('pointerdown', (e) => {
+            e.stopPropagation(); 
+            
+            if (!isLockedMode) {
+                activarModoBolsillo();
+            } else {
+                btnWakeLock.textContent = "⚡ Don't let go! Processing...";
+                pulseTimer = setTimeout(() => {
+                    desactivarModoBolsillo();
+                }, HOLD_DURATION);
+            }
+        });
+
+        const cancelarPulsacion = (e) => {
+            e.stopPropagation();
+            if (isLockedMode && pulseTimer) {
+                clearTimeout(pulseTimer);
+                pulseTimer = null;
+                btnWakeLock.textContent = "⏳ Mantén pulsado 2s para desbloquear";
+            }
+        };
+
+        btnWakeLock.addEventListener('pointerup', cancelarPulsacion);
+        btnWakeLock.addEventListener('pointerleave', cancelarPulsacion);
+    }
 })
 
 /* ////////////////

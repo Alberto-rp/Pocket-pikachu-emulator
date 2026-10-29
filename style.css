@@ -351,14 +351,15 @@ footer button{
     display: flex;
     background-color: #65696e;
     color: white;
+    border: 0;
     border-radius: 15px;
-    padding: 5px 50px;
+    padding: 7px 50px;
     letter-spacing: 2px;
     font-size: 10px;
 }
 
 #toggle-pedometer.active {
-    background-color: #1d2632;
+    background-color: #333;
 }
 
 .emailme {
@@ -479,5 +480,68 @@ footer button{
         height: 64px;
         transform: rotate(360deg)
     }
+}
+
+/*Bloqueo de pantalla*/
+#btn-toggle-wake-lock {
+    display: none;
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    background-color: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 15px;
+    padding: 5px 50px;
+    letter-spacing: 2px;
+    font-size: 10px;
+}
+
+/* 1. Capa protectora (Oculta por defecto) */
+#bloqueo-pantalla-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.94); 
+    z-index: 9990;
+    pointer-events: auto;
+}
+
+body.modo-bolsillo-activo #bloqueo-pantalla-overlay {
+    display: block;
+}
+
+body.modo-bolsillo-activo #app, 
+body.modo-bolsillo-activo .main-container { 
+    pointer-events: none !important; 
+}
+
+body.modo-bolsillo-activo #btn-toggle-wake-lock {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important; 
+    width: 85vw; 
+    height: 85px;
+    font-size: 1.1rem;
+    z-index: 9999 !important;
+    pointer-events: auto !important;
+    
+    background-color: #000 !important; 
+    color: white !important;
+    border: 3px solid white;
+    border-radius: 12px;
+    font-weight: bold;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
     
