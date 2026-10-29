@@ -1005,7 +1005,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     }
                                     
                                 }
-                            }else if(pokeStatus.friendshipLevel > 1500 && pokeStatus.friendshipLevel <= 3000){ // LIKE status
+                            }else if(pokeStatus.friendshipLevel > 1500 && pokeStatus.friendshipLevel <= 3000){ // LIKE status (Calculate in the future at least 10K Steps to come here)
                                 standLike();                                    
                             }else if(pokeStatus.friendshipLevel > 3000){ //LOVE status
                                 standLove();

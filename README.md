@@ -1,5 +1,6 @@
 # Pocket Pikachu Emulator
 
+- Try it free at [Pokpik.life](http://www.pokpik.life/)
 - This is a web project made by a huge fan of this 90'S old toy, "pocket pikachu" only with JS
 - I'm trying to replicate it by reverse engineering, watching the behavior of mine and making it here.
 - I added the custom/new functionality to enable/disable the friendshipLevel dropdown.
@@ -8,33 +9,36 @@
 
 <img src="img/eatingGif.gif" width="400" />
 
-## Actual functionalities
+## Custom functionalities
 - Pedometer native for mobile, currently in testing.
+- Posibility of installing the website via PWA
+- Settings Menu (Reset steps, Relation Dropdown and Difficulty Level setting)
+- NEW Relation/FriendShip dropdown could be disabled from the settings menu; ON by default
+- NEW Difficulty/Setting, setting the final goal of the tamagotchi, between 10K, 100K or 1M Steps (100K by default)
+
+## Original functionalities
+- Friendship-system (LEFT, MAD, OK, LIKE and LOVE states available)
 - Sleep Animation from 20/21PM to 8AM Hours (3 different possitions)
 - Eat Animations at 10, 12 and 18 hours (3 different animations, Bread, Onigiri and Chopsticks)
 - Greeting animations at 8, 12, 18 or 8, 12, 18, 19 depending total steps
 - Shower/Bathtub anim at 19/20PM
 - Brushing teeth animations after eating or shower. 
 - Play Animations randomly between 9-18 hours (SandCastle, BuildingBlocks, Reading, Playing-yoyo, Study-Maths, Study-History, Study-English, Sleep-Studying)
+- Special hack if pik is in LEFT status and you shake at least 20 times: (He comes back)
 - TV or RC or Computer Animations randomly between 18-19 hours (depending total steps)
 - Icecream or Lollypop Animations between 15-16 hours
 - Playing-yoyo or Fly-Kite Animations randomly between 16-18 hours
 - Clock Menu (without alarm)
 - Step Counter (Based on the shake button)
-- Settings Menu (Reset steps, Relation Dropdown and Difficulty Level setting)
-- Friendship-system (LEFT, MAD, OK, LIKE and LOVE states available)
-- Special hack if pik is in LEFT status and you shake at least 20 times: (He comes back)
 - Slot machine (with a special hack if you walk more than 150 steps or if you loose more than 5 times)
 - Gift Menu (COMPLETED) (With 11 differents animations depending the amount and friendship level)
 - State of the Relation/FriendShip status
-- NEW Relation/FriendShip dropdown could be disabled from the settings menu; ON by default
-- NEW Difficulty/Setting, setting the final goal of the tamagotchi, between 10K, 100K or 1M Steps (100K by default)
 - New animations is related to the total steps; Reach 150.000 or 300.000 (Different amount depending difficulty, 1500, 15.000 or 150.000 for example) <b>will show new animations</b>
 - When the limit (10K, 100K or 1M Steps) is reach, will appear the congrats Screen + Record screen
 
 ## links of interest
 
-- [Pocket Pikachu Emulator Online](http://www.pokpik.life/)
+- [Play Pocket Pikachu Emulator Online!](http://www.pokpik.life/)
 - [Pocket Pikachu on wikipedia](https://en.wikipedia.org/wiki/Pok%C3%A9mon_Pikachu)
 - [Pocket Pikachu on Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Pok%C3%A9mon_Pikachu)
 - [Pocket Pikachu Instructions](http://www.bookmice.net/fleur/pikadirect.html)
