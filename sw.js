@@ -1,12 +1,12 @@
 //Change this to update in peoples mobiles
-const CACHE_VERSION = 'v5.0.1'; 
+const CACHE_VERSION = 'v5.0.2'; 
 const CACHE_NAME = `pokpik-${CACHE_VERSION}`;
 //Coment the contents below for developing
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/script.js?v=501',
+  '/script.js?v=502',
   '/anims.json',
   '/style.css',
 ];

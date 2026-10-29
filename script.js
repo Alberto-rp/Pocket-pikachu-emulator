@@ -2601,6 +2601,7 @@ document.addEventListener('DOMContentLoaded', () => {
     /* PEDOMETER */
     const toggleBtnPedo = document.querySelector('#toggle-pedometer');
     const toggleBtnPocket = document.querySelector('#btn-toggle-wake-lock');
+    const rpLogo = document.querySelector('#rpLogo');
     let lastStepTime = 0;
 
     // 2. Lógica del Podómetro Móvil (Opcional y Bajo Demanda)
@@ -2736,7 +2737,10 @@ document.addEventListener('DOMContentLoaded', () => {
             isLockedMode = true;
 
             const btnControl = document.getElementById('btn-toggle-wake-lock');
-            if (btnControl) btnControl.textContent = "⏳ Press and hold for 2s to unlock";
+            if (btnControl) {
+                btnControl.textContent = "⏳ Press and hold for 2s to unlock";
+                rpLogo.style.display = 'none';
+            }
         } catch (err) {
             console.error(`Error: ${err.message}`);
         }
@@ -2766,6 +2770,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 btnWakeLock.textContent = "⚡ Don't let go! Processing...";
                 pulseTimer = setTimeout(() => {
                     desactivarModoBolsillo();
+                    rpLogo.style.display = 'block';
                 }, HOLD_DURATION);
             }
         });
@@ -2775,7 +2780,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isLockedMode && pulseTimer) {
                 clearTimeout(pulseTimer);
                 pulseTimer = null;
-                btnWakeLock.textContent = "⏳ Mantén pulsado 2s para desbloquear";
+                btnWakeLock.textContent = "⏳ Press and hold for 2s to unlock";
+                rpLogo.style.display = 'none';
             }
         };
 
